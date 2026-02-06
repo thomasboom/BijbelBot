@@ -23,6 +23,7 @@ class ConnectionService {
   }
 
   /// Update connection status
+  // ignore: unused_element
   void _updateConnectionStatus(bool connected) {
     if (_isConnected != connected) {
       _isConnected = connected;

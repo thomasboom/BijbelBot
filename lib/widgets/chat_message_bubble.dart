@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class ChatMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     final isUser = message.sender == MessageSender.user;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -33,7 +35,7 @@ class ChatMessageBubble extends StatelessWidget {
           child: Column(
             crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
-              if (!isUser) _buildBotLabel(colorScheme),
+              if (!isUser) _buildBotLabel(colorScheme, localizations),
               const SizedBox(height: 4),
               _buildMessageBubble(isUser, colorScheme),
               const SizedBox(height: 4),
@@ -93,7 +95,7 @@ class ChatMessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildBotLabel(ColorScheme colorScheme) {
+  Widget _buildBotLabel(ColorScheme colorScheme, AppLocalizations localizations) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
@@ -103,7 +105,7 @@ class ChatMessageBubble extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        isError ? 'Fout' : 'BijbelBot',
+        isError ? localizations.error : localizations.appName,
         style: TextStyle(
           color: isError
               ? colorScheme.onErrorContainer

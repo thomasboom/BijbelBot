@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/bible_chat_message.dart';
 import '../models/bible_chat_conversation.dart';
@@ -323,22 +324,23 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
 
   Future<void> _showNewConversationDialog() async {
+    final localizations = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Nieuwe Conversatie'),
-          content: const Text(
+          title: Text(localizations.newConversation),
+          content: Text(
             'Weet je zeker dat je een nieuwe conversatie wilt starten? De huidige conversatie wordt gewist.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuleren'),
+              child: Text('Annuleren'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Nieuwe Conversatie'),
+              child: Text(localizations.newConversation),
             ),
           ],
         );
@@ -352,6 +354,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   Future<void> _startNewConversation() async {
     if (_chatProvider == null) return;
+    final localizations = AppLocalizations.of(context)!;
 
     try {
       setState(() {
@@ -361,7 +364,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
       // Create a new conversation
       final newConversation = await _chatProvider!.createConversation(
-        title: 'Nieuwe conversatie',
+        title: localizations.newConversation,
       );
 
       // Set as active conversation
@@ -397,6 +400,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -413,7 +417,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
           IconButton(
             onPressed: _showNewConversationDialog,
             icon: const Icon(Icons.add_comment),
-            tooltip: 'Nieuwe Conversatie',
+            tooltip: localizations.newConversation,
           ),
         ],
         backgroundColor: colorScheme.surface,

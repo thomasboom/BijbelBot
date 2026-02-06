@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'models/bible_chat_conversation.dart';
 import 'providers/bible_chat_provider.dart';
 import 'screens/bible_chat_screen.dart';
 import 'widgets/conversation_history_sidebar.dart';
 import 'widgets/settings_menu.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   // Load environment variables from assets (works on all platforms including Android)
   try {
     await dotenv.load(fileName: ".env");
-    print('Successfully loaded .env from assets');
+    debugPrint('Successfully loaded .env from assets');
 
     // Verify the API key was loaded
     final apiKey = dotenv.env['OLLAMA_API_KEY'];
     if (apiKey != null && apiKey.isNotEmpty) {
-      print('OLLAMA_API_KEY loaded successfully');
+      debugPrint('OLLAMA_API_KEY loaded successfully');
     } else {
-      print('Warning: OLLAMA_API_KEY not found in .env file');
+      debugPrint('Warning: OLLAMA_API_KEY not found in .env file');
     }
   } catch (e) {
-    print('Could not load .env file: $e');
-    print('Please ensure .env file is added to pubspec.yaml assets and contains OLLAMA_API_KEY');
+    debugPrint('Could not load .env file: $e');
+    debugPrint('Please ensure .env file is added to pubspec.yaml assets and contains OLLAMA_API_KEY');
   }
 
   runApp(const BijbelBotApp());
@@ -41,6 +44,16 @@ class BijbelBotApp extends StatelessWidget {
         theme: _buildLightTheme(),
         darkTheme: _buildDarkTheme(),
         themeMode: ThemeMode.system, // Follow system preference
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en'), // English
+          const Locale('nl'), // Dutch
+        ],
         home: const BijbelBotHomePage(),
       ),
     );
@@ -314,17 +327,21 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
   @override
   void initState() {
     super.initState();
-    _initializeConversation();
+    // Move initialization to didChangeDependencies where context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeConversation();
+    });
   }
 
   Future<void> _initializeConversation() async {
     final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
+    final localizations = AppLocalizations.of(context)!;
 
     // Create initial conversation if none exists
     if (chatProvider.activeConversation == null) {
       try {
         final conversation = await chatProvider.createConversation(
-          title: 'Nieuwe Bijbel Chat',
+          title: localizations.newBibleChat,
         );
         setState(() {
           _currentConversation = conversation;
@@ -334,7 +351,7 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Fout bij initialiseren: $e'),
+              content: Text('${localizations.errorInitializing} $e'),
               backgroundColor: Colors.red,
             ),
           );
@@ -364,9 +381,11 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
 
   Future<void> _createNewConversation() async {
     final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
+    final localizations = AppLocalizations.of(context)!;
+    
     try {
       final conversation = await chatProvider.createConversation(
-        title: 'Nieuwe conversatie',
+        title: localizations.newConversation,
       );
       setState(() {
         _currentConversation = conversation;
@@ -377,7 +396,7 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Fout bij maken conversatie: $e'),
+            content: Text('${localizations.errorCreatingConversation} $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -387,15 +406,16 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BijbelBot'),
+        title: Text(localizations.bibleBot),
         leading: Builder(
-          builder: (context) => 
+          builder: (context) =>
             IconButton(
               icon: const Icon(Icons.menu),
               onPressed: () => Scaffold.of(context).openDrawer(),
-              tooltip: 'Open gesprekken',
+              tooltip: localizations.openConversations,
             ),
         ),
         actions: const [

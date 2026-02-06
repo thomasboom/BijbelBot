@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/bible_chat_conversation.dart';
 import '../providers/bible_chat_provider.dart';
@@ -17,8 +18,9 @@ class ConversationHistorySidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     final provider = Provider.of<BibleChatProvider>(context);
-    
+
     return Container(
       width: 280,
       decoration: BoxDecoration(
@@ -48,7 +50,7 @@ class ConversationHistorySidebar extends StatelessWidget {
                 IconButton(
                   onPressed: onNewConversation,
                   icon: const Icon(Icons.add),
-                  tooltip: 'Nieuwe Gesprek',
+                  tooltip: localizations.newConversation,
                 ),
               ],
             ),
@@ -127,12 +129,13 @@ class ConversationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       title: Text(
-        conversation.title ?? 'Nieuwe conversatie',
+        conversation.title ?? localizations.newConversation,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           overflow: TextOverflow.ellipsis,

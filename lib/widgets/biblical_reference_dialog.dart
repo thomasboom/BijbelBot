@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:async';
 import 'package:xml/xml.dart' as xml;
-import '../l10n/strings_nl.dart' as strings;
 import '../constants/urls.dart';
 import '../utils/bible_book_mapper.dart';
 
@@ -72,14 +72,14 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
       // Validate URL to ensure it's from our trusted domain
       final uri = Uri.parse(url);
       if (uri.host != Uri.parse(AppUrls.bibleApiBase).host) {
-        throw Exception(strings.AppStrings.invalidApiUrl);
+        throw Exception('invalid_api_url');
       }
 
       // Make HTTP request with timeout
       final response = await _client.get(uri).timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          throw Exception(strings.AppStrings.timeoutError);
+          throw Exception('timeout_error');
         },
       );
 
@@ -87,7 +87,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
         // Validate content type - be more flexible
         final contentType = response.headers['content-type'];
         if (contentType == null || (!contentType.contains('xml') && !contentType.contains('text'))) {
-          throw Exception('${strings.AppStrings.invalidContentType}. Content-Type: $contentType. Response: ${response.body.substring(0, 300)}...');
+          throw Exception('invalid_content_type');
         }
 
         // Parse XML response
@@ -150,7 +150,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
 
           // If still no content, show debug info
           if (content.isEmpty) {
-            throw Exception('${strings.AppStrings.noTextFound}. XML length: ${response.body.length}, First 300 chars: ${response.body.substring(0, 300)}');
+            throw Exception('no_text_found');
           }
         } catch (e) {
           // If XML parsing fails, try to extract text directly from response
@@ -158,7 +158,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
           if (extractedText.isNotEmpty) {
             content = _sanitizeText(extractedText);
           } else {
-            throw Exception('${strings.AppStrings.xmlParsingFailed}: $e');
+            throw Exception('xml_parsing_failed');
           }
         }
 
@@ -169,14 +169,14 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
           });
         }
       } else if (response.statusCode == 429) {
-        throw Exception(strings.AppStrings.tooManyRequests);
+        throw Exception('too_many_requests');
       } else {
-        throw Exception('${strings.AppStrings.serverError} ${response.statusCode})');
+        throw Exception('server_error_${response.statusCode}');
       }
     } on SocketException {
       if (mounted) {
         setState(() {
-          _error = strings.AppStrings.networkError;
+          _error = 'network_error';
           _isLoading = false;
         });
       }
@@ -184,14 +184,14 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
       if (e.toString().contains('Time-out')) {
         if (mounted) {
           setState(() {
-            _error = strings.AppStrings.timeoutError;
+            _error = 'timeout_error';
             _isLoading = false;
           });
         }
       } else {
         if (mounted) {
           setState(() {
-            _error = '${strings.AppStrings.errorLoadingWithDetails} ${e.toString()}';
+            _error = 'error_loading_with_details';
             _isLoading = false;
           });
         }
@@ -199,7 +199,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = '${strings.AppStrings.errorLoadingWithDetails} ${e.toString()}';
+          _error = 'error_loading_with_details';
           _isLoading = false;
         });
       }
@@ -358,14 +358,50 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    String displayError = _error;
+    
+    // Translate error codes to localized messages
+    switch (_error) {
+      case 'network_error':
+        displayError = localizations.networkError;
+        break;
+      case 'timeout_error':
+        displayError = localizations.timeoutError;
+        break;
+      case 'invalid_api_url':
+        displayError = localizations.invalidApiUrl;
+        break;
+      case 'invalid_content_type':
+        displayError = '${localizations.invalidContentType}. Content-Type: ... Response: ...';
+        break;
+      case 'no_text_found':
+        displayError = localizations.noTextFound;
+        break;
+      case 'xml_parsing_failed':
+        displayError = localizations.xmlParsingFailed;
+        break;
+      case 'too_many_requests':
+        displayError = localizations.tooManyRequests;
+        break;
+      case 'error_loading_with_details':
+        displayError = localizations.errorLoadingWithDetails;
+        break;
+      default:
+        if (_error.startsWith('server_error_')) {
+          final statusCode = _error.replaceFirst('server_error_', '');
+          displayError = '${localizations.serverError} $statusCode)';
+        }
+    }
+    
     return AlertDialog(
-      title: Text(strings.AppStrings.biblicalReference),
+      title: Text(localizations.biblicalReference),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
-            : _error.isNotEmpty
-                ? Text(_error)
+            : displayError.isNotEmpty
+                ? Text(displayError)
                 : SingleChildScrollView(
                     child: Text(_content),
                   ),
@@ -375,7 +411,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(strings.AppStrings.close),
+          child: Text(localizations.close),
         ),
       ],
     );
