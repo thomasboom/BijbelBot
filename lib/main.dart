@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'models/bible_chat_conversation.dart';
 import 'providers/bible_chat_provider.dart';
 import 'screens/bible_chat_screen.dart';
+import 'widgets/conversation_history_sidebar.dart';
+import 'widgets/settings_menu.dart';
 
 void main() async {
   // Load environment variables from assets (works on all platforms including Android)
@@ -351,15 +353,99 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
     });
   }
 
+  void _onConversationSelected(BibleChatConversation conversation) {
+    setState(() {
+      _currentConversation = conversation;
+    });
+    // Set as active conversation in provider
+    final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
+    chatProvider.setActiveConversation(conversation.id);
+  }
+
+  Future<void> _createNewConversation() async {
+    final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
+    try {
+      final conversation = await chatProvider.createConversation(
+        title: 'Nieuwe conversatie',
+      );
+      setState(() {
+        _currentConversation = conversation;
+      });
+      // Set as active conversation in provider
+      chatProvider.setActiveConversation(conversation.id);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Fout bij maken conversatie: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _currentConversation == null
-          ? const Center(child: CircularProgressIndicator())
-          : BibleChatScreen(
-              conversation: _currentConversation!,
-              onConversationUpdated: _onConversationUpdated,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // On smaller screens, show only the chat screen without sidebar
+        if (constraints.maxWidth < 768) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('BijbelBot'),
+              actions: const [
+                SettingsMenu(),
+              ],
             ),
+            body: _currentConversation == null
+                ? const Center(child: CircularProgressIndicator())
+                : BibleChatScreen(
+                    conversation: _currentConversation!,
+                    onConversationUpdated: _onConversationUpdated,
+                  ),
+          );
+        }
+
+        // On larger screens, show sidebar + chat screen
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('BijbelBot'),
+            actions: const [
+              SettingsMenu(),
+            ],
+          ),
+          body: Row(
+            children: [
+              // Sidebar
+              SizedBox(
+                width: 280,
+                child: ConversationHistorySidebar(
+                  selectedConversationId: _currentConversation?.id,
+                  onConversationSelected: _onConversationSelected,
+                  onNewConversation: _createNewConversation,
+                ),
+              ),
+              
+              // Vertical divider
+              Container(
+                width: 1,
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+              
+              // Chat screen
+              Expanded(
+                child: _currentConversation == null
+                    ? const Center(child: CircularProgressIndicator())
+                    : BibleChatScreen(
+                        conversation: _currentConversation!,
+                        onConversationUpdated: _onConversationUpdated,
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

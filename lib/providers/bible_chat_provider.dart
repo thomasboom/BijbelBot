@@ -80,6 +80,10 @@ class BibleChatProvider extends ChangeNotifier {
       );
 
       await _saveConversation(conversation);
+      
+      // Clean up empty conversations after creating a new one
+      await cleanupEmptyConversations();
+      
       AppLogger.info('Created new conversation: ${conversation.id}');
 
       return conversation;
@@ -88,6 +92,28 @@ class BibleChatProvider extends ChangeNotifier {
       AppLogger.error(_error!, e);
       notifyListeners();
       rethrow;
+    }
+  }
+
+  /// Cleans up empty conversations (those with no messages)
+  Future<void> cleanupEmptyConversations() async {
+    try {
+      final emptyConversations = _conversations.values
+          .where((conversation) => conversation.messageIds.isEmpty)
+          .toList();
+
+      for (final conversation in emptyConversations) {
+        // Don't delete the active conversation even if it's empty
+        if (conversation.id == _activeConversationId) {
+          continue;
+        }
+
+        await deleteConversation(conversation.id);
+      }
+
+      AppLogger.info('Cleaned up ${emptyConversations.length} empty conversations');
+    } catch (e) {
+      AppLogger.error('Failed to clean up empty conversations: $e');
     }
   }
 
@@ -118,6 +144,9 @@ class BibleChatProvider extends ChangeNotifier {
         final updatedConversation = conversation.withNewMessage(message.id);
         await _saveConversation(updatedConversation);
       }
+
+      // Clean up empty conversations after adding a message
+      await cleanupEmptyConversations();
 
       AppLogger.info('Added message ${message.id} to conversation $conversationId');
       return message;
@@ -311,6 +340,9 @@ class BibleChatProvider extends ChangeNotifier {
 
       // Load active conversation
       _activeConversationId = _prefs?.getString(_activeConversationKey);
+
+      // Clean up empty conversations after loading
+      await cleanupEmptyConversations();
 
       AppLogger.info('Chat data loaded: ${_conversations.length} conversations, ${_messages.length} messages');
     } catch (e) {

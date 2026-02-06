@@ -60,6 +60,15 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   }
 
   @override
+  void didUpdateWidget(BibleChatScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Check if conversation changed
+    if (oldWidget.conversation.id != widget.conversation.id) {
+      _refreshConversation();
+    }
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
@@ -416,7 +425,8 @@ class _BibleChatScreenState extends State<BibleChatScreen>
           ],
         ),
         actions: [
-          // New conversation button
+          // On smaller screens, show new conversation button
+          if(MediaQuery.of(context).size.width < 768)
           IconButton(
             onPressed: _showNewConversationDialog,
             icon: const Icon(Icons.add_comment),
