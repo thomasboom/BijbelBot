@@ -406,24 +406,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
               onPressed: widget.onBackPressed,
             )
           : null,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'BijbelBot',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              'Stel me een vraag over de Bijbel',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface.withAlpha((0.6 * 255).round()),
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
+        title: null,
         actions: [
           // On smaller screens, show new conversation button
           if(MediaQuery.of(context).size.width < 768)
@@ -575,15 +558,6 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface.withAlpha((0.7 * 255).round()),
                 ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Stel me een vraag over de Bijbel',
-                style: TextStyle(
-                  color: Color(0x99000000), // 0.6 alpha for onSurface
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
               // Sample questions
