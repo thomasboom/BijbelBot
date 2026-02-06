@@ -139,9 +139,22 @@ class BibleChatProvider extends ChangeNotifier {
       await _saveMessage(message);
 
       // Update conversation with new message
-      final conversation = _conversations[conversationId];
-      if (conversation != null) {
-        final updatedConversation = conversation.withNewMessage(message.id);
+      var updatedConversation = _conversations[conversationId];
+      if (updatedConversation != null) {
+        updatedConversation = updatedConversation.withNewMessage(message.id);
+        
+        // Generate a title for the conversation if it doesn't have one and this is the first AI response
+        if (updatedConversation.title == null || updatedConversation.title!.startsWith('Nieuwe conversatie')) {
+          if (sender == MessageSender.bot && updatedConversation.messageIds.length <= 2) {
+            // Generate title based on the first user message in the conversation
+            final firstUserMessage = await _getFirstUserMessageInConversation(conversationId);
+            if (firstUserMessage != null) {
+              final generatedTitle = await _generateTitleFromMessage(firstUserMessage);
+              updatedConversation = updatedConversation.copyWith(title: generatedTitle);
+            }
+          }
+        }
+        
         await _saveConversation(updatedConversation);
       }
 
@@ -156,6 +169,43 @@ class BibleChatProvider extends ChangeNotifier {
       notifyListeners();
       rethrow;
     }
+  }
+
+  /// Gets the first user message in a conversation
+  Future<BibleChatMessage?> _getFirstUserMessageInConversation(String conversationId) async {
+    final conversation = _conversations[conversationId];
+    if (conversation == null) return null;
+
+    // Find the first user message in the conversation
+    for (final messageId in conversation.messageIds) {
+      final message = _messages[messageId];
+      if (message != null && message.sender == MessageSender.user) {
+        return message;
+      }
+    }
+    return null;
+  }
+
+  /// Generates a title from the first user message
+  Future<String> _generateTitleFromMessage(BibleChatMessage message) async {
+    // Create a title based on the first 60 characters of the user's message
+    String title = message.content.trim();
+    if (title.length > 60) {
+      title = title.substring(0, 60);
+      // Find the last space to avoid cutting words
+      final lastSpaceIndex = title.lastIndexOf(' ');
+      if (lastSpaceIndex > 0) {
+        title = title.substring(0, lastSpaceIndex);
+      }
+      title += '...';
+    }
+    
+    // Capitalize the first letter
+    if (title.isNotEmpty) {
+      title = title[0].toUpperCase() + title.substring(1);
+    }
+    
+    return title;
   }
 
   /// Updates an existing conversation
