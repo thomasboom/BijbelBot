@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/bible_chat_provider.dart';
 import '../models/ai_prompt_settings.dart';
+import 'api_key_dialog.dart';
 
 class SettingsMenu extends StatelessWidget {
   const SettingsMenu({super.key});
@@ -41,6 +42,24 @@ class SettingsMenu extends StatelessWidget {
                     child: Text(
                       'AI-instellingen',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  _sectionTitle('API key'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.vpn_key),
+                      title: const Text('Ollama API key'),
+                      subtitle: Text(
+                        provider.hasApiKey
+                            ? 'Ingesteld (${_maskApiKey(provider.apiKey!)})'
+                            : 'Niet ingesteld',
+                      ),
+                      trailing: TextButton(
+                        onPressed: () => _showApiKeyDialog(context, provider),
+                        child: Text(provider.hasApiKey ? 'Wijzigen' : 'Toevoegen'),
+                      ),
                     ),
                   ),
                   _sectionTitle('Toon'),
@@ -149,6 +168,23 @@ class SettingsMenu extends StatelessWidget {
         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
       ),
     );
+  }
+
+  Future<void> _showApiKeyDialog(BuildContext context, BibleChatProvider provider) async {
+    await showApiKeyDialog(
+      context: context,
+      existingKey: provider.apiKey,
+      onSave: (value) async {
+        await provider.setApiKey(value);
+      },
+    );
+  }
+
+  String _maskApiKey(String apiKey) {
+    final trimmed = apiKey.trim();
+    if (trimmed.length <= 4) return '****';
+    final visible = trimmed.substring(trimmed.length - 4);
+    return '****$visible';
   }
 
   void _showDeleteAllChatsDialog(BuildContext context, BibleChatProvider provider) {

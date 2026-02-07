@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'logger.dart';
 import '../models/ai_prompt_settings.dart';
@@ -69,7 +68,7 @@ class AiError implements Exception {
 /// This is a standalone version specifically for the BijbelBot app.
 class AiService {
   static AiService? _instance;
-  late final String _apiKey;
+  String _apiKey = '';
   late final http.Client _httpClient;
   bool _initialized = false;
   String _normenText = '';
@@ -98,41 +97,24 @@ class AiService {
   /// Gets the API key for external access
   String get apiKey => _apiKey;
 
-  /// Initializes the AI service by loading the API key from environment variables
-  Future<void> initialize() async {
+  /// Initializes the AI service with a user-provided API key
+  Future<void> initialize({required String apiKey}) async {
     try {
       AppLogger.info('Initializing Ollama AI API service for BijbelBot...');
 
-      // Try to get API key from already loaded dotenv
-      String? apiKey = dotenv.env['OLLAMA_API_KEY'];
-
-      // If .env didn't work, try system environment variables
-      if (apiKey == null || apiKey.isEmpty) {
-        apiKey = const String.fromEnvironment('OLLAMA_API_KEY');
-      }
-
-      // If still no API key, try to load .env file directly
-      if (apiKey.isEmpty) {
-        try {
-          await dotenv.load(fileName: '.env');
-          apiKey = dotenv.env['OLLAMA_API_KEY'];
-        } catch (e) {
-          AppLogger.warning('Could not load .env file in AI service: $e');
-        }
-      }
-
-      if (apiKey == null || apiKey.isEmpty) {
+      final trimmedKey = apiKey.trim();
+      if (trimmedKey.isEmpty) {
         throw const AiError(
-          message: 'OLLAMA_API_KEY is required for cloud models. Please add your API key to the .env file. Get your key from https://ollama.com/settings/keys',
+          message: 'API key is required. Add your Ollama API key in the app settings.',
         );
       }
 
       // Validate API key format for cloud API
-      if (apiKey.length < 20) {
+      if (trimmedKey.length < 20) {
         AppLogger.warning('OLLAMA_API_KEY appears to be too short - please verify it is correct');
       }
 
-      _apiKey = apiKey;
+      _apiKey = trimmedKey;
       _normenText = await _loadNormenText();
       _initialized = true;
       AppLogger.info('Ollama AI API service initialized successfully for BijbelBot');
@@ -146,7 +128,12 @@ class AiService {
   /// Ensures the service is initialized before use
   Future<void> _ensureInitialized() async {
     if (!_initialized) {
-      await initialize();
+      if (_apiKey.isEmpty) {
+        throw const AiError(
+          message: 'API key ontbreekt. Voeg je API key toe in de instellingen.',
+        );
+      }
+      await initialize(apiKey: _apiKey);
     }
   }
 
@@ -165,7 +152,7 @@ class AiService {
 
     if (!_initialized || _apiKey.isEmpty) {
       throw const AiError(
-        message: 'Ollama AI API service is not properly configured. Please check your OLLAMA_API_KEY in the .env file.',
+        message: 'Ollama AI API service is not properly configured. Add your API key in the app settings.',
       );
     }
 
@@ -193,7 +180,7 @@ class AiService {
       // Provide helpful error messages for common cloud API issues
       if (e.toString().contains('401') || e.toString().contains('Unauthorized')) {
         throw AiError(
-          message: 'Ongeldige API key. Controleer je OLLAMA_API_KEY in het .env bestand. Verkrijg een nieuwe key van https://ollama.com/settings/keys',
+          message: 'Ongeldige API key. Controleer je API key in de instellingen. Verkrijg een nieuwe key van https://ollama.com/settings/keys',
         );
       } else if (e.toString().contains('404') || e.toString().contains('Not Found')) {
         throw AiError(
@@ -225,7 +212,7 @@ class AiService {
 
     if (!_initialized || _apiKey.isEmpty) {
       throw const AiError(
-        message: 'Ollama AI API service is not properly configured. Please check your OLLAMA_API_KEY in the .env file.',
+        message: 'Ollama AI API service is not properly configured. Add your API key in the app settings.',
       );
     }
 

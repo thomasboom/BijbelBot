@@ -20,12 +20,12 @@ class BibleBotService {
   bool get isInitialized => _isInitialized;
 
   /// Initialize the Bible bot service
-  Future<void> initialize() async {
+  Future<void> initialize({required String apiKey}) async {
     try {
       AppLogger.info('Initializing BibleBot service...');
 
       // Initialize AI service
-      await AiService.instance.initialize();
+      await AiService.instance.initialize(apiKey: apiKey);
 
       _isInitialized = true;
       AppLogger.info('BibleBot service initialized successfully');

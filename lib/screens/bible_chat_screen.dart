@@ -10,6 +10,7 @@ import '../services/logger.dart';
 import '../widgets/chat_message_bubble.dart';
 import '../widgets/chat_input_field.dart';
 import '../providers/bible_chat_provider.dart';
+import '../widgets/api_key_dialog.dart';
 
 /// Main chat interface screen for Bible bot functionality.
 ///
@@ -53,13 +54,15 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   String? _errorMessage;
   bool _isOnline = true;
   bool _providerListenerAttached = false;
+  bool _needsApiKey = false;
+  String? _lastApiKey;
+  bool _didInitChat = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _initializeConnectionService();
-    _initializeChat();
   }
 
   @override
@@ -76,6 +79,10 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     super.didChangeDependencies();
     _chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
     _attachProviderListener();
+    if (!_didInitChat) {
+      _didInitChat = true;
+      _initializeChat();
+    }
   }
 
   @override
@@ -159,10 +166,25 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         _errorMessage = null;
       });
 
-      // Initialize BibleBot service if needed
-      if (!_bibleBotService.isInitialized) {
-        await _bibleBotService.initialize();
+      if (_chatProvider == null) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
       }
+
+      await _chatProvider!.ensureReady();
+      if (!_chatProvider!.hasApiKey) {
+        setState(() {
+          _isLoading = false;
+          _isInitialized = false;
+          _needsApiKey = true;
+        });
+        return;
+      }
+
+      // Initialize BibleBot service
+      await _bibleBotService.initialize(apiKey: _chatProvider!.apiKey!);
 
       // Load conversation messages
       await _loadConversationMessages();
@@ -170,6 +192,8 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       setState(() {
         _isInitialized = true;
         _isLoading = false;
+        _needsApiKey = false;
+        _lastApiKey = _chatProvider!.apiKey;
       });
 
       // Scroll to bottom after initialization
@@ -224,6 +248,13 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   Future<void> _sendMessage(String message) async {
     if (message.trim().isEmpty || _isLoading || _chatProvider == null) return;
+    if (!_chatProvider!.hasApiKey) {
+      setState(() {
+        _errorMessage = 'Voeg eerst je API key toe in de instellingen.';
+        _needsApiKey = true;
+      });
+      return;
+    }
 
     BibleChatMessage? botMessage;
 
@@ -460,10 +491,29 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     }
   }
 
+  Future<void> _promptForApiKey() async {
+    if (_chatProvider == null) return;
+    await _chatProvider!.ensureReady();
+
+    await showApiKeyDialog(
+      context: context,
+      existingKey: _chatProvider!.apiKey,
+      onSave: (value) async {
+        await _chatProvider!.setApiKey(value);
+      },
+    );
+
+    if (mounted && _chatProvider!.hasApiKey) {
+      await _initializeChat();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final localizations = AppLocalizations.of(context)!;
+    final hasApiKey = _chatProvider?.hasApiKey ?? false;
+    final showApiKeyRequired = _needsApiKey || !hasApiKey;
 
     return Scaffold(
       appBar: AppBar(
@@ -488,7 +538,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
             // Chat berichten gebied
             Expanded(
               child: Container(
-                child: _isInitialized ? _buildChatMessages() : _buildLoadingView(),
+                child: showApiKeyRequired
+                    ? _buildApiKeyRequired()
+                    : (_isInitialized ? _buildChatMessages() : _buildLoadingView()),
               ),
             ),
 
@@ -543,8 +595,51 @@ class _BibleChatScreenState extends State<BibleChatScreen>
               controller: _messageController,
               onSendMessage: _sendMessage,
               isLoading: _isLoading,
+              isEnabled: hasApiKey && _isInitialized,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildApiKeyRequired() {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.vpn_key,
+                  size: 48,
+                  color: colorScheme.primary,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'API key vereist',
+                  style: theme.textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Voeg je eigen Ollama API key toe om de chat te gebruiken. Je kunt dit later wijzigen in de instellingen.',
+                  style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _promptForApiKey,
+                  child: const Text('API key toevoegen'),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -678,6 +773,13 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   void _onProviderUpdated() {
     if (!mounted || _chatProvider == null) return;
     if (_chatProvider!.isLoading) return;
+
+    if (!_isLoading &&
+        _chatProvider!.hasApiKey &&
+        _chatProvider!.apiKey != _lastApiKey) {
+      _initializeChat();
+      return;
+    }
 
     _syncMessagesFromProvider();
   }

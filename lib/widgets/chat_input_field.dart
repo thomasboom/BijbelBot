@@ -14,12 +14,14 @@ class ChatInputField extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onSendMessage;
   final bool isLoading;
+  final bool isEnabled;
 
   const ChatInputField({
     super.key,
     required this.controller,
     required this.onSendMessage,
     this.isLoading = false,
+    this.isEnabled = true,
   });
 
   @override
@@ -28,7 +30,7 @@ class ChatInputField extends StatefulWidget {
 
 class _ChatInputFieldState extends State<ChatInputField> {
   void _sendMessage() {
-    if (widget.isLoading) return;
+    if (widget.isLoading || !widget.isEnabled) return;
     final message = widget.controller.text.trim();
     if (message.isNotEmpty) {
       widget.onSendMessage(message);
@@ -36,7 +38,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
   }
 
   void _insertNewline() {
-    if (widget.isLoading) return;
+    if (widget.isLoading || !widget.isEnabled) return;
     final controller = widget.controller;
     final selection = controller.selection;
     final text = controller.text;
@@ -134,8 +136,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                     ),
                     maxLines: null,
                     textCapitalization: TextCapitalization.sentences,
-                    enabled: !widget.isLoading,
-                    onSubmitted: widget.isLoading ? null : widget.onSendMessage,
+                    enabled: !widget.isLoading && widget.isEnabled,
+                    onSubmitted: (widget.isLoading || !widget.isEnabled) ? null : widget.onSendMessage,
                   ),
                 ),
               ),
@@ -144,13 +146,13 @@ class _ChatInputFieldState extends State<ChatInputField> {
           const SizedBox(width: 8),
           Container(
             decoration: BoxDecoration(
-              color: widget.isLoading
+              color: (widget.isLoading || !widget.isEnabled)
                   ? colorScheme.outline.withAlpha(128) // 0.5 opacity
                   : colorScheme.primary,
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              onPressed: widget.isLoading ? null : _sendMessage,
+              onPressed: (widget.isLoading || !widget.isEnabled) ? null : _sendMessage,
               icon: widget.isLoading
                   ? SizedBox(
                       width: 20,

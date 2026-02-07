@@ -17,6 +17,7 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _promptEmojiKey = 'ai_prompt_emoji';
   static const String _promptFormatKey = 'ai_prompt_format';
   static const String _promptCustomKey = 'ai_prompt_custom';
+  static const String _apiKeyKey = 'ollama_api_key';
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
 
   SharedPreferences? _prefs;
@@ -27,6 +28,7 @@ class BibleChatProvider extends ChangeNotifier {
   final Map<String, BibleChatMessage> _messages = {};
   String? _activeConversationId;
   AiPromptSettings _promptSettings = AiPromptSettings.defaults();
+  String? _apiKey;
 
   bool _isLoading = true;
   String? _error;
@@ -72,6 +74,27 @@ class BibleChatProvider extends ChangeNotifier {
 
   /// Current AI prompt settings
   AiPromptSettings get promptSettings => _promptSettings;
+
+  /// Current Ollama API key (if set)
+  String? get apiKey => _apiKey;
+
+  /// Whether an API key is available
+  bool get hasApiKey => _apiKey != null && _apiKey!.trim().isNotEmpty;
+
+  Future<void> setApiKey(String apiKey) async {
+    await _ensureReady();
+    final trimmed = apiKey.trim();
+    _apiKey = trimmed;
+    await _prefs?.setString(_apiKeyKey, trimmed);
+    notifyListeners();
+  }
+
+  Future<void> clearApiKey() async {
+    await _ensureReady();
+    _apiKey = null;
+    await _prefs?.remove(_apiKeyKey);
+    notifyListeners();
+  }
 
   Future<void> setPromptTone(PromptTone tone) async {
     await _updatePromptSettings(_promptSettings.copyWith(tone: tone));
@@ -507,6 +530,7 @@ class BibleChatProvider extends ChangeNotifier {
 
       // Load AI prompt settings
       _loadPromptSettings();
+      _apiKey = _prefs?.getString(_apiKeyKey);
 
       // Load conversations
       await _loadConversations();

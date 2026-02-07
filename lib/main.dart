@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'models/bible_chat_conversation.dart';
@@ -11,23 +9,6 @@ import 'widgets/settings_menu.dart';
 import 'l10n/app_localizations.dart';
 
 void main() async {
-  // Load environment variables from assets (works on all platforms including Android)
-  try {
-    await dotenv.load(fileName: ".env");
-    debugPrint('Successfully loaded .env from assets');
-
-    // Verify the API key was loaded
-    final apiKey = dotenv.env['OLLAMA_API_KEY'];
-    if (apiKey != null && apiKey.isNotEmpty) {
-      debugPrint('OLLAMA_API_KEY loaded successfully');
-    } else {
-      debugPrint('Warning: OLLAMA_API_KEY not found in .env file');
-    }
-  } catch (e) {
-    debugPrint('Could not load .env file: $e');
-    debugPrint('Please ensure .env file is added to pubspec.yaml assets and contains OLLAMA_API_KEY');
-  }
-
   runApp(const BijbelBotApp());
 }
 
