@@ -265,6 +265,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       await for (final chunk in _bibleBotService.askQuestionStream(
         question: message,
         history: history,
+        promptSettings: _chatProvider!.promptSettings,
       ).timeout(const Duration(seconds: 45))) {
         buffer.write(chunk);
         await _chatProvider!.updateMessageContent(
@@ -287,6 +288,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
           questionType: 'general_question',
           conversationId: widget.conversation.id,
           history: history,
+          promptSettings: _chatProvider!.promptSettings,
         ).timeout(const Duration(seconds: 45));
 
         await _chatProvider!.updateMessageContent(

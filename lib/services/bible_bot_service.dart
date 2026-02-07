@@ -1,5 +1,6 @@
 import '../services/logger.dart';
 import 'gemini_service.dart';
+import '../models/ai_prompt_settings.dart';
 
 // Re-export types for convenience
 export 'gemini_service.dart' show BibleReference, BibleQAResponse;
@@ -40,6 +41,7 @@ class BibleBotService {
     required String questionType,
     String? conversationId,
     List<Map<String, String>>? history,
+    AiPromptSettings? promptSettings,
   }) async {
     try {
       AppLogger.info('Asking Bible question: $question');
@@ -48,6 +50,7 @@ class BibleBotService {
       final response = await AiService.instance.askBibleQuestion(
         question,
         history: history,
+        promptSettings: promptSettings,
       );
 
       return response;
@@ -61,10 +64,12 @@ class BibleBotService {
   Stream<String> askQuestionStream({
     required String question,
     List<Map<String, String>>? history,
+    AiPromptSettings? promptSettings,
   }) {
     return AiService.instance.askBibleQuestionStream(
       question,
       history: history,
+      promptSettings: promptSettings,
     );
   }
 

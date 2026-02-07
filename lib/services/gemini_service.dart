@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'logger.dart';
+import '../models/ai_prompt_settings.dart';
 
 /// Stream callback function type for real-time updates
 typedef StreamCallback = void Function(String chunk);
@@ -153,6 +154,7 @@ class AiService {
   Future<BibleQAResponse> askBibleQuestion(
     String question, {
     List<Map<String, String>>? history,
+    AiPromptSettings? promptSettings,
   }) async {
     if (question.trim().isEmpty) {
       throw const AiError(message: 'Question cannot be empty');
@@ -175,6 +177,7 @@ class AiService {
       final response = await _makeApiRequest(
         question,
         history: history,
+        promptSettings: promptSettings,
       );
 
       if (response.statusCode == 200) {
@@ -211,6 +214,7 @@ class AiService {
     String question, {
     StreamCallback? onChunk,
     List<Map<String, String>>? history,
+    AiPromptSettings? promptSettings,
   }) async* {
     if (question.trim().isEmpty) {
       throw const AiError(message: 'Question cannot be empty');
@@ -233,6 +237,7 @@ class AiService {
       final request = await _makeStreamingApiRequestStream(
         question,
         history: history,
+        promptSettings: promptSettings,
       );
 
       await for (final chunk in request) {
@@ -264,12 +269,13 @@ class AiService {
   Future<http.Response> _makeApiRequest(
     String question, {
     List<Map<String, String>>? history,
+    AiPromptSettings? promptSettings,
   }) async {
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
     final requestBody = json.encode({
       'model': 'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
-      'messages': _buildMessages(question, history),
+      'messages': _buildMessages(question, history, promptSettings),
     });
 
     AppLogger.info('Making request to Ollama API');
@@ -428,10 +434,12 @@ class AiService {
   }
 
   /// Builds a system prompt for Bible Q&A
-  String _buildBiblePrompt() {
+  String _buildBiblePrompt(AiPromptSettings settings) {
     final normenBlock = _normenText.trim().isEmpty
         ? 'Normen: (geen normen geladen)'
         : 'Normen (uit normen.md):\n$_normenText';
+
+    final styleBlock = _buildStyleInstructions(settings);
 
     return '''
 Je bent een deskundige Bijbelkenner en leraar met een gereformeerde, traditionele christelijke visie. Antwoord in het Nederlands.
@@ -446,6 +454,9 @@ Richtlijnen voor je antwoord:
 7. Als je het niet zeker weet, geef dat eerlijk aan en speculeer niet
 8. Bij niet-Bijbelse vragen: geef een behulpzaam algemeen antwoord; wanneer waarden relevant zijn, benadruk expliciet het christelijke morele kader (bijv. kuisheid en seks binnen het huwelijk)
 9. Vermijd harde of veroordelende taal; spreek met genade en waarheid
+
+Stijlvoorkeuren:
+$styleBlock
 
 Gebruik het onderstaande normen-overzicht als waarde-kader:
 ${normenBlock}
@@ -462,6 +473,47 @@ Referenties: Genesis 1:1, Johannes 3:16
 ''';
   }
 
+  String _buildStyleInstructions(AiPromptSettings settings) {
+    String toneLine;
+    switch (settings.tone) {
+      case PromptTone.warm:
+        toneLine = 'Toon: warm, vriendelijk en pastoraal.';
+        break;
+      case PromptTone.professional:
+        toneLine = 'Toon: professioneel, helder en respectvol.';
+        break;
+      case PromptTone.functional:
+        toneLine = 'Toon: functioneel, kort en to-the-point.';
+        break;
+    }
+
+    String emojiLine;
+    switch (settings.emojiLevel) {
+      case EmojiLevel.more:
+        emojiLine = 'Emoji\'s: gebruik regelmatig emoji\'s waar passend.';
+        break;
+      case EmojiLevel.normal:
+        emojiLine = 'Emoji\'s: gebruik spaarzaam een paar emoji\'s waar passend.';
+        break;
+      case EmojiLevel.less:
+        emojiLine = 'Emoji\'s: gebruik bij voorkeur geen emoji\'s.';
+        break;
+    }
+
+    String formatLine;
+    switch (settings.responseFormat) {
+      case ResponseFormat.formatted:
+        formatLine = 'Opmaak: gebruik duidelijke structuur met kopjes en/of lijstjes waar passend.';
+        break;
+      case ResponseFormat.longText:
+        formatLine =
+            'Opmaak: schrijf vooral in doorlopende tekst zonder opsommingen; zet "Referenties:" op een aparte regel.';
+        break;
+    }
+
+    return '$toneLine\n$emojiLine\n$formatLine';
+  }
+
   Future<String> _loadNormenText() async {
     try {
       return await rootBundle.loadString('normen.md');
@@ -474,11 +526,13 @@ Referenties: Genesis 1:1, Johannes 3:16
   List<Map<String, String>> _buildMessages(
     String question,
     List<Map<String, String>>? history,
+    AiPromptSettings? promptSettings,
   ) {
+    final resolvedSettings = promptSettings ?? AiPromptSettings.defaults();
     final messages = <Map<String, String>>[
       {
         'role': 'system',
-        'content': _buildBiblePrompt(),
+        'content': _buildBiblePrompt(resolvedSettings),
       },
     ];
 
@@ -743,12 +797,13 @@ Referenties: Genesis 1:1, Johannes 3:16
   Future<Stream<String>> _makeStreamingApiRequestStream(
     String question, {
     List<Map<String, String>>? history,
+    AiPromptSettings? promptSettings,
   }) async {
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
     final requestBody = json.encode({
       'model': 'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
-      'messages': _buildMessages(question, history),
+      'messages': _buildMessages(question, history, promptSettings),
       'stream': true
     });
 

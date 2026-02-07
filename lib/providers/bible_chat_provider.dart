@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/bible_chat_message.dart';
 import '../models/bible_chat_conversation.dart';
+import '../models/ai_prompt_settings.dart';
 import '../services/logger.dart';
 import '../widgets/biblical_reference_dialog.dart';
 
@@ -12,6 +13,9 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _conversationsKey = 'bible_chat_conversations';
   static const String _messagesKey = 'bible_chat_messages';
   static const String _activeConversationKey = 'bible_chat_active_conversation';
+  static const String _promptToneKey = 'ai_prompt_tone';
+  static const String _promptEmojiKey = 'ai_prompt_emoji';
+  static const String _promptFormatKey = 'ai_prompt_format';
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
 
   SharedPreferences? _prefs;
@@ -21,6 +25,7 @@ class BibleChatProvider extends ChangeNotifier {
   final Map<String, BibleChatConversation> _conversations = {};
   final Map<String, BibleChatMessage> _messages = {};
   String? _activeConversationId;
+  AiPromptSettings _promptSettings = AiPromptSettings.defaults();
 
   bool _isLoading = true;
   String? _error;
@@ -63,6 +68,21 @@ class BibleChatProvider extends ChangeNotifier {
   /// Gets a conversation by ID
   BibleChatConversation? getConversation(String conversationId) =>
       _conversations[conversationId];
+
+  /// Current AI prompt settings
+  AiPromptSettings get promptSettings => _promptSettings;
+
+  Future<void> setPromptTone(PromptTone tone) async {
+    await _updatePromptSettings(_promptSettings.copyWith(tone: tone));
+  }
+
+  Future<void> setEmojiLevel(EmojiLevel level) async {
+    await _updatePromptSettings(_promptSettings.copyWith(emojiLevel: level));
+  }
+
+  Future<void> setResponseFormat(ResponseFormat format) async {
+    await _updatePromptSettings(_promptSettings.copyWith(responseFormat: format));
+  }
 
   /// Gets messages for a specific conversation
   List<BibleChatMessage> getConversationMessages(String conversationId) {
@@ -480,6 +500,9 @@ class BibleChatProvider extends ChangeNotifier {
       _prefs = await SharedPreferences.getInstance();
       AppLogger.info('SharedPreferences instance obtained');
 
+      // Load AI prompt settings
+      _loadPromptSettings();
+
       // Load conversations
       await _loadConversations();
 
@@ -512,6 +535,32 @@ class BibleChatProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  void _loadPromptSettings() {
+    if (_prefs == null) return;
+    final toneValue = _prefs!.getString(_promptToneKey);
+    final emojiValue = _prefs!.getString(_promptEmojiKey);
+    final formatValue = _prefs!.getString(_promptFormatKey);
+
+    _promptSettings = AiPromptSettings(
+      tone: AiPromptSettings.parseTone(toneValue),
+      emojiLevel: AiPromptSettings.parseEmojiLevel(emojiValue),
+      responseFormat: AiPromptSettings.parseResponseFormat(formatValue),
+    );
+  }
+
+  Future<void> _updatePromptSettings(AiPromptSettings settings) async {
+    try {
+      await _ensureReady();
+      _promptSettings = settings;
+      await _prefs?.setString(_promptToneKey, settings.tone.name);
+      await _prefs?.setString(_promptEmojiKey, settings.emojiLevel.name);
+      await _prefs?.setString(_promptFormatKey, settings.responseFormat.name);
+      notifyListeners();
+    } catch (e) {
+      AppLogger.error('Failed to update AI prompt settings: $e');
     }
   }
 
