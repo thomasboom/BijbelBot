@@ -31,12 +31,12 @@ class BibleChatConversation {
   /// Creates a new [BibleChatConversation].
   ///
   /// The [messageIds] parameter specifies which messages belong to this conversation.
-  /// The [maxHistoryLimit] defaults to 100 if not provided.
+  /// The [maxHistoryLimit] defaults to 500 if not provided.
   const BibleChatConversation({
     required this.id,
     required this.startTime,
     required this.messageIds,
-    this.maxHistoryLimit = 100,
+    this.maxHistoryLimit = 500,
     this.userContext,
     this.metadata,
     this.isActive = true,
@@ -71,7 +71,7 @@ class BibleChatConversation {
       messageIds: messages,
       maxHistoryLimit: (json['maxHistoryLimit'] is int)
           ? json['maxHistoryLimit'] as int
-          : int.tryParse(json['maxHistoryLimit']?.toString() ?? '') ?? 100,
+          : int.tryParse(json['maxHistoryLimit']?.toString() ?? '') ?? 500,
       userContext: context,
       metadata: meta,
       isActive: json['isActive'] != false,

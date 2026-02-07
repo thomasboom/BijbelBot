@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/bible_chat_message.dart';
@@ -51,6 +52,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   bool _isInitialized = false;
   String? _errorMessage;
   bool _isOnline = true;
+  bool _providerListenerAttached = false;
 
   @override
   void initState() {
@@ -73,11 +75,13 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
+    _attachProviderListener();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _detachProviderListener();
     _connectionService.dispose();
     _scrollController.dispose();
     _messageController.dispose();
@@ -195,9 +199,11 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
       // Load messages from the provider
       final messages = _chatProvider!.getConversationMessages(widget.conversation.id);
-      setState(() {
-        _messages = messages;
-      });
+      if (mounted) {
+        setState(() {
+          _messages = messages;
+        });
+      }
 
       AppLogger.info('Loaded ${messages.length} messages for conversation ${widget.conversation.id}');
     } catch (e) {
@@ -245,12 +251,15 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         _scrollToBottom();
       });
 
+      final history = _buildHistoryForAi();
+
       // Send question to BibleBot service
       final response = await _bibleBotService.askQuestion(
         question: message,
         questionType: 'general_question',
         conversationId: widget.conversation.id,
-      );
+        history: history,
+      ).timeout(const Duration(seconds: 45));
 
       // Create bot response message
       final botMessage = await _chatProvider!.addMessage(
@@ -268,14 +277,30 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         _isLoading = false;
       });
 
-      // Update conversation
-      _updateConversation();
-
       // Scroll to bottom to show bot response
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToBottom();
       });
 
+    } on TimeoutException catch (e) {
+      AppLogger.error('Request timed out', e);
+
+      final errorMessage = await _chatProvider!.addMessage(
+        conversationId: widget.conversation.id,
+        content: 'De reactie duurt langer dan verwacht. Probeer het opnieuw.',
+        sender: MessageSender.bot,
+        type: MessageType.text,
+      );
+
+      setState(() {
+        _messages.add(errorMessage);
+        _isLoading = false;
+        _errorMessage = e.toString();
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
     } catch (e) {
       AppLogger.error('Failed to send message', e);
 
@@ -297,19 +322,6 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         _scrollToBottom();
       });
     }
-  }
-
-  void _updateConversation() {
-    if (_chatProvider == null) return;
-
-    final updatedConversation = widget.conversation.withNewMessage(
-      _messages.last.id,
-    );
-
-    // Update conversation through provider
-    _chatProvider!.updateConversation(updatedConversation);
-
-    widget.onConversationUpdated?.call(updatedConversation);
   }
 
   void _scrollToBottom() {
@@ -606,5 +618,45 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         ),
       ),
     );
+  }
+
+  void _attachProviderListener() {
+    if (_chatProvider == null || _providerListenerAttached) return;
+    _chatProvider!.addListener(_onProviderUpdated);
+    _providerListenerAttached = true;
+  }
+
+  void _detachProviderListener() {
+    if (_chatProvider == null || !_providerListenerAttached) return;
+    _chatProvider!.removeListener(_onProviderUpdated);
+    _providerListenerAttached = false;
+  }
+
+  void _onProviderUpdated() {
+    if (!mounted || _chatProvider == null) return;
+    if (_chatProvider!.isLoading) return;
+
+    final messages = _chatProvider!.getConversationMessages(widget.conversation.id);
+    setState(() {
+      _messages = messages;
+    });
+  }
+
+  List<Map<String, String>> _buildHistoryForAi() {
+    final history = <Map<String, String>>[];
+    for (final message in _messages) {
+      if (message.content.trim().isEmpty) continue;
+      if (message.sender == MessageSender.bot &&
+          (message.content.contains('fout opgetreden') ||
+           message.content.contains('Sorry, er is een fout'))) {
+        continue;
+      }
+
+      history.add({
+        'role': message.sender == MessageSender.user ? 'user' : 'assistant',
+        'content': message.content,
+      });
+    }
+    return history;
   }
 }

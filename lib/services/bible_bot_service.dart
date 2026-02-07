@@ -39,12 +39,16 @@ class BibleBotService {
     required String question,
     required String questionType,
     String? conversationId,
+    List<Map<String, String>>? history,
   }) async {
     try {
       AppLogger.info('Asking Bible question: $question');
 
       // Use AI service to get Bible answer
-      final response = await AiService.instance.askBibleQuestion(question);
+      final response = await AiService.instance.askBibleQuestion(
+        question,
+        history: history,
+      );
 
       return response;
     } catch (e) {

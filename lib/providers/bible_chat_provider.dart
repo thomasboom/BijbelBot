@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -11,6 +12,7 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _conversationsKey = 'bible_chat_conversations';
   static const String _messagesKey = 'bible_chat_messages';
   static const String _activeConversationKey = 'bible_chat_active_conversation';
+  static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
 
   SharedPreferences? _prefs;
 
@@ -21,6 +23,7 @@ class BibleChatProvider extends ChangeNotifier {
 
   bool _isLoading = true;
   String? _error;
+  Future<void> _saveChain = Future.value();
 
   BibleChatProvider() {
     AppLogger.info('BibleChatProvider initializing...');
@@ -71,7 +74,7 @@ class BibleChatProvider extends ChangeNotifier {
   }) async {
     try {
       final conversation = BibleChatConversation(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
         startTime: DateTime.now(),
         messageIds: [],
         title: title,
@@ -80,10 +83,7 @@ class BibleChatProvider extends ChangeNotifier {
       );
 
       await _saveConversation(conversation);
-      
-      // Clean up empty conversations after creating a new one
-      await cleanupEmptyConversations();
-      
+
       AppLogger.info('Created new conversation: ${conversation.id}');
 
       return conversation;
@@ -96,8 +96,10 @@ class BibleChatProvider extends ChangeNotifier {
   }
 
   /// Cleans up empty conversations (those with no messages)
-  Future<void> cleanupEmptyConversations() async {
+  Future<void> cleanupEmptyConversations({Duration? minimumAge}) async {
     try {
+      final now = DateTime.now();
+      final grace = minimumAge ?? _emptyConversationGracePeriod;
       final emptyConversations = _conversations.values
           .where((conversation) => conversation.messageIds.isEmpty)
           .toList();
@@ -105,6 +107,11 @@ class BibleChatProvider extends ChangeNotifier {
       for (final conversation in emptyConversations) {
         // Don't delete the active conversation even if it's empty
         if (conversation.id == _activeConversationId) {
+          continue;
+        }
+
+        // Skip very recent conversations to prevent accidental deletion
+        if (now.difference(conversation.startTime) < grace) {
           continue;
         }
 
@@ -128,7 +135,7 @@ class BibleChatProvider extends ChangeNotifier {
   }) async {
     try {
       final message = BibleChatMessage(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
         content: content,
         sender: sender,
         type: type,
@@ -391,6 +398,18 @@ class BibleChatProvider extends ChangeNotifier {
       // Load active conversation
       _activeConversationId = _prefs?.getString(_activeConversationKey);
 
+      // If active conversation is missing, select the most recent one
+      if (_activeConversationId != null && !_conversations.containsKey(_activeConversationId)) {
+        _activeConversationId = null;
+      }
+
+      if (_activeConversationId == null && _conversations.isNotEmpty) {
+        final mostRecent = _conversations.values.reduce((a, b) =>
+            a.lastActivity.isAfter(b.lastActivity) ? a : b);
+        _activeConversationId = mostRecent.id;
+        await _prefs?.setString(_activeConversationKey, mostRecent.id);
+      }
+
       // Clean up empty conversations after loading
       await cleanupEmptyConversations();
 
@@ -454,14 +473,16 @@ class BibleChatProvider extends ChangeNotifier {
 
   /// Saves all conversations to storage
   Future<void> _saveAllConversations() async {
-    try {
-      final conversationsData = _conversations.map((key, value) => MapEntry(key, value.toJson()));
-      final jsonString = json.encode(conversationsData);
-      await _prefs?.setString(_conversationsKey, jsonString);
-    } catch (e) {
-      AppLogger.error('Failed to save conversations: $e');
-      throw Exception('Failed to save conversations');
-    }
+    await _withSaveLock(() async {
+      try {
+        final conversationsData = _conversations.map((key, value) => MapEntry(key, value.toJson()));
+        final jsonString = json.encode(conversationsData);
+        await _prefs?.setString(_conversationsKey, jsonString);
+      } catch (e) {
+        AppLogger.error('Failed to save conversations: $e');
+        throw Exception('Failed to save conversations');
+      }
+    });
   }
 
   /// Saves a message to storage
@@ -472,14 +493,29 @@ class BibleChatProvider extends ChangeNotifier {
 
   /// Saves all messages to storage
   Future<void> _saveAllMessages() async {
-    try {
-      final messagesData = _messages.map((key, value) => MapEntry(key, value.toJson()));
-      final jsonString = json.encode(messagesData);
-      await _prefs?.setString(_messagesKey, jsonString);
-    } catch (e) {
-      AppLogger.error('Failed to save messages: $e');
-      throw Exception('Failed to save messages');
-    }
+    await _withSaveLock(() async {
+      try {
+        final messagesData = _messages.map((key, value) => MapEntry(key, value.toJson()));
+        final jsonString = json.encode(messagesData);
+        await _prefs?.setString(_messagesKey, jsonString);
+      } catch (e) {
+        AppLogger.error('Failed to save messages: $e');
+        throw Exception('Failed to save messages');
+      }
+    });
+  }
+
+  Future<void> _withSaveLock(Future<void> Function() action) {
+    final completer = Completer<void>();
+    _saveChain = _saveChain.catchError((_) {}).then((_) async {
+      try {
+        await action();
+        completer.complete();
+      } catch (e, st) {
+        completer.completeError(e, st);
+      }
+    });
+    return completer.future;
   }
 
   /// Shows the biblical reference dialog for a given reference

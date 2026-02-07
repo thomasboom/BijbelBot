@@ -13,6 +13,7 @@ class AiConfig {
   static const Duration requestTimeout = Duration(seconds: 30);
   static const int maxRetries = 3;
   static const Duration retryDelay = Duration(seconds: 1);
+  static const int maxHistoryMessages = 20;
 }
 
 /// Model class for Bible Q&A responses
@@ -146,7 +147,10 @@ class AiService {
   }
 
   /// Answers a Bible-related question using AI
-  Future<BibleQAResponse> askBibleQuestion(String question) async {
+  Future<BibleQAResponse> askBibleQuestion(
+    String question, {
+    List<Map<String, String>>? history,
+  }) async {
     if (question.trim().isEmpty) {
       throw const AiError(message: 'Question cannot be empty');
     }
@@ -165,7 +169,10 @@ class AiService {
     AppLogger.info('Asking Bible question: $question');
 
     try {
-      final response = await _makeApiRequest(question);
+      final response = await _makeApiRequest(
+        question,
+        history: history,
+      );
 
       if (response.statusCode == 200) {
         final bibleResponse = await _parseApiResponse(response.body);
@@ -197,7 +204,11 @@ class AiService {
   }
 
   /// Answers a Bible-related question using AI with streaming support
-  Stream<String> askBibleQuestionStream(String question, {StreamCallback? onChunk}) async* {
+  Stream<String> askBibleQuestionStream(
+    String question, {
+    StreamCallback? onChunk,
+    List<Map<String, String>>? history,
+  }) async* {
     if (question.trim().isEmpty) {
       throw const AiError(message: 'Question cannot be empty');
     }
@@ -216,7 +227,10 @@ class AiService {
     AppLogger.info('Asking Bible question with streaming: $question');
 
     try {
-      final request = await _makeStreamingApiRequestStream(question);
+      final request = await _makeStreamingApiRequestStream(
+        question,
+        history: history,
+      );
 
       await for (final chunk in request) {
         yield chunk;
@@ -244,18 +258,15 @@ class AiService {
   }
 
   /// Makes the HTTP request to the Ollama API
-  Future<http.Response> _makeApiRequest(String question) async {
+  Future<http.Response> _makeApiRequest(
+    String question, {
+    List<Map<String, String>>? history,
+  }) async {
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
-    final prompt = _buildBiblePrompt(question);
     final requestBody = json.encode({
       'model': 'gpt-oss:120b', // Use the cloud model as specified in the API key
-      'messages': [
-        {
-          'role': 'user',
-          'content': prompt
-        }
-      ]
+      'messages': _buildMessages(question, history),
     });
 
     AppLogger.info('Making request to Ollama API');
@@ -309,6 +320,16 @@ class AiService {
     try {
       AppLogger.info('Parsing API response...');
 
+      final trimmed = responseBody.trim();
+      if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+        final Map<String, dynamic> response = json.decode(trimmed);
+        final message = response['message'] as Map<String, dynamic>?;
+        final content = message?['content'] as String?;
+        if (content != null && content.trim().isNotEmpty) {
+          return _parseBibleResponse(content);
+        }
+      }
+
       // Handle streaming response format - split by newlines and parse each JSON object
       final lines = responseBody.split('\n').where((line) => line.trim().isNotEmpty);
 
@@ -319,18 +340,18 @@ class AiService {
         try {
           final Map<String, dynamic> response = json.decode(line);
 
-          // Check if this is the final chunk
-          if (response['done'] == true) {
-            isDone = true;
-            break;
-          }
-
           // Extract content from this chunk
           final message = response['message'] as Map<String, dynamic>?;
           final content = message?['content'] as String?;
 
           if (content != null && content.isNotEmpty) {
             fullContent += content;
+          }
+
+          // Check if this is the final chunk
+          if (response['done'] == true) {
+            isDone = true;
+            break;
           }
         } catch (e) {
           AppLogger.warning('Failed to parse line as JSON: $line, Error: $e');
@@ -402,12 +423,10 @@ class AiService {
     }
   }
 
-  /// Builds a structured prompt for Bible Q&A
-  String _buildBiblePrompt(String question) {
+  /// Builds a system prompt for Bible Q&A
+  String _buildBiblePrompt() {
     return '''
-You are a knowledgeable Bible scholar and teacher. Please answer the following question about the Bible in Dutch.
-
-Question: "$question"
+You are a knowledgeable Bible scholar and teacher. Please answer Bible questions in Dutch.
 
 Guidelines for your response:
 1. Provide accurate, biblically-based answers
@@ -430,6 +449,43 @@ References: Genesis 1:1, John 3:16
 
 Explanation: [Additional context if needed]
 ''';
+  }
+
+  List<Map<String, String>> _buildMessages(
+    String question,
+    List<Map<String, String>>? history,
+  ) {
+    final messages = <Map<String, String>>[
+      {
+        'role': 'system',
+        'content': _buildBiblePrompt(),
+      },
+    ];
+
+    if (history != null && history.isNotEmpty) {
+      final trimmedHistory = history
+          .where((entry) => entry['content'] != null && entry['content']!.trim().isNotEmpty)
+          .where((entry) => entry['role'] == 'user' || entry['role'] == 'assistant')
+          .toList();
+
+      final startIndex = trimmedHistory.length > AiConfig.maxHistoryMessages
+          ? trimmedHistory.length - AiConfig.maxHistoryMessages
+          : 0;
+
+      messages.addAll(trimmedHistory.sublist(startIndex));
+    }
+
+    if (question.trim().isNotEmpty) {
+      final last = messages.isNotEmpty ? messages.last : null;
+      if (last == null || last['role'] != 'user' || last['content'] != question.trim()) {
+        messages.add({
+          'role': 'user',
+          'content': question.trim(),
+        });
+      }
+    }
+
+    return messages;
   }
 
   /// Parses the Gemini response to extract Bible answer and references
@@ -649,18 +705,15 @@ Explanation: [Additional context if needed]
   }
 
   /// Makes a streaming HTTP request to the Ollama API
-  Future<Stream<String>> _makeStreamingApiRequestStream(String question) async {
+  Future<Stream<String>> _makeStreamingApiRequestStream(
+    String question, {
+    List<Map<String, String>>? history,
+  }) async {
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
-    final prompt = _buildBiblePrompt(question);
     final requestBody = json.encode({
       'model': 'gpt-oss:120b', // Use the cloud model as specified in the API key
-      'messages': [
-        {
-          'role': 'user',
-          'content': prompt
-        }
-      ],
+      'messages': _buildMessages(question, history),
       'stream': true
     });
 
@@ -675,31 +728,28 @@ Explanation: [Additional context if needed]
       headers['Authorization'] = 'Bearer $_apiKey';
     }
 
-    final request = await _httpClient.post(
-      url,
-      headers: headers,
-      body: requestBody,
-    );
+    final request = http.Request('POST', url)
+      ..headers.addAll(headers)
+      ..body = requestBody;
 
-    return Stream.fromIterable(
-      request.body
-          .toString()
-          .split('\n')
-          .where((line) => line.trim().isNotEmpty)
-          .where((data) => data != '[DONE]')
-          .map((data) {
-        try {
-          final jsonData = json.decode(data);
-          // Handle Ollama API response format
-          final message = jsonData['message'] as Map<String, dynamic>?;
-          final content = message?['content'] as String?;
-          return content ?? '';
-        } catch (e) {
-          return '';
-        }
-      })
-          .where((content) => content.isNotEmpty)
-    );
+    final streamed = await _httpClient.send(request).timeout(AiConfig.requestTimeout);
+
+    return streamed.stream
+        .transform(utf8.decoder)
+        .transform(const LineSplitter())
+        .where((line) => line.trim().isNotEmpty)
+        .where((data) => data != '[DONE]')
+        .map((data) {
+          try {
+            final jsonData = json.decode(data);
+            final message = jsonData['message'] as Map<String, dynamic>?;
+            final content = message?['content'] as String?;
+            return content ?? '';
+          } catch (e) {
+            return '';
+          }
+        })
+        .where((content) => content.isNotEmpty);
   }
 
   /// Disposes of resources used by the service
