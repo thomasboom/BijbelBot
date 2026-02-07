@@ -420,8 +420,13 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
               tooltip: localizations.openConversations,
             ),
         ),
-        actions: const [
-          SettingsMenu(),
+        actions: [
+          IconButton(
+            onPressed: _createNewConversation,
+            icon: const Icon(Icons.add_comment),
+            tooltip: localizations.newConversation,
+          ),
+          const SettingsMenu(),
         ],
       ),
       drawer: Drawer(

@@ -420,15 +420,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
             )
           : null,
         title: null,
-        actions: [
-          // On smaller screens, show new conversation button
-          if(MediaQuery.of(context).size.width < 768)
-          IconButton(
-            onPressed: _showNewConversationDialog,
-            icon: const Icon(Icons.add_comment),
-            tooltip: localizations.newConversation,
-          ),
-        ],
+        actions: const [],
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
