@@ -7,27 +7,40 @@ class SettingsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      icon: const Icon(Icons.more_vert),
-      onSelected: (String result) async {
-        final provider = Provider.of<BibleChatProvider>(context, listen: false);
-        
-        if (result == 'delete_all_chats') {
-          _showDeleteAllChatsDialog(context, provider);
-        }
-      },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
-          value: 'delete_all_chats',
-          child: Row(
+    return IconButton(
+      icon: const Icon(Icons.settings),
+      onPressed: () => _showSettingsBottomSheet(context),
+    );
+  }
+
+  void _showSettingsBottomSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.delete_forever, color: Colors.red),
-              SizedBox(width: 12),
-              Text('Verwijder alle gesprekken', style: TextStyle(color: Colors.red)),
+              ListTile(
+                leading: const Icon(Icons.delete_forever, color: Colors.red),
+                title: const Text(
+                  'Verwijder alle gesprekken',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  final provider = Provider.of<BibleChatProvider>(context, listen: false);
+                  _showDeleteAllChatsDialog(context, provider);
+                },
+              ),
             ],
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 
