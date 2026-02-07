@@ -49,18 +49,28 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
           _buildAvatar(isUser, colorScheme),
           const SizedBox(width: 12),
         ],
-        Flexible(
-          child: Column(
-            crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        if (isUser)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (!isUser) _buildBotLabel(colorScheme, localizations, textTheme),
-              const SizedBox(height: 4),
               _buildMessageBubble(isUser, colorScheme, textTheme),
               const SizedBox(height: 4),
               _buildTimestamp(colorScheme, textTheme),
             ],
+          )
+        else
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildBotLabel(colorScheme, localizations, textTheme),
+                const SizedBox(height: 4),
+                _buildMessageBubble(isUser, colorScheme, textTheme),
+                const SizedBox(height: 4),
+                _buildTimestamp(colorScheme, textTheme),
+              ],
+            ),
           ),
-        ),
         if (isUser) ...[
           const SizedBox(width: 12),
           _buildAvatar(isUser, colorScheme),
@@ -257,6 +267,10 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
 
   Widget _buildMessageContent(bool isUser, ColorScheme colorScheme, TextTheme textTheme) {
     final textColor = isUser ? colorScheme.onPrimary : colorScheme.onSurface;
+
+    if (isUser) {
+      return _buildMarkdownContent(message.content, textColor, colorScheme, textTheme);
+    }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
