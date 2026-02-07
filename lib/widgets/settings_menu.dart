@@ -15,6 +15,10 @@ class SettingsMenu extends StatelessWidget {
   }
 
   void _showSettingsBottomSheet(BuildContext context) {
+    final customController = TextEditingController(
+      text: context.read<BibleChatProvider>().promptSettings.customInstruction,
+    );
+
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -102,6 +106,20 @@ class SettingsMenu extends StatelessWidget {
                       },
                     ),
                   ),
+                  _sectionTitle('Eigen instructie'),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                    child: TextField(
+                      controller: customController,
+                      minLines: 3,
+                      maxLines: 6,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Schrijf extra instructies voor de AI...',
+                      ),
+                      onChanged: provider.setCustomInstruction,
+                    ),
+                  ),
                   const Divider(height: 24),
                   ListTile(
                     leading: const Icon(Icons.delete_forever, color: Colors.red),
@@ -120,7 +138,7 @@ class SettingsMenu extends StatelessWidget {
           ),
         );
       },
-    );
+    ).whenComplete(customController.dispose);
   }
 
   Widget _sectionTitle(String title) {

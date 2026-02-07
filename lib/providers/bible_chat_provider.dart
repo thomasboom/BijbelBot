@@ -16,6 +16,7 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _promptToneKey = 'ai_prompt_tone';
   static const String _promptEmojiKey = 'ai_prompt_emoji';
   static const String _promptFormatKey = 'ai_prompt_format';
+  static const String _promptCustomKey = 'ai_prompt_custom';
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
 
   SharedPreferences? _prefs;
@@ -82,6 +83,10 @@ class BibleChatProvider extends ChangeNotifier {
 
   Future<void> setResponseFormat(ResponseFormat format) async {
     await _updatePromptSettings(_promptSettings.copyWith(responseFormat: format));
+  }
+
+  Future<void> setCustomInstruction(String instruction) async {
+    await _updatePromptSettings(_promptSettings.copyWith(customInstruction: instruction));
   }
 
   /// Gets messages for a specific conversation
@@ -543,11 +548,13 @@ class BibleChatProvider extends ChangeNotifier {
     final toneValue = _prefs!.getString(_promptToneKey);
     final emojiValue = _prefs!.getString(_promptEmojiKey);
     final formatValue = _prefs!.getString(_promptFormatKey);
+    final customValue = _prefs!.getString(_promptCustomKey) ?? '';
 
     _promptSettings = AiPromptSettings(
       tone: AiPromptSettings.parseTone(toneValue),
       emojiLevel: AiPromptSettings.parseEmojiLevel(emojiValue),
       responseFormat: AiPromptSettings.parseResponseFormat(formatValue),
+      customInstruction: customValue,
     );
   }
 
@@ -558,6 +565,7 @@ class BibleChatProvider extends ChangeNotifier {
       await _prefs?.setString(_promptToneKey, settings.tone.name);
       await _prefs?.setString(_promptEmojiKey, settings.emojiLevel.name);
       await _prefs?.setString(_promptFormatKey, settings.responseFormat.name);
+      await _prefs?.setString(_promptCustomKey, settings.customInstruction);
       notifyListeners();
     } catch (e) {
       AppLogger.error('Failed to update AI prompt settings: $e');

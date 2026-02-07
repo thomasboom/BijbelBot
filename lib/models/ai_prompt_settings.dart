@@ -19,11 +19,13 @@ class AiPromptSettings {
   final PromptTone tone;
   final EmojiLevel emojiLevel;
   final ResponseFormat responseFormat;
+  final String customInstruction;
 
   const AiPromptSettings({
     required this.tone,
     required this.emojiLevel,
     required this.responseFormat,
+    required this.customInstruction,
   });
 
   factory AiPromptSettings.defaults() {
@@ -31,6 +33,7 @@ class AiPromptSettings {
       tone: PromptTone.warm,
       emojiLevel: EmojiLevel.normal,
       responseFormat: ResponseFormat.formatted,
+      customInstruction: '',
     );
   }
 
@@ -38,11 +41,13 @@ class AiPromptSettings {
     PromptTone? tone,
     EmojiLevel? emojiLevel,
     ResponseFormat? responseFormat,
+    String? customInstruction,
   }) {
     return AiPromptSettings(
       tone: tone ?? this.tone,
       emojiLevel: emojiLevel ?? this.emojiLevel,
       responseFormat: responseFormat ?? this.responseFormat,
+      customInstruction: customInstruction ?? this.customInstruction,
     );
   }
 

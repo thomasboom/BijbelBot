@@ -440,6 +440,9 @@ class AiService {
         : 'Normen (uit normen.md):\n$_normenText';
 
     final styleBlock = _buildStyleInstructions(settings);
+    final customBlock = settings.customInstruction.trim().isEmpty
+        ? ''
+        : '\nExtra instructies van de gebruiker:\n${settings.customInstruction.trim()}\n';
 
     return '''
 Je bent een deskundige Bijbelkenner en leraar met een gereformeerde, traditionele christelijke visie. Antwoord in het Nederlands.
@@ -457,6 +460,7 @@ Richtlijnen voor je antwoord:
 
 Stijlvoorkeuren:
 $styleBlock
+$customBlock
 
 Gebruik het onderstaande normen-overzicht als waarde-kader:
 ${normenBlock}
