@@ -359,6 +359,9 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
     String displayError = _error;
     
     // Translate error codes to localized messages
@@ -395,15 +398,19 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     }
     
     return AlertDialog(
-      title: Text(localizations.biblicalReference),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: colorScheme.surface,
+      title: Text(localizations.biblicalReference, style: textTheme.titleLarge),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : displayError.isNotEmpty
-                ? Text(displayError)
+                ? Text(displayError, style: textTheme.bodyMedium)
                 : SingleChildScrollView(
-                    child: Text(_content),
+                    child: Text(_content, style: textTheme.bodyMedium),
                   ),
       ),
       actions: [
@@ -411,7 +418,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(localizations.close),
+          child: Text(localizations.close, style: textTheme.labelLarge),
         ),
       ],
     );

@@ -21,7 +21,9 @@ class ChatMessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final isUser = message.sender == MessageSender.user;
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
     return Row(
       mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -35,11 +37,11 @@ class ChatMessageBubble extends StatelessWidget {
           child: Column(
             crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
-              if (!isUser) _buildBotLabel(colorScheme, localizations),
+              if (!isUser) _buildBotLabel(colorScheme, localizations, textTheme),
               const SizedBox(height: 4),
-              _buildMessageBubble(isUser, colorScheme),
+              _buildMessageBubble(isUser, colorScheme, textTheme),
               const SizedBox(height: 4),
-              _buildTimestamp(colorScheme),
+              _buildTimestamp(colorScheme, textTheme),
             ],
           ),
         ),
@@ -95,7 +97,7 @@ class ChatMessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildBotLabel(ColorScheme colorScheme, AppLocalizations localizations) {
+  Widget _buildBotLabel(ColorScheme colorScheme, AppLocalizations localizations, TextTheme textTheme) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
@@ -106,96 +108,93 @@ class ChatMessageBubble extends StatelessWidget {
       ),
       child: Text(
         isError ? localizations.error : localizations.appName,
-        style: TextStyle(
+        style: textTheme.labelSmall?.copyWith(
           color: isError
               ? colorScheme.onErrorContainer
               : colorScheme.onPrimaryContainer,
           fontWeight: FontWeight.w500,
-          fontSize: 11,
         ),
       ),
     );
   }
 
-  Widget _buildMessageBubble(bool isUser, ColorScheme colorScheme) {
+  Widget _buildMessageBubble(bool isUser, ColorScheme colorScheme, TextTheme textTheme) {
     return Builder(
       builder: (BuildContext context) {
         return Container(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.75,
           ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: isError
-            ? colorScheme.errorContainer
-            : (isUser ? colorScheme.primary : colorScheme.surfaceContainerHighest),
-        borderRadius: BorderRadius.circular(20).copyWith(
-          bottomLeft: isUser ? const Radius.circular(20) : const Radius.circular(4),
-          bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(20),
-        ),
-        border: isError
-            ? Border.all(
-                color: colorScheme.error.withAlpha((0.5 * 255).round()),
-                width: 1,
-              )
-            : null,
-        boxShadow: isError
-            ? [
-                BoxShadow(
-                  color: colorScheme.error.withAlpha((0.1 * 255).round()),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: colorScheme.shadow.withAlpha((0.08 * 255).round()),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (isError) ...[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 18,
-                  color: colorScheme.onErrorContainer,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
-                    style: TextStyle(
-                      color: colorScheme.onErrorContainer,
-                      height: 1.4,
-                      letterSpacing: 0.1,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isError
+                ? colorScheme.errorContainer
+                : (isUser ? colorScheme.primary : colorScheme.surfaceContainerHighest),
+            borderRadius: BorderRadius.circular(20).copyWith(
+              bottomLeft: isUser ? const Radius.circular(20) : const Radius.circular(4),
+              bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(20),
             ),
-          ] else ...[
-            _buildMessageContent(isUser, colorScheme),
-          ],
-          if (message.bibleReferences != null && message.bibleReferences!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            _buildBibleReferences(colorScheme, context),
-          ],
-        ],
-      ),
+            border: isError
+                ? Border.all(
+                    color: colorScheme.error.withAlpha((0.5 * 255).round()),
+                    width: 1,
+                  )
+                : null,
+            boxShadow: isError
+                ? [
+                    BoxShadow(
+                      color: colorScheme.error.withAlpha((0.1 * 255).round()),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: colorScheme.shadow.withAlpha((0.08 * 255).round()),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (isError) ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 18,
+                      color: colorScheme.onErrorContainer,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: colorScheme.onErrorContainer,
+                          height: 1.4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ] else ...[
+                _buildMessageContent(isUser, colorScheme, textTheme),
+              ],
+              if (message.bibleReferences != null && message.bibleReferences!.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                _buildBibleReferences(colorScheme, context, textTheme),
+              ],
+            ],
+          ),
+        );
+      },
     );
-     },
-   );
- }
+  }
 
-  Widget _buildBibleReferences(ColorScheme colorScheme, BuildContext context) {
+  Widget _buildBibleReferences(ColorScheme colorScheme, BuildContext context, TextTheme textTheme) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -227,10 +226,9 @@ class ChatMessageBubble extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   reference,
-                  style: TextStyle(
+                  style: textTheme.labelSmall?.copyWith(
                     color: colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w500,
-                    fontSize: 11,
                   ),
                 ),
               ],
@@ -241,24 +239,24 @@ class ChatMessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildMessageContent(bool isUser, ColorScheme colorScheme) {
+  Widget _buildMessageContent(bool isUser, ColorScheme colorScheme, TextTheme textTheme) {
     final textColor = isUser ? colorScheme.onPrimary : colorScheme.onSurface;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: _buildMarkdownContent(message.content, textColor, colorScheme),
+          child: _buildMarkdownContent(message.content, textColor, colorScheme, textTheme),
         ),
       ],
     );
   }
 
-  Widget _buildMarkdownContent(String content, Color textColor, ColorScheme colorScheme) {
+  Widget _buildMarkdownContent(String content, Color textColor, ColorScheme colorScheme, TextTheme textTheme) {
     try {
       return MarkdownBody(
         data: content,
-        styleSheet: _getMarkdownStyleSheet(textColor, colorScheme),
+        styleSheet: _getMarkdownStyleSheet(textColor, colorScheme, textTheme),
         selectable: true,
         softLineBreak: true,
       );
@@ -266,62 +264,51 @@ class ChatMessageBubble extends StatelessWidget {
       // Fallback to plain text if markdown parsing fails
       return Text(
         content,
-        style: TextStyle(
+        style: textTheme.bodyLarge?.copyWith(
           color: textColor,
           height: 1.4,
-          letterSpacing: 0.1,
-          fontSize: 16,
         ),
       );
     }
   }
 
-  MarkdownStyleSheet _getMarkdownStyleSheet(Color textColor, ColorScheme colorScheme) {
+  MarkdownStyleSheet _getMarkdownStyleSheet(Color textColor, ColorScheme colorScheme, TextTheme textTheme) {
     return MarkdownStyleSheet(
-      p: TextStyle(
+      p: textTheme.bodyLarge?.copyWith(
         color: textColor,
         height: 1.4,
-        letterSpacing: 0.1,
-        fontSize: 16,
       ),
-      h1: TextStyle(
+      h1: textTheme.headlineSmall?.copyWith(
         color: textColor,
         fontWeight: FontWeight.bold,
         height: 1.3,
-        fontSize: 24,
       ),
-      h2: TextStyle(
+      h2: textTheme.titleLarge?.copyWith(
         color: textColor,
         fontWeight: FontWeight.bold,
         height: 1.3,
-        fontSize: 22,
       ),
-      h3: TextStyle(
+      h3: textTheme.titleMedium?.copyWith(
         color: textColor,
         fontWeight: FontWeight.bold,
         height: 1.3,
-        fontSize: 18,
       ),
-      strong: TextStyle(
+      strong: textTheme.bodyLarge?.copyWith(
         color: textColor,
         fontWeight: FontWeight.bold,
-        fontSize: 16,
       ),
-      em: TextStyle(
+      em: textTheme.bodyLarge?.copyWith(
         color: textColor,
         fontStyle: FontStyle.italic,
-        fontSize: 16,
       ),
-      code: TextStyle(
+      code: textTheme.bodyMedium?.copyWith(
         color: textColor,
         backgroundColor: colorScheme.surfaceContainerHighest.withAlpha((0.5 * 255).round()),
         fontFamily: 'monospace',
-        fontSize: 14,
       ),
-      blockquote: TextStyle(
+      blockquote: textTheme.bodyLarge?.copyWith(
         color: textColor.withAlpha((0.8 * 255).round()),
         height: 1.4,
-        fontSize: 16,
       ),
       blockquoteDecoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
@@ -332,9 +319,8 @@ class ChatMessageBubble extends StatelessWidget {
           ),
         ),
       ),
-      listBullet: TextStyle(
+      listBullet: textTheme.bodyLarge?.copyWith(
         color: textColor,
-        fontSize: 16,
       ),
       horizontalRuleDecoration: BoxDecoration(
         border: Border(
@@ -347,14 +333,13 @@ class ChatMessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _buildTimestamp(ColorScheme colorScheme) {
+  Widget _buildTimestamp(ColorScheme colorScheme, TextTheme textTheme) {
     final timestamp = DateFormat('HH:mm').format(message.timestamp);
 
     return Text(
       timestamp,
-      style: TextStyle(
+      style: textTheme.labelSmall?.copyWith(
         color: colorScheme.onSurface.withAlpha((0.6 * 255).round()),
-        fontSize: 11,
       ),
     );
   }

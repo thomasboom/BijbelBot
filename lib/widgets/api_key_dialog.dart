@@ -56,16 +56,40 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return AlertDialog(
-      title: const Text('API key instellen'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: colorScheme.surface,
+      title: Text('API key instellen', style: textTheme.titleLarge),
       content: Form(
         key: _formKey,
         child: TextFormField(
           controller: _controller,
           obscureText: _obscure,
+          style: textTheme.bodyLarge,
           decoration: InputDecoration(
             labelText: 'Ollama API key',
+            labelStyle: textTheme.bodyLarge,
             helperText: 'Wordt alleen lokaal opgeslagen op dit apparaat.',
+            helperStyle: textTheme.bodySmall,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.outline),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.outline),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.primary, width: 2),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             suffixIcon: IconButton(
               onPressed: () => setState(() => _obscure = !_obscure),
               icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
@@ -82,11 +106,11 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Annuleren'),
+          child: Text('Annuleren', style: textTheme.labelLarge),
         ),
         TextButton(
           onPressed: _save,
-          child: const Text('Opslaan'),
+          child: Text('Opslaan', style: textTheme.labelLarge),
         ),
       ],
     );
