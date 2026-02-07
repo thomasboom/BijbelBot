@@ -53,8 +53,9 @@ class BijbelBotApp extends StatelessWidget {
   /// Typography follows M3 type scale with expressive font weights.
   /// Shape system uses M3 shape scale for consistent corner radii.
   ThemeData _buildLightTheme() {
-    // M3 Expressive seed color - vibrant blue for spiritual/biblical app
-    const seedColor = Color(0xFF2563EB);
+    // M3 Expressive seed color - neutral blue for spiritual/biblical app
+    // Using a more neutral blue that avoids purple tones in dynamic generation
+    const seedColor = Color(0xFF1976D2);
     
     // Generate dynamic color scheme from seed
     final colorScheme = ColorScheme.fromSeed(
@@ -240,8 +241,9 @@ class BijbelBotApp extends StatelessWidget {
 
   /// Material 3 Expressive Dark Theme
   ThemeData _buildDarkTheme() {
-    // M3 Expressive seed color - same as light for consistency
-    const seedColor = Color(0xFF2563EB);
+    // M3 Expressive seed color - same neutral blue as light for consistency
+    // Using a more neutral blue that avoids purple tones in dynamic generation
+    const seedColor = Color(0xFF1976D2);
     
     // Generate dynamic color scheme from seed for dark mode
     final colorScheme = ColorScheme.fromSeed(
