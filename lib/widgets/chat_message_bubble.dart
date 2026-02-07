@@ -6,10 +6,13 @@ import 'package:provider/provider.dart';
 import '../models/bible_chat_message.dart';
 import '../providers/bible_chat_provider.dart';
 
-/// Widget for displaying a chat message bubble
+/// M3 Expressive chat message bubble widget
 /// 
-/// Uses AutomaticKeepAlive to maintain state during scrolling and prevent
-/// unnecessary rebuilds when streaming content updates.
+/// Features:
+/// - Dynamic color from theme colorScheme
+/// - M3 shape system with appropriate corner radii
+/// - Expressive motion for interactions
+/// - Proper typography using M3 type scale
 class ChatMessageBubble extends StatefulWidget {
   final BibleChatMessage message;
   final bool isError;
@@ -34,7 +37,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Required for AutomaticKeepAliveClientMixin
+    super.build(context);
     final localizations = AppLocalizations.of(context)!;
     final isUser = message.sender == MessageSender.user;
     final theme = Theme.of(context);
@@ -79,58 +82,42 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
     );
   }
 
+  /// M3 Expressive avatar with proper shape and color
   Widget _buildAvatar(bool isUser, ColorScheme colorScheme) {
-    return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: isError
-            ? LinearGradient(
-                colors: [
-                  colorScheme.errorContainer,
-                  colorScheme.errorContainer.withAlpha((0.8 * 255).round()),
-                ],
-              )
-            : (isUser
-                ? LinearGradient(
-                    colors: [
-                      colorScheme.primary,
-                      colorScheme.primary.withAlpha((0.8 * 255).round()),
-                    ],
-                  )
-                : LinearGradient(
-                    colors: [
-                      colorScheme.secondaryContainer,
-                      colorScheme.secondaryContainer.withAlpha((0.8 * 255).round()),
-                    ],
-                  )),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withAlpha((0.1 * 255).round()),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Icon(
-        isError ? Icons.error : (isUser ? Icons.person : Icons.smart_toy),
-        color: isError
-            ? colorScheme.onErrorContainer
-            : (isUser ? colorScheme.onPrimary : colorScheme.onSecondaryContainer),
-        size: 20,
+    final backgroundColor = isError
+        ? colorScheme.errorContainer
+        : (isUser ? colorScheme.primaryContainer : colorScheme.secondaryContainer);
+    
+    final foregroundColor = isError
+        ? colorScheme.onErrorContainer
+        : (isUser ? colorScheme.onPrimaryContainer : colorScheme.onSecondaryContainer);
+
+    return Material(
+      color: backgroundColor,
+      shape: const CircleBorder(),
+      elevation: 0,
+      child: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        child: Icon(
+          isError ? Icons.error_outline : (isUser ? Icons.person_outline : Icons.smart_toy_outlined),
+          color: foregroundColor,
+          size: 22,
+        ),
       ),
     );
   }
 
+  /// M3 Expressive bot label chip
   Widget _buildBotLabel(ColorScheme colorScheme, AppLocalizations localizations, TextTheme textTheme) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: isError
-            ? colorScheme.errorContainer.withAlpha((0.7 * 255).round())
-            : colorScheme.primaryContainer.withAlpha((0.5 * 255).round()),
-        borderRadius: BorderRadius.circular(8),
+            ? colorScheme.errorContainer.withValues(alpha: 0.7)
+            : colorScheme.primaryContainer.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(8), // small shape
       ),
       child: Text(
         isError ? localizations.error : localizations.appName,
@@ -144,43 +131,37 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
     );
   }
 
+  /// M3 Expressive message bubble with shape system
   Widget _buildMessageBubble(bool isUser, ColorScheme colorScheme, TextTheme textTheme) {
     return Builder(
       builder: (BuildContext context) {
+        final backgroundColor = isError
+            ? colorScheme.errorContainer
+            : (isUser ? colorScheme.primaryContainer : colorScheme.surfaceContainerHighest);
+        
+        final foregroundColor = isError
+            ? colorScheme.onErrorContainer
+            : (isUser ? colorScheme.onPrimaryContainer : colorScheme.onSurface);
+
         return Container(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.75,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: isError
-                ? colorScheme.errorContainer
-                : (isUser ? colorScheme.primary : colorScheme.surfaceContainerHighest),
+            color: backgroundColor,
+            // M3 shape system: large corner radius with asymmetric corners for chat bubbles
             borderRadius: BorderRadius.circular(20).copyWith(
               bottomLeft: isUser ? const Radius.circular(20) : const Radius.circular(4),
               bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(20),
             ),
+            // Subtle border for error state
             border: isError
                 ? Border.all(
-                    color: colorScheme.error.withAlpha((0.5 * 255).round()),
+                    color: colorScheme.error.withValues(alpha: 0.5),
                     width: 1,
                   )
                 : null,
-            boxShadow: isError
-                ? [
-                    BoxShadow(
-                      color: colorScheme.error.withAlpha((0.1 * 255).round()),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ]
-                : [
-                    BoxShadow(
-                      color: colorScheme.shadow.withAlpha((0.08 * 255).round()),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,15 +173,15 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
                     Icon(
                       Icons.error_outline,
                       size: 18,
-                      color: colorScheme.onErrorContainer,
+                      color: foregroundColor,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
                         style: textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onErrorContainer,
-                          height: 1.4,
+                          color: foregroundColor,
+                          height: 1.5,
                         ),
                       ),
                     ),
@@ -220,44 +201,41 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
     );
   }
 
+  /// M3 Expressive bible reference chips
   Widget _buildBibleReferences(ColorScheme colorScheme, BuildContext context, TextTheme textTheme) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
       children: message.bibleReferences!.map((reference) {
-        return InkWell(
-          onTap: () {
-            // Get the provider from context and show the biblical reference dialog
-            final provider = Provider.of<BibleChatProvider>(context, listen: false);
-            provider.showBiblicalReference(context, reference);
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: colorScheme.outline.withAlpha((0.3 * 255).round()),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.menu_book,
-                  size: 16,
-                  color: colorScheme.onPrimaryContainer,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  reference,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w500,
+        return Material(
+          color: colorScheme.secondaryContainer,
+          borderRadius: BorderRadius.circular(12), // medium shape
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () {
+              final provider = Provider.of<BibleChatProvider>(context, listen: false);
+              provider.showBiblicalReference(context, reference);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.menu_book_outlined,
+                    size: 16,
+                    color: colorScheme.onSecondaryContainer,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 6),
+                  Text(
+                    reference,
+                    style: textTheme.labelSmall?.copyWith(
+                      color: colorScheme.onSecondaryContainer,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -266,7 +244,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
   }
 
   Widget _buildMessageContent(bool isUser, ColorScheme colorScheme, TextTheme textTheme) {
-    final textColor = isUser ? colorScheme.onPrimary : colorScheme.onSurface;
+    final textColor = isUser ? colorScheme.onPrimaryContainer : colorScheme.onSurface;
 
     if (isUser) {
       return _buildMarkdownContent(message.content, textColor, colorScheme, textTheme);
@@ -291,60 +269,60 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
         softLineBreak: true,
       );
     } catch (e) {
-      // Fallback to plain text if markdown parsing fails
       return Text(
         content,
         style: textTheme.bodyLarge?.copyWith(
           color: textColor,
-          height: 1.4,
+          height: 1.5,
         ),
       );
     }
   }
 
+  /// M3 Expressive markdown styling
   MarkdownStyleSheet _getMarkdownStyleSheet(Color textColor, ColorScheme colorScheme, TextTheme textTheme) {
     return MarkdownStyleSheet(
       p: textTheme.bodyLarge?.copyWith(
         color: textColor,
-        height: 1.4,
+        height: 1.5,
       ),
-      h1: textTheme.headlineSmall?.copyWith(
+      h1: textTheme.headlineLarge?.copyWith(
         color: textColor,
-        fontWeight: FontWeight.bold,
-        height: 1.3,
+        fontWeight: FontWeight.w500,
+        height: 1.25,
       ),
-      h2: textTheme.titleLarge?.copyWith(
+      h2: textTheme.headlineMedium?.copyWith(
         color: textColor,
-        fontWeight: FontWeight.bold,
-        height: 1.3,
+        fontWeight: FontWeight.w500,
+        height: 1.29,
       ),
-      h3: textTheme.titleMedium?.copyWith(
+      h3: textTheme.headlineSmall?.copyWith(
         color: textColor,
-        fontWeight: FontWeight.bold,
-        height: 1.3,
+        fontWeight: FontWeight.w500,
+        height: 1.33,
       ),
       strong: textTheme.bodyLarge?.copyWith(
         color: textColor,
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w600,
       ),
       em: textTheme.bodyLarge?.copyWith(
         color: textColor,
         fontStyle: FontStyle.italic,
       ),
-      code: textTheme.bodyMedium?.copyWith(
-        color: textColor,
-        backgroundColor: colorScheme.surfaceContainerHighest.withAlpha((0.5 * 255).round()),
+      code: textTheme.bodySmall?.copyWith(
+        color: colorScheme.onSurface,
+        backgroundColor: colorScheme.surfaceContainerHighest,
         fontFamily: 'monospace',
       ),
       blockquote: textTheme.bodyLarge?.copyWith(
-        color: textColor.withAlpha((0.8 * 255).round()),
-        height: 1.4,
+        color: colorScheme.onSurfaceVariant,
+        height: 1.5,
       ),
       blockquoteDecoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withAlpha((0.3 * 255).round()),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         border: Border(
           left: BorderSide(
-            color: colorScheme.outline.withAlpha((0.5 * 255).round()),
+            color: colorScheme.outlineVariant,
             width: 4,
           ),
         ),
@@ -355,7 +333,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
       horizontalRuleDecoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: colorScheme.outline.withAlpha((0.3 * 255).round()),
+            color: colorScheme.outlineVariant,
             width: 1,
           ),
         ),
@@ -363,13 +341,14 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
     );
   }
 
+  /// M3 Expressive timestamp with proper typography
   Widget _buildTimestamp(ColorScheme colorScheme, TextTheme textTheme) {
     final timestamp = DateFormat('HH:mm').format(message.timestamp);
 
     return Text(
       timestamp,
       style: textTheme.labelSmall?.copyWith(
-        color: colorScheme.onSurface.withAlpha((0.6 * 255).round()),
+        color: colorScheme.onSurfaceVariant,
       ),
     );
   }

@@ -466,9 +466,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Annuleren'),
+              child: const Text('Annuleren'),
             ),
-            TextButton(
+            FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(localizations.newConversation),
             ),

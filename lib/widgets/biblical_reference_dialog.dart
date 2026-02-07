@@ -7,6 +7,13 @@ import 'package:xml/xml.dart' as xml;
 import '../constants/urls.dart';
 import '../utils/bible_book_mapper.dart';
 
+/// M3 Expressive biblical reference dialog
+/// 
+/// Features:
+/// - M3 dialog shape with extraLarge corner radius
+/// - Dynamic color from theme colorScheme
+/// - M3 typography scale
+/// - Expressive loading and error states
 class BiblicalReferenceDialog extends StatefulWidget {
   final String reference;
 
@@ -21,7 +28,6 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
   String _content = '';
   String _error = '';
 
-  // Create a secure HTTP client with timeout and validation
   final http.Client _client = http.Client();
 
   @override
@@ -38,7 +44,6 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
 
   Future<void> _loadBiblicalReference() async {
     try {
-      // Parse the reference to extract book, chapter, and verse
       final parsed = _parseReference(widget.reference);
       if (parsed == null) {
         throw Exception('Ongeldige bijbelverwijzing: "${widget.reference}"');
@@ -49,33 +54,26 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
       final startVerse = parsed['startVerse'];
       final endVerse = parsed['endVerse'];
 
-      // Convert book name to book number for the new API
       final bookNumber = BibleBookMapper.getBookNumber(book);
       if (bookNumber == null) {
-        // Debug: show what book name was received and what valid names are available
         final validBooks = BibleBookMapper.getAllBookNames();
         throw Exception('Ongeldig boeknaam: "$book". Geldige boeken: ${validBooks.take(10).join(", ")}...');
       }
 
       String url;
       if (startVerse != null && endVerse != null) {
-        // Multiple verses - format as "startVerse-endVerse"
         url = '${AppUrls.bibleApiBase}?b=$bookNumber&h=$chapter&v=$startVerse-$endVerse';
       } else if (startVerse != null) {
-        // Single verse
         url = '${AppUrls.bibleApiBase}?b=$bookNumber&h=$chapter&v=$startVerse';
       } else {
-        // Entire chapter - request a reasonable sample (first 10 verses)
         url = '${AppUrls.bibleApiBase}?b=$bookNumber&h=$chapter&v=1-10';
       }
 
-      // Validate URL to ensure it's from our trusted domain
       final uri = Uri.parse(url);
       if (uri.host != Uri.parse(AppUrls.bibleApiBase).host) {
         throw Exception('invalid_api_url');
       }
 
-      // Make HTTP request with timeout
       final response = await _client.get(uri).timeout(
         const Duration(seconds: 10),
         onTimeout: () {
@@ -84,24 +82,19 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
       );
 
       if (response.statusCode == 200) {
-        // Validate content type - be more flexible
         final contentType = response.headers['content-type'];
         if (contentType == null || (!contentType.contains('xml') && !contentType.contains('text'))) {
           throw Exception('invalid_content_type');
         }
 
-        // Parse XML response
         String content = '';
         try {
-          // Clean the response body first (remove BOM or other artifacts)
           String cleanBody = response.body.trim();
           if (cleanBody.startsWith('\uFEFF')) {
             cleanBody = cleanBody.substring(1);
           }
 
           final document = xml.XmlDocument.parse(cleanBody);
-
-          // Find all verse elements in the XML structure: bijbel > bijbelboek > hoofdstuk > vers
           final verses = document.findAllElements('vers');
 
           for (final verse in verses) {
@@ -109,13 +102,11 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
             final verseText = verse.innerText.trim();
 
             if (verseNumber != null && verseText.isNotEmpty) {
-              // Sanitize text to prevent XSS
               final sanitizedText = _sanitizeText(verseText);
               content += '$verseNumber. $sanitizedText\n';
             }
           }
 
-          // If no verses found with 'vers' elements, try alternative element names
           if (content.isEmpty) {
             final alternativeVerseElements = document.findAllElements('verse');
             for (final verse in alternativeVerseElements) {
@@ -129,14 +120,12 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
             }
           }
 
-          // If still no content, try to extract any meaningful text
           if (content.isEmpty) {
             final allElements = <xml.XmlElement>[];
             _collectAllElements(document.rootElement, allElements);
 
             for (final element in allElements) {
               final elementText = element.innerText.trim();
-              // Look for elements that contain actual Bible text (not just markup)
               if (elementText.isNotEmpty &&
                   elementText.length > 10 &&
                   !elementText.contains('<') &&
@@ -148,12 +137,10 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
             }
           }
 
-          // If still no content, show debug info
           if (content.isEmpty) {
             throw Exception('no_text_found');
           }
         } catch (e) {
-          // If XML parsing fails, try to extract text directly from response
           String extractedText = _extractTextFromResponse(response.body);
           if (extractedText.isNotEmpty) {
             content = _sanitizeText(extractedText);
@@ -206,10 +193,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     }
   }
 
-
-  // Simple text sanitization to prevent XSS
   String _sanitizeText(String text) {
-    // First decode Unicode escape sequences
     String decodedText = _decodeUnicodeEscapes(text);
 
     return decodedText
@@ -220,7 +204,6 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
         .replaceAll("'", '&#x27;');
   }
 
-  // Decode Unicode escape sequences like \u00ebl
   String _decodeUnicodeEscapes(String text) {
     final RegExp unicodeRegex = RegExp(r'\u([0-9a-fA-F]{4})');
     return text.replaceAllMapped(unicodeRegex, (Match match) {
@@ -238,9 +221,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
   }
 
   String _extractTextFromResponse(String responseBody) {
-    // Try to extract meaningful text from various response formats
     try {
-      // If it's XML, try to parse and extract text content
       if (responseBody.contains('<') && responseBody.contains('>')) {
         final document = xml.XmlDocument.parse(responseBody);
         final allElements = <xml.XmlElement>[];
@@ -254,42 +235,29 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
         }
       }
 
-      // If not XML or no text found, return the whole body (it might be plain text)
       return responseBody.trim();
     } catch (e) {
-      // If all parsing fails, return the original body
       return responseBody.trim();
     }
   }
 
   Map<String, dynamic>? _parseReference(String reference) {
     try {
-      // Handle different reference formats:
-      // "Genesis 1:1" -> book: Genesis, chapter: 1, startVerse: 1
-      // "Genesis 1:1-3" -> book: Genesis, chapter: 1, startVerse: 1, endVerse: 3
-      // "Genesis 1" -> book: Genesis, chapter: 1
-      // "Genesis 2 en 3" -> book: Genesis, chapter: 2, startVerse: 3 (special case)
-      // "Psalmen" -> book: Psalmen, chapter: 1 (whole book)
-
       reference = reference.trim();
 
-      // Special case for "book chapter en chapter" format
       if (reference.contains(' en ')) {
         final parts = reference.split(' en ');
         if (parts.length == 2) {
           final firstPart = parts[0].trim();
           final secondPart = parts[1].trim();
 
-          // Parse first reference
           final firstMatch = RegExp(r'(\w+)\s+(\d+)').firstMatch(firstPart);
           if (firstMatch != null) {
             final book = firstMatch.group(1)!;
             final chapter = int.tryParse(firstMatch.group(2)!);
 
-            // Parse second reference
             final secondMatch = RegExp(r'(\d+)').firstMatch(secondPart);
             if (secondMatch != null) {
-              // For "book chapter en chapter" format, we treat it as a single chapter reference
               return {
                 'book': book,
                 'chapter': chapter,
@@ -301,10 +269,8 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
         }
       }
 
-      // Standard parsing for "Book chapter:verse" format
       final parts = reference.split(' ');
       if (parts.length < 2) {
-        // Handle single word references like "Psalmen"
         if (BibleBookMapper.isValidBookName(reference)) {
           return {
             'book': reference,
@@ -316,11 +282,9 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
         return null;
       }
 
-      // Extract book name (everything except the last part)
       final book = parts.sublist(0, parts.length - 1).join(' ');
       final chapterAndVerses = parts.last;
 
-      // Split chapter and verses by colon
       final chapterVerseParts = chapterAndVerses.split(':');
 
       if (chapterVerseParts.isEmpty) return null;
@@ -332,15 +296,12 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
       int? endVerse;
 
       if (chapterVerseParts.length > 1) {
-        // Has verse information
         final versePart = chapterVerseParts[1];
         if (versePart.contains('-')) {
-          // Range of verses
           final verseRange = versePart.split('-');
           startVerse = int.tryParse(verseRange[0]);
           endVerse = int.tryParse(verseRange[1]);
         } else {
-          // Single verse
           startVerse = int.tryParse(versePart);
         }
       }
@@ -364,7 +325,6 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     final textTheme = theme.textTheme;
     String displayError = _error;
     
-    // Translate error codes to localized messages
     switch (_error) {
       case 'network_error':
         displayError = localizations.networkError;
@@ -398,27 +358,50 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     }
     
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+      icon: _isLoading 
+          ? null 
+          : (_error.isNotEmpty 
+              ? Icon(Icons.error_outline, color: colorScheme.error, size: 32)
+              : Icon(Icons.menu_book_outlined, color: colorScheme.primary, size: 32)),
+      title: Text(
+        localizations.biblicalReference,
+        style: textTheme.headlineSmall,
       ),
-      backgroundColor: colorScheme.surface,
-      title: Text(localizations.biblicalReference, style: textTheme.titleLarge),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Laden...',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              )
             : displayError.isNotEmpty
                 ? Text(displayError, style: textTheme.bodyMedium)
                 : SingleChildScrollView(
-                    child: Text(_content, style: textTheme.bodyMedium),
+                    child: SelectableText(
+                      _content,
+                      style: textTheme.bodyLarge?.copyWith(
+                        height: 1.6,
+                      ),
+                    ),
                   ),
       ),
       actions: [
-        TextButton(
+        FilledButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(localizations.close, style: textTheme.labelLarge),
+          child: Text(localizations.close),
         ),
       ],
     );

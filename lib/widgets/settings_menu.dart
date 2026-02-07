@@ -4,27 +4,31 @@ import '../providers/bible_chat_provider.dart';
 import '../models/ai_prompt_settings.dart';
 import 'api_key_dialog.dart';
 
+/// M3 Expressive settings menu widget
+/// 
+/// Features:
+/// - M3 bottom sheet with drag handle
+/// - Dynamic color from theme colorScheme
+/// - M3 shape system for components
+/// - Expressive motion for interactions
 class SettingsMenu extends StatelessWidget {
   const SettingsMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.settings),
+      icon: const Icon(Icons.settings_outlined),
       onPressed: () => _showSettingsBottomSheet(context),
+      tooltip: 'Instellingen',
     );
   }
 
   void _showSettingsBottomSheet(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     showModalBottomSheet<void>(
       context: context,
-      showDragHandle: true,
+      showDragHandle: true, // M3 drag handle
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      backgroundColor: colorScheme.surface,
+      useSafeArea: true,
       builder: (BuildContext context) {
         return const SettingsBottomSheetContent();
       },
@@ -72,182 +76,138 @@ class _SettingsBottomSheetContentState
 
         return ListView(
           shrinkWrap: true,
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.only(bottom: 24),
           children: [
+            // Header
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
               child: Text(
                 'AI-instellingen',
-                style: textTheme.titleMedium,
-              ),
-            ),
-            _sectionTitle('API key', textTheme),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(Icons.vpn_key, color: colorScheme.primary),
-                title: Text('Ollama API key', style: textTheme.bodyLarge),
-                subtitle: Text(
-                  provider.hasApiKey
-                      ? 'Ingesteld (${_maskApiKey(provider.apiKey!)})'
-                      : 'Niet ingesteld',
-                  style: textTheme.bodyMedium,
-                ),
-                trailing: TextButton(
-                  onPressed: () => _showApiKeyDialog(context, provider),
-                  child: Text(provider.hasApiKey ? 'Wijzigen' : 'Toevoegen'),
+                style: textTheme.headlineSmall?.copyWith(
+                  color: colorScheme.onSurface,
                 ),
               ),
             ),
-            _sectionTitle('Toon', textTheme),
+            
+            // API Key Section
+            _buildSectionTitle('API key', textTheme, colorScheme),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: DropdownButtonFormField<PromptTone>(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  leading: Icon(Icons.vpn_key_outlined, color: colorScheme.primary),
+                  title: Text('Ollama API key', style: textTheme.titleSmall),
+                  subtitle: Text(
+                    provider.hasApiKey
+                        ? 'Ingesteld (${_maskApiKey(provider.apiKey!)})'
+                        : 'Niet ingesteld',
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  trailing: FilledButton.tonal(
+                    onPressed: () => _showApiKeyDialog(context, provider),
+                    child: Text(provider.hasApiKey ? 'Wijzigen' : 'Toevoegen'),
+                  ),
+                ),
+              ),
+            ),
+            
+            // Tone Section
+            _buildSectionTitle('Toon', textTheme, colorScheme),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: _buildDropdown<PromptTone>(
                 value: settings.tone,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-                items: PromptTone.values
-                    .map(
-                      (tone) => DropdownMenuItem(
-                        value: tone,
-                        child: Text(AiPromptSettings.toneLabel(tone), style: textTheme.bodyLarge),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    provider.setPromptTone(value);
-                  }
-                },
+                items: PromptTone.values,
+                labelBuilder: AiPromptSettings.toneLabel,
+                onChanged: provider.setPromptTone,
+                colorScheme: colorScheme,
+                textTheme: textTheme,
               ),
             ),
-            _sectionTitle('Emoji\'s', textTheme),
+            
+            // Emoji Section
+            _buildSectionTitle('Emoji\'s', textTheme, colorScheme),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: DropdownButtonFormField<EmojiLevel>(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: _buildDropdown<EmojiLevel>(
                 value: settings.emojiLevel,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-                items: EmojiLevel.values
-                    .map(
-                      (level) => DropdownMenuItem(
-                        value: level,
-                        child: Text(AiPromptSettings.emojiLabel(level), style: textTheme.bodyLarge),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    provider.setEmojiLevel(value);
-                  }
-                },
+                items: EmojiLevel.values,
+                labelBuilder: AiPromptSettings.emojiLabel,
+                onChanged: provider.setEmojiLevel,
+                colorScheme: colorScheme,
+                textTheme: textTheme,
               ),
             ),
-            _sectionTitle('Antwoordformaat', textTheme),
+            
+            // Response Format Section
+            _buildSectionTitle('Antwoordformaat', textTheme, colorScheme),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: DropdownButtonFormField<ResponseFormat>(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: _buildDropdown<ResponseFormat>(
                 value: settings.responseFormat,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-                items: ResponseFormat.values
-                    .map(
-                      (format) => DropdownMenuItem(
-                        value: format,
-                        child: Text(AiPromptSettings.formatLabel(format), style: textTheme.bodyLarge),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    provider.setResponseFormat(value);
-                  }
-                },
+                items: ResponseFormat.values,
+                labelBuilder: AiPromptSettings.formatLabel,
+                onChanged: provider.setResponseFormat,
+                colorScheme: colorScheme,
+                textTheme: textTheme,
               ),
             ),
-            _sectionTitle('Eigen instructie', textTheme),
+            
+            // Custom Instruction Section
+            _buildSectionTitle('Eigen instructie', textTheme, colorScheme),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
               child: TextField(
                 controller: _customController,
                 minLines: 3,
                 maxLines: 6,
                 style: textTheme.bodyLarge,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
-                  ),
                   hintText: 'Schrijf extra instructies voor de AI...',
                   hintStyle: textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurface.withAlpha((0.5 * 255).round()),
+                    color: colorScheme.onSurfaceVariant,
                   ),
-                  contentPadding: const EdgeInsets.all(16),
                 ),
                 onChanged: provider.setCustomInstruction,
               ),
             ),
-            const Divider(height: 24),
+            
+            // Danger Zone
+            const SizedBox(height: 16),
+            Divider(color: colorScheme.outlineVariant),
+            const SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListTile(
-                leading: Icon(Icons.delete_forever, color: colorScheme.tertiary),
-                title: Text(
-                  'Verwijder alle gesprekken',
-                  style: textTheme.bodyLarge?.copyWith(color: colorScheme.tertiary),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Card(
+                margin: EdgeInsets.zero,
+                color: colorScheme.errorContainer,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  leading: Icon(
+                    Icons.delete_forever_outlined,
+                    color: colorScheme.onErrorContainer,
+                  ),
+                  title: Text(
+                    'Verwijder alle gesprekken',
+                    style: textTheme.titleSmall?.copyWith(
+                      color: colorScheme.onErrorContainer,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Deze actie kan niet ongedaan worden gemaakt',
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onErrorContainer.withValues(alpha: 0.8),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _showDeleteAllChatsDialog(context, provider);
+                  },
                 ),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _showDeleteAllChatsDialog(context, provider);
-                },
               ),
             ),
           ],
@@ -256,13 +216,53 @@ class _SettingsBottomSheetContentState
     );
   }
 
-  Widget _sectionTitle(String title, TextTheme textTheme) {
+  Widget _buildSectionTitle(String title, TextTheme textTheme, ColorScheme colorScheme) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
       child: Text(
         title,
-        style: textTheme.labelLarge,
+        style: textTheme.labelLarge?.copyWith(
+          color: colorScheme.primary,
+        ),
       ),
+    );
+  }
+
+  Widget _buildDropdown<T>({
+    required T value,
+    required List<T> items,
+    required String Function(T) labelBuilder,
+    required void Function(T) onChanged,
+    required ColorScheme colorScheme,
+    required TextTheme textTheme,
+  }) {
+    return DropdownButtonFormField<T>(
+      value: value,
+      decoration: InputDecoration(
+        hintText: 'Selecteer...',
+        hintStyle: textTheme.bodyLarge?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+      ),
+      items: items
+          .map(
+            (item) => DropdownMenuItem(
+              value: item,
+              child: Text(
+                labelBuilder(item),
+                style: textTheme.bodyLarge,
+              ),
+            ),
+          )
+          .toList(),
+      onChanged: (newValue) {
+        if (newValue != null) {
+          onChanged(newValue);
+        }
+      },
+      icon: Icon(Icons.arrow_drop_down, color: colorScheme.onSurfaceVariant),
+      dropdownColor: colorScheme.surfaceContainerHigh,
+      borderRadius: BorderRadius.circular(16), // M3 large shape
     );
   }
 
@@ -298,11 +298,15 @@ class _SettingsBottomSheetContentState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+          icon: Icon(
+            Icons.warning_amber_rounded,
+            color: colorScheme.error,
+            size: 32,
           ),
-          backgroundColor: colorScheme.surface,
-          title: Text('Alle gesprekken verwijderen', style: textTheme.titleLarge),
+          title: Text(
+            'Alle gesprekken verwijderen',
+            style: textTheme.headlineSmall,
+          ),
           content: Text(
             'Weet u zeker dat u alle gesprekken wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.',
             style: textTheme.bodyMedium,
@@ -310,9 +314,9 @@ class _SettingsBottomSheetContentState
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Annuleren', style: textTheme.labelLarge),
+              child: const Text('Annuleren'),
             ),
-            TextButton(
+            FilledButton(
               onPressed: () async {
                 Navigator.of(context).pop();
                 await provider.clearAllData();
@@ -320,16 +324,16 @@ class _SettingsBottomSheetContentState
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Alle gesprekken zijn verwijderd', style: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary)),
-                      backgroundColor: colorScheme.primary,
+                      content: const Text('Alle gesprekken zijn verwijderd'),
                     ),
                   );
                 }
               },
-              child: Text(
-                'Verwijderen',
-                style: textTheme.labelLarge?.copyWith(color: colorScheme.tertiary),
+              style: FilledButton.styleFrom(
+                backgroundColor: colorScheme.error,
+                foregroundColor: colorScheme.onError,
               ),
+              child: const Text('Verwijderen'),
             ),
           ],
         );

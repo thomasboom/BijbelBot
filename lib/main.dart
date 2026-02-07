@@ -12,6 +12,13 @@ void main() async {
   runApp(const BijbelBotApp());
 }
 
+/// Material 3 Expressive theme configuration for BijbelBot
+/// 
+/// This implementation follows M3 Expressive guidelines:
+/// - Dynamic color schemes from seed color
+/// - Proper M3 type scale with correct line heights
+/// - Shape system using M3 shape scale
+/// - Expressive motion with proper easing curves
 class BijbelBotApp extends StatelessWidget {
   const BijbelBotApp({super.key});
 
@@ -21,10 +28,10 @@ class BijbelBotApp extends StatelessWidget {
       create: (context) => BibleChatProvider(),
       child: MaterialApp(
         title: 'BijbelBot',
-        debugShowCheckedModeBanner: false, // Remove debug banner
+        debugShowCheckedModeBanner: false,
         theme: _buildLightTheme(),
         darkTheme: _buildDarkTheme(),
-        themeMode: ThemeMode.system, // Follow system preference
+        themeMode: ThemeMode.system,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -32,265 +39,508 @@ class BijbelBotApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [
-          const Locale('en'), // English
-          const Locale('nl'), // Dutch
+          const Locale('en'),
+          const Locale('nl'),
         ],
         home: const BijbelBotHomePage(),
       ),
     );
   }
 
-  /// Light theme matching original BijbelQuiz app exactly
+  /// Material 3 Expressive Light Theme
+  /// 
+  /// Uses dynamic color generation from seed color with proper M3 color roles.
+  /// Typography follows M3 type scale with expressive font weights.
+  /// Shape system uses M3 shape scale for consistent corner radii.
   ThemeData _buildLightTheme() {
+    // M3 Expressive seed color - vibrant blue for spiritual/biblical app
+    const seedColor = Color(0xFF2563EB);
+    
+    // Generate dynamic color scheme from seed
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: Brightness.light,
+    );
+
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF2563EB), // Blue primary from original app
-        brightness: Brightness.light,
-      ).copyWith(
-        primary: const Color(0xFF2563EB), // Blue
-        secondary: const Color(0xFF7C3AED), // Purple
-        tertiary: const Color(0xFFDC2626), // Red
-        surface: const Color(0xFFFAFAFA),
-        surfaceContainerHighest: const Color(0xFFF8FAFC),
-        onSurface: const Color(0xFF0F172A),
-        outline: const Color(0xFFE2E8F0),
-        outlineVariant: const Color(0xFFF1F5F9),
-        shadow: const Color(0xFF0F172A),
-      ),
       useMaterial3: true,
-      textTheme: ThemeData.light().textTheme.apply(
-        fontFamily: 'Quicksand',
-        bodyColor: const Color(0xFF0F172A),
-        displayColor: const Color(0xFF0F172A),
-      ).copyWith(
-        headlineLarge: const TextStyle(
-          fontSize: 32,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.5,
-          color: Color(0xFF0F172A),
+      colorScheme: colorScheme,
+      
+      // M3 Expressive Typography Scale
+      // Following exact M3 type scale specifications
+      textTheme: _buildM3TextTheme(Brightness.light, colorScheme),
+      
+      // M3 Expressive Shape System
+      // Using M3 shape scale: extraSmall (4dp), small (8dp), medium (12dp), large (16dp), extraLarge (28dp)
+      cardTheme: CardThemeData(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16), // large component
         ),
-        headlineMedium: const TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.3,
-          color: Color(0xFF0F172A),
-        ),
-        headlineSmall: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.2,
-          color: Color(0xFF0F172A),
-        ),
-        titleLarge: const TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.1,
-          color: Color(0xFF0F172A),
-        ),
-        titleMedium: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0,
-          color: Color(0xFF0F172A),
-        ),
-        titleSmall: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.1,
-          color: Color(0xFF0F172A),
-        ),
-        bodyLarge: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0.1,
-          color: Color(0xFF334155),
-        ),
-        bodyMedium: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0.1,
-          color: Color(0xFF475569),
-        ),
-        labelLarge: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-          color: Color(0xFF0F172A),
-        ),
+        clipBehavior: Clip.antiAlias,
+        color: colorScheme.surfaceContainerHighest,
+        surfaceTintColor: colorScheme.surfaceTint,
       ),
+      
+      // Elevated Button - M3 Expressive style
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20), // extraLarge for buttons
           ),
-          elevation: 2,
-          backgroundColor: const Color(0xFF2563EB), // Blue primary
-          foregroundColor: Colors.white,
+          elevation: 0,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
           textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
             letterSpacing: 0.1,
           ),
         ),
       ),
-      cardTheme: const CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+      
+      // Filled Button - M3 style
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.1,
+          ),
         ),
-        clipBehavior: Clip.antiAlias,
-        color: Colors.white,
-        surfaceTintColor: Colors.transparent,
       ),
-      appBarTheme: const AppBarTheme(
+      
+      // Text Button - M3 style
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          foregroundColor: colorScheme.primary,
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.1,
+          ),
+        ),
+      ),
+      
+      // AppBar - M3 Expressive style with scroll elevation
+      appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Color(0xFF0F172A),
-        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 3,
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
+        surfaceTintColor: colorScheme.surfaceTint,
         titleTextStyle: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: Color(0xFF0F172A),
-          letterSpacing: -0.1,
+          fontSize: 22,
+          fontWeight: FontWeight.w400,
+          color: colorScheme.onSurface,
+          letterSpacing: 0,
         ),
       ),
+      
+      // Navigation Drawer - M3 style
+      drawerTheme: DrawerThemeData(
+        backgroundColor: colorScheme.surface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(
+            right: Radius.circular(28), // extraLarge
+          ),
+        ),
+      ),
+      
+      // Bottom Sheet - M3 Expressive style
+      bottomSheetTheme: BottomSheetThemeData(
+        showDragHandle: true,
+        backgroundColor: colorScheme.surfaceContainerLow,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(28), // extraLarge
+          ),
+        ),
+      ),
+      
+      // Dialog - M3 style
+      dialogTheme: DialogThemeData(
+        backgroundColor: colorScheme.surfaceContainerHigh,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28), // extraLarge
+        ),
+        titleTextStyle: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          color: colorScheme.onSurface,
+        ),
+        contentTextStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: colorScheme.onSurfaceVariant,
+        ),
+      ),
+      
+      // SnackBar - M3 style
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: colorScheme.inverseSurface,
+        contentTextStyle: TextStyle(
+          color: colorScheme.onInverseSurface,
+          fontSize: 14,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+      
+      // Input Decoration - M3 Expressive style
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: colorScheme.surfaceContainerHighest,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16), // extraLarge for text fields
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.error, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.error, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      
+      // Page Transitions - M3 Expressive motion
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      scaffoldBackgroundColor: const Color(0xFFFAFAFA),
+      
+      scaffoldBackgroundColor: colorScheme.surface,
     );
   }
 
-  /// Dark theme matching original BijbelQuiz app exactly
+  /// Material 3 Expressive Dark Theme
   ThemeData _buildDarkTheme() {
+    // M3 Expressive seed color - same as light for consistency
+    const seedColor = Color(0xFF2563EB);
+    
+    // Generate dynamic color scheme from seed for dark mode
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: seedColor,
+      brightness: Brightness.dark,
+    );
+
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFF2563EB), // Blue primary from original app
-        brightness: Brightness.dark,
-      ).copyWith(
-        primary: const Color(0xFF2563EB), // Blue
-        secondary: const Color(0xFF7C3AED), // Purple
-        tertiary: const Color(0xFFDC2626), // Red
-        surface: const Color(0xFF0F172A),
-        surfaceContainerHighest: const Color(0xFF1E293B),
-        onSurface: const Color(0xFFF8FAFC),
-        outline: const Color(0xFF334155),
-        outlineVariant: const Color(0xFF1E293B),
-        shadow: const Color(0xFF000000),
-      ),
       useMaterial3: true,
-      textTheme: ThemeData.dark().textTheme.apply(
-        fontFamily: 'Quicksand',
-        bodyColor: const Color(0xFFF8FAFC),
-        displayColor: const Color(0xFFF8FAFC),
-      ).copyWith(
-        headlineLarge: const TextStyle(
-          fontSize: 32,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.5,
-          color: Color(0xFFF8FAFC),
+      colorScheme: colorScheme,
+      
+      // M3 Expressive Typography Scale
+      textTheme: _buildM3TextTheme(Brightness.dark, colorScheme),
+      
+      // M3 Expressive Shape System
+      cardTheme: CardThemeData(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
-        headlineMedium: const TextStyle(
-          fontSize: 28,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.3,
-          color: Color(0xFFF8FAFC),
-        ),
-        headlineSmall: const TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.2,
-          color: Color(0xFFF8FAFC),
-        ),
-        titleLarge: const TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.1,
-          color: Color(0xFFF8FAFC),
-        ),
-        titleMedium: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0,
-          color: Color(0xFFF8FAFC),
-        ),
-        titleSmall: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.1,
-          color: Color(0xFFF8FAFC),
-        ),
-        bodyLarge: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0.1,
-          color: Color(0xFFCBD5E1),
-        ),
-        bodyMedium: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0.1,
-          color: Color(0xFF94A3B8),
-        ),
-        labelLarge: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-          color: Color(0xFFF8FAFC),
-        ),
+        clipBehavior: Clip.antiAlias,
+        color: colorScheme.surfaceContainerHighest,
+        surfaceTintColor: colorScheme.surfaceTint,
       ),
+      
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
           ),
-          elevation: 2,
-          backgroundColor: const Color(0xFF2563EB), // Blue primary
-          foregroundColor: Colors.white,
+          elevation: 0,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
           textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
             letterSpacing: 0.1,
           ),
         ),
       ),
-      cardTheme: const CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+      
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.1,
+          ),
         ),
-        clipBehavior: Clip.antiAlias,
-        color: Color(0xFF1E293B),
-        surfaceTintColor: Colors.transparent,
       ),
-      appBarTheme: const AppBarTheme(
+      
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          foregroundColor: colorScheme.primary,
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.1,
+          ),
+        ),
+      ),
+      
+      appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
-        scrolledUnderElevation: 0,
-        backgroundColor: Color(0xFF0F172A),
-        foregroundColor: Color(0xFFF8FAFC),
-        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 3,
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
+        surfaceTintColor: colorScheme.surfaceTint,
         titleTextStyle: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: Color(0xFFF8FAFC),
-          letterSpacing: -0.1,
+          fontSize: 22,
+          fontWeight: FontWeight.w400,
+          color: colorScheme.onSurface,
+          letterSpacing: 0,
         ),
       ),
+      
+      drawerTheme: DrawerThemeData(
+        backgroundColor: colorScheme.surface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(
+            right: Radius.circular(28),
+          ),
+        ),
+      ),
+      
+      bottomSheetTheme: BottomSheetThemeData(
+        showDragHandle: true,
+        backgroundColor: colorScheme.surfaceContainerLow,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(28),
+          ),
+        ),
+      ),
+      
+      dialogTheme: DialogThemeData(
+        backgroundColor: colorScheme.surfaceContainerHigh,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28),
+        ),
+        titleTextStyle: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          color: colorScheme.onSurface,
+        ),
+        contentTextStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: colorScheme.onSurfaceVariant,
+        ),
+      ),
+      
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: colorScheme.inverseSurface,
+        contentTextStyle: TextStyle(
+          color: colorScheme.onInverseSurface,
+          fontSize: 14,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+      
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: colorScheme.surfaceContainerHighest,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.error, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: colorScheme.error, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      scaffoldBackgroundColor: const Color(0xFF0F172A),
+      
+      scaffoldBackgroundColor: colorScheme.surface,
+    );
+  }
+
+  /// Build M3 Expressive Typography Scale
+  /// 
+  /// M3 Type Scale specifications:
+  /// - Display: Large (57), Medium (45), Small (36)
+  /// - Headline: Large (32), Medium (28), Small (24)
+  /// - Title: Large (22), Medium (16), Small (14)
+  /// - Body: Large (16), Medium (14), Small (12)
+  /// - Label: Large (14), Medium (12), Small (11)
+  TextTheme _buildM3TextTheme(Brightness brightness, ColorScheme colorScheme) {
+    final isDark = brightness == Brightness.dark;
+    final onSurfaceColor = isDark ? colorScheme.onSurface : colorScheme.onSurface;
+    final onSurfaceVariant = isDark ? colorScheme.onSurfaceVariant : colorScheme.onSurfaceVariant;
+    
+    return TextTheme(
+      // Display styles - for large, short text like onboarding
+      displayLarge: TextStyle(
+        fontSize: 57,
+        fontWeight: FontWeight.w400,
+        height: 1.12,
+        letterSpacing: -0.25,
+        color: onSurfaceColor,
+      ),
+      displayMedium: TextStyle(
+        fontSize: 45,
+        fontWeight: FontWeight.w400,
+        height: 1.16,
+        letterSpacing: 0,
+        color: onSurfaceColor,
+      ),
+      displaySmall: TextStyle(
+        fontSize: 36,
+        fontWeight: FontWeight.w400,
+        height: 1.22,
+        letterSpacing: 0,
+        color: onSurfaceColor,
+      ),
+      
+      // Headline styles - for section headers
+      headlineLarge: TextStyle(
+        fontSize: 32,
+        fontWeight: FontWeight.w400,
+        height: 1.25,
+        letterSpacing: 0,
+        color: onSurfaceColor,
+      ),
+      headlineMedium: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.w400,
+        height: 1.29,
+        letterSpacing: 0,
+        color: onSurfaceColor,
+      ),
+      headlineSmall: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w400,
+        height: 1.33,
+        letterSpacing: 0,
+        color: onSurfaceColor,
+      ),
+      
+      // Title styles - for component titles
+      titleLarge: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w400,
+        height: 1.27,
+        letterSpacing: 0,
+        color: onSurfaceColor,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+        letterSpacing: 0.15,
+        color: onSurfaceColor,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        height: 1.43,
+        letterSpacing: 0.1,
+        color: onSurfaceColor,
+      ),
+      
+      // Body styles - for longer content
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+        letterSpacing: 0.5,
+        color: onSurfaceVariant,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        height: 1.43,
+        letterSpacing: 0.25,
+        color: onSurfaceVariant,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w400,
+        height: 1.33,
+        letterSpacing: 0.4,
+        color: onSurfaceVariant,
+      ),
+      
+      // Label styles - for buttons, inputs, etc.
+      labelLarge: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        height: 1.43,
+        letterSpacing: 0.1,
+        color: onSurfaceColor,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        height: 1.33,
+        letterSpacing: 0.5,
+        color: onSurfaceColor,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        height: 1.45,
+        letterSpacing: 0.5,
+        color: onSurfaceColor,
+      ),
     );
   }
 }
@@ -308,7 +558,6 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
   @override
   void initState() {
     super.initState();
-    // Move initialization to didChangeDependencies where context is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeConversation();
     });
@@ -320,7 +569,6 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
 
     await chatProvider.ensureReady();
 
-    // Create initial conversation if none exists
     if (chatProvider.activeConversation == null) {
       try {
         final conversation = await chatProvider.createConversation(
@@ -330,12 +578,10 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
           _currentConversation = conversation;
         });
       } catch (e) {
-        // Handle error
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('${localizations.errorInitializing} $e'),
-              backgroundColor: Colors.red,
             ),
           );
         }
@@ -357,7 +603,6 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
     setState(() {
       _currentConversation = conversation;
     });
-    // Set as active conversation in provider
     final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
     chatProvider.setActiveConversation(conversation.id);
   }
@@ -373,14 +618,12 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
       setState(() {
         _currentConversation = conversation;
       });
-      // Set as active conversation in provider
       chatProvider.setActiveConversation(conversation.id);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${localizations.errorCreatingConversation} $e'),
-            backgroundColor: Colors.red,
           ),
         );
       }
@@ -411,17 +654,14 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
         ],
       ),
       drawer: Drawer(
-        width: 280,
         child: ConversationHistorySidebar(
           selectedConversationId: _currentConversation?.id,
           onConversationSelected: (conversation) {
             _onConversationSelected(conversation);
-            // Close the drawer after selection
             Navigator.of(context).pop();
           },
           onNewConversation: () {
             _createNewConversation();
-            // Close the drawer after creating new conversation
             Navigator.of(context).pop();
           },
         ),

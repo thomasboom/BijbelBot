@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// Widget for the chat input field with send button
+/// M3 Expressive chat input field widget
+/// 
+/// Features:
+/// - M3 shape system with extraLarge corner radius
+/// - Dynamic color from theme colorScheme
+/// - Expressive motion for interactions
+/// - Proper typography using M3 type scale
 class ChatInputField extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onSendMessage;
@@ -20,7 +26,33 @@ class ChatInputField extends StatefulWidget {
   State<ChatInputField> createState() => _ChatInputFieldState();
 }
 
-class _ChatInputFieldState extends State<ChatInputField> {
+class _ChatInputFieldState extends State<ChatInputField>
+    with SingleTickerProviderStateMixin {
+  // Animation controller for expressive send button
+  late AnimationController _sendButtonController;
+  late Animation<double> _sendButtonScale;
+
+  @override
+  void initState() {
+    super.initState();
+    _sendButtonController = AnimationController(
+      duration: const Duration(milliseconds: 150), // M3 short duration
+      vsync: this,
+    );
+    _sendButtonScale = Tween<double>(begin: 1.0, end: 0.9).animate(
+      CurvedAnimation(
+        parent: _sendButtonController,
+        curve: Curves.easeOutCubic, // M3 standard easing
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _sendButtonController.dispose();
+    super.dispose();
+  }
+
   void _sendMessage() {
     if (widget.isLoading || !widget.isEnabled) return;
     final message = widget.controller.text.trim();
@@ -54,19 +86,21 @@ class _ChatInputFieldState extends State<ChatInputField> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: colorScheme.outline.withAlpha(51), // 0.2 opacity
+            color: colorScheme.outlineVariant,
             width: 1,
           ),
         ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: CallbackShortcuts(
@@ -77,68 +111,68 @@ class _ChatInputFieldState extends State<ChatInputField> {
               },
               child: TextField(
                 controller: widget.controller,
+                style: textTheme.bodyLarge,
                 decoration: InputDecoration(
                   hintText: 'Stel een vraag over de Bijbel...',
-                  hintStyle: TextStyle(
-                    color: colorScheme.onSurface.withAlpha(153), // 0.6 opacity
+                  hintStyle: textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
                   ),
+                  // M3 shape: extraLarge (28dp) for text fields
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide(
-                      color: colorScheme.outline.withAlpha(128), // 0.5 opacity
-                    ),
+                    borderRadius: BorderRadius.circular(28),
+                    borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide(
-                      color: colorScheme.outline.withAlpha(128), // 0.5 opacity
-                    ),
+                    borderRadius: BorderRadius.circular(28),
+                    borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide(
-                      color: colorScheme.primary,
-                      width: 2,
-                    ),
+                    borderRadius: BorderRadius.circular(28),
+                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
                   ),
                   filled: true,
-                  fillColor: colorScheme.surface,
+                  fillColor: colorScheme.surfaceContainerHighest,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                    horizontal: 20,
+                    vertical: 14,
                   ),
                 ),
                 maxLines: null,
+                minLines: 1,
                 textCapitalization: TextCapitalization.sentences,
                 enabled: !widget.isLoading && widget.isEnabled,
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          Container(
-            decoration: BoxDecoration(
-              color: (widget.isLoading || !widget.isEnabled)
-                  ? colorScheme.outline.withAlpha(128) // 0.5 opacity
-                  : colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
+          const SizedBox(width: 12),
+          // M3 Expressive FAB-style send button
+          ScaleTransition(
+            scale: _sendButtonScale,
+            child: FloatingActionButton(
               onPressed: (widget.isLoading || !widget.isEnabled) ? null : _sendMessage,
-              icon: widget.isLoading
+              backgroundColor: (widget.isLoading || !widget.isEnabled)
+                  ? colorScheme.surfaceContainerHighest
+                  : colorScheme.primaryContainer,
+              foregroundColor: (widget.isLoading || !widget.isEnabled)
+                  ? colorScheme.onSurfaceVariant
+                  : colorScheme.onPrimaryContainer,
+              elevation: 0,
+              focusElevation: 0,
+              hoverElevation: 0,
+              highlightElevation: 0,
+              shape: const CircleBorder(),
+              child: widget.isLoading
                   ? SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
+                        strokeWidth: 2.5,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          colorScheme.onPrimary,
+                          colorScheme.onPrimaryContainer,
                         ),
                       ),
                     )
-                  : Icon(
-                      Icons.send,
-                      color: colorScheme.onPrimary,
-                    ),
+                  : const Icon(Icons.send_rounded, size: 22),
             ),
           ),
         ],

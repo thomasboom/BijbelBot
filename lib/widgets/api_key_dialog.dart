@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// M3 Expressive API key dialog
+/// 
+/// Features:
+/// - M3 dialog shape with extraLarge corner radius
+/// - Dynamic color from theme colorScheme
+/// - M3 text field styling
+/// - Expressive motion for interactions
 Future<void> showApiKeyDialog({
   required BuildContext context,
   required String? existingKey,
@@ -61,56 +68,67 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
     final textTheme = theme.textTheme;
 
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+      icon: Icon(
+        Icons.vpn_key_outlined,
+        color: colorScheme.primary,
+        size: 32,
       ),
-      backgroundColor: colorScheme.surface,
-      title: Text('API key instellen', style: textTheme.titleLarge),
+      title: Text(
+        'API key instellen',
+        style: textTheme.headlineSmall,
+      ),
       content: Form(
         key: _formKey,
-        child: TextFormField(
-          controller: _controller,
-          obscureText: _obscure,
-          style: textTheme.bodyLarge,
-          decoration: InputDecoration(
-            labelText: 'Ollama API key',
-            labelStyle: textTheme.bodyLarge,
-            helperText: 'Wordt alleen lokaal opgeslagen op dit apparaat.',
-            helperStyle: textTheme.bodySmall,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: colorScheme.outline),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Voer je Ollama API key in om de chat te gebruiken. De key wordt alleen lokaal opgeslagen op dit apparaat.',
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: colorScheme.outline),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _controller,
+              obscureText: _obscure,
+              style: textTheme.bodyLarge,
+              decoration: InputDecoration(
+                labelText: 'Ollama API key',
+                labelStyle: textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                helperText: 'Wordt alleen lokaal opgeslagen',
+                helperStyle: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                suffixIcon: IconButton(
+                  onPressed: () => setState(() => _obscure = !_obscure),
+                  icon: Icon(
+                    _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  tooltip: _obscure ? 'Toon key' : 'Verberg key',
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'Vul een geldige API key in.';
+                }
+                return null;
+              },
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: colorScheme.primary, width: 2),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            suffixIcon: IconButton(
-              onPressed: () => setState(() => _obscure = !_obscure),
-              icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
-            ),
-          ),
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return 'Vul een geldige API key in.';
-            }
-            return null;
-          },
+          ],
         ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Annuleren', style: textTheme.labelLarge),
+          child: const Text('Annuleren'),
         ),
-        TextButton(
+        FilledButton(
           onPressed: _save,
-          child: Text('Opslaan', style: textTheme.labelLarge),
+          child: const Text('Opslaan'),
         ),
       ],
     );
