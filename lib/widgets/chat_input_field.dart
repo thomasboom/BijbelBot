@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class _SendMessageIntent extends Intent {
-  const _SendMessageIntent();
-}
-
-class _InsertNewlineIntent extends Intent {
-  const _InsertNewlineIntent();
-}
-
 /// Widget for the chat input field with send button
 class ChatInputField extends StatefulWidget {
   final TextEditingController controller;
@@ -44,7 +36,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
     final text = controller.text;
 
     if (!selection.isValid) {
-      controller.text = '${text}\n';
+      controller.text = '$text\n';
       controller.selection = TextSelection.collapsed(offset: controller.text.length);
       return;
     }
@@ -77,69 +69,48 @@ class _ChatInputFieldState extends State<ChatInputField> {
       child: Row(
         children: [
           Expanded(
-            child: Shortcuts(
-              shortcuts: <LogicalKeySet, Intent>{
-                LogicalKeySet(LogicalKeyboardKey.enter): const _SendMessageIntent(),
-                LogicalKeySet(LogicalKeyboardKey.shift, LogicalKeyboardKey.enter):
-                    const _InsertNewlineIntent(),
-                LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.enter):
-                    const _InsertNewlineIntent(),
+            child: CallbackShortcuts(
+              bindings: <ShortcutActivator, VoidCallback>{
+                const SingleActivator(LogicalKeyboardKey.enter): _sendMessage,
+                const SingleActivator(LogicalKeyboardKey.enter, shift: true): _insertNewline,
+                const SingleActivator(LogicalKeyboardKey.enter, control: true): _insertNewline,
               },
-              child: Actions(
-                actions: {
-                  _SendMessageIntent: CallbackAction<_SendMessageIntent>(
-                    onInvoke: (intent) {
-                      _sendMessage();
-                      return null;
-                    },
+              child: TextField(
+                controller: widget.controller,
+                decoration: InputDecoration(
+                  hintText: 'Stel een vraag over de Bijbel...',
+                  hintStyle: TextStyle(
+                    color: colorScheme.onSurface.withAlpha(153), // 0.6 opacity
                   ),
-                  _InsertNewlineIntent: CallbackAction<_InsertNewlineIntent>(
-                    onInvoke: (intent) {
-                      _insertNewline();
-                      return null;
-                    },
-                  ),
-                },
-                child: Focus(
-                  child: TextField(
-                    controller: widget.controller,
-                    decoration: InputDecoration(
-                      hintText: 'Stel een vraag over de Bijbel...',
-                      hintStyle: TextStyle(
-                        color: colorScheme.onSurface.withAlpha(153), // 0.6 opacity
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(
-                          color: colorScheme.outline.withAlpha(128), // 0.5 opacity
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(
-                          color: colorScheme.outline.withAlpha(128), // 0.5 opacity
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(
-                          color: colorScheme.primary,
-                          width: 2,
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: colorScheme.surface,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide(
+                      color: colorScheme.outline.withAlpha(128), // 0.5 opacity
                     ),
-                    maxLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    enabled: !widget.isLoading && widget.isEnabled,
-                    onSubmitted: (widget.isLoading || !widget.isEnabled) ? null : widget.onSendMessage,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide(
+                      color: colorScheme.outline.withAlpha(128), // 0.5 opacity
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide(
+                      color: colorScheme.primary,
+                      width: 2,
+                    ),
+                  ),
+                  filled: true,
+                  fillColor: colorScheme.surface,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
                   ),
                 ),
+                maxLines: null,
+                textCapitalization: TextCapitalization.sentences,
+                enabled: !widget.isLoading && widget.isEnabled,
               ),
             ),
           ),
