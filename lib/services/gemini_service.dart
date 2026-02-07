@@ -491,12 +491,13 @@ Explanation: [Additional context if needed]
   /// Parses the Gemini response to extract Bible answer and references
   BibleQAResponse _parseBibleResponse(String response) {
     try {
+      final normalizedResponse = _normalizeModelText(response);
       // Extract answer (everything before references)
       String answer;
       List<BibleReference> references = [];
 
       // Look for references section
-      final lines = response.split('\n');
+      final lines = normalizedResponse.split('\n');
       List<String> answerLines = [];
       List<String> referenceLines = [];
       bool inReferencesSection = false;
@@ -526,20 +527,28 @@ Explanation: [Additional context if needed]
 
       // If no references found in dedicated section, try to extract from entire response
       if (references.isEmpty) {
-        references = _extractBibleReferences(response);
+        references = _extractBibleReferences(normalizedResponse);
       }
 
       return BibleQAResponse(
-        answer: answer.isNotEmpty ? answer : response,
+        answer: answer.isNotEmpty ? answer : normalizedResponse,
         references: references,
       );
     } catch (e) {
       AppLogger.warning('Failed to parse Bible response, using raw response: $e');
       return BibleQAResponse(
-        answer: response,
+        answer: _normalizeModelText(response),
         references: [],
       );
     }
+  }
+
+  String _normalizeModelText(String text) {
+    // Some fallbacks extract escaped sequences like "\\n" literally. Normalize them.
+    return text
+        .replaceAll('\\r\\n', '\n')
+        .replaceAll('\\n', '\n')
+        .replaceAll('\\t', '\t');
   }
 
   /// Extracts Bible references from text using regex patterns

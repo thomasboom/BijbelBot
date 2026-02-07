@@ -260,6 +260,7 @@ class ChatMessageBubble extends StatelessWidget {
         data: content,
         styleSheet: _getMarkdownStyleSheet(textColor, colorScheme),
         selectable: true,
+        softLineBreak: true,
       );
     } catch (e) {
       // Fallback to plain text if markdown parsing fails
