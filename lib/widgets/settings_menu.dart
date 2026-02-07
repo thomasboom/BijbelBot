@@ -40,44 +40,68 @@ class SettingsMenu extends StatelessWidget {
                     ),
                   ),
                   _sectionTitle('Toon'),
-                  ...PromptTone.values.map((tone) {
-                    return RadioListTile<PromptTone>(
-                      value: tone,
-                      groupValue: settings.tone,
-                      title: Text(AiPromptSettings.toneLabel(tone)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: DropdownButtonFormField<PromptTone>(
+                      value: settings.tone,
+                      decoration: const InputDecoration(border: OutlineInputBorder()),
+                      items: PromptTone.values
+                          .map(
+                            (tone) => DropdownMenuItem(
+                              value: tone,
+                              child: Text(AiPromptSettings.toneLabel(tone)),
+                            ),
+                          )
+                          .toList(),
                       onChanged: (value) {
                         if (value != null) {
                           provider.setPromptTone(value);
                         }
                       },
-                    );
-                  }),
+                    ),
+                  ),
                   _sectionTitle('Emoji\'s'),
-                  ...EmojiLevel.values.map((level) {
-                    return RadioListTile<EmojiLevel>(
-                      value: level,
-                      groupValue: settings.emojiLevel,
-                      title: Text(AiPromptSettings.emojiLabel(level)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: DropdownButtonFormField<EmojiLevel>(
+                      value: settings.emojiLevel,
+                      decoration: const InputDecoration(border: OutlineInputBorder()),
+                      items: EmojiLevel.values
+                          .map(
+                            (level) => DropdownMenuItem(
+                              value: level,
+                              child: Text(AiPromptSettings.emojiLabel(level)),
+                            ),
+                          )
+                          .toList(),
                       onChanged: (value) {
                         if (value != null) {
                           provider.setEmojiLevel(value);
                         }
                       },
-                    );
-                  }),
+                    ),
+                  ),
                   _sectionTitle('Antwoordformaat'),
-                  ...ResponseFormat.values.map((format) {
-                    return RadioListTile<ResponseFormat>(
-                      value: format,
-                      groupValue: settings.responseFormat,
-                      title: Text(AiPromptSettings.formatLabel(format)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: DropdownButtonFormField<ResponseFormat>(
+                      value: settings.responseFormat,
+                      decoration: const InputDecoration(border: OutlineInputBorder()),
+                      items: ResponseFormat.values
+                          .map(
+                            (format) => DropdownMenuItem(
+                              value: format,
+                              child: Text(AiPromptSettings.formatLabel(format)),
+                            ),
+                          )
+                          .toList(),
                       onChanged: (value) {
                         if (value != null) {
                           provider.setResponseFormat(value);
                         }
                       },
-                    );
-                  }),
+                    ),
+                  ),
                   const Divider(height: 24),
                   ListTile(
                     leading: const Icon(Icons.delete_forever, color: Colors.red),
