@@ -17,7 +17,7 @@ class SettingsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     return IconButton(
       icon: const Icon(Icons.settings_outlined),
       onPressed: () => _showSettingsBottomSheet(context),
@@ -71,7 +71,7 @@ class _SettingsBottomSheetContentState
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
 
     return Consumer<BibleChatProvider>(
       builder: (context, provider, _) {
@@ -239,9 +239,9 @@ class _SettingsBottomSheetContentState
     required ColorScheme colorScheme,
     required TextTheme textTheme,
   }) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     return DropdownButtonFormField<T>(
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(
         hintText: localizations.select,
         hintStyle: textTheme.bodyLarge?.copyWith(
@@ -297,7 +297,7 @@ class _SettingsBottomSheetContentState
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
 
     showDialog(
       context: context,

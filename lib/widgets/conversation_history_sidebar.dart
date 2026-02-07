@@ -51,7 +51,7 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final provider = Provider.of<BibleChatProvider>(context);
     final allConversations = provider.conversationsByLastActivity.reversed.toList();
     final filteredConversations = _filterConversations(allConversations);
@@ -159,7 +159,7 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
 
   /// M3 Expressive empty state
   Widget _buildEmptyState(ColorScheme colorScheme, TextTheme textTheme, bool isSearchResult) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -206,7 +206,7 @@ class ConversationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 

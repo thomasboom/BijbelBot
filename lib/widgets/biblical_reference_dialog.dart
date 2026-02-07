@@ -46,7 +46,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     try {
       final parsed = _parseReference(widget.reference);
       if (parsed == null) {
-        final localizations = AppLocalizations.of(context)!;
+        final localizations = AppLocalizations.of(context);
         throw Exception(localizations.invalidBiblicalReferenceWithRef(widget.reference));
       }
 
@@ -57,7 +57,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
 
       final bookNumber = BibleBookMapper.getBookNumber(book);
       if (bookNumber == null) {
-        final localizations = AppLocalizations.of(context)!;
+        final localizations = AppLocalizations.of(context);
         final validBooks = BibleBookMapper.getAllBookNames();
         throw Exception(localizations.invalidBookName(book, validBooks.take(10).join(", ")));
       }
@@ -321,7 +321,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;

@@ -67,7 +67,7 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
 
     return AlertDialog(
       icon: Icon(

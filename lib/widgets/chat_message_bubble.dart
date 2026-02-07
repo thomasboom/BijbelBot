@@ -38,7 +38,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final isUser = message.sender == MessageSender.user;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;

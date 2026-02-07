@@ -450,7 +450,7 @@ $styleBlock
 $customBlock
 
 Gebruik het onderstaande normen-overzicht als waarde-kader:
-${normenBlock}
+$normenBlock
 
 Structureer je antwoord als:
 1. Een helder, direct antwoord op de vraag

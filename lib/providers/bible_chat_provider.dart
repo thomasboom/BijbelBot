@@ -252,21 +252,6 @@ class BibleChatProvider extends ChangeNotifier {
     }
   }
 
-  /// Gets the first user message in a conversation
-  Future<BibleChatMessage?> _getFirstUserMessageInConversation(String conversationId) async {
-    final conversation = _conversations[conversationId];
-    if (conversation == null) return null;
-
-    // Find the first user message in the conversation
-    for (final messageId in conversation.messageIds) {
-      final message = _messages[messageId];
-      if (message != null && message.sender == MessageSender.user) {
-        return message;
-      }
-    }
-    return null;
-  }
-
   /// Gets the latest user message in a conversation
   Future<BibleChatMessage?> _getLatestUserMessageInConversation(String conversationId) async {
     final conversation = _conversations[conversationId];
@@ -301,18 +286,6 @@ class BibleChatProvider extends ChangeNotifier {
     }
     
     return title;
-  }
-
-  bool _isDefaultTitle(String? title) {
-    if (title == null || title.trim().isEmpty) return true;
-    final normalized = title.trim().toLowerCase();
-    const defaults = {
-      'new bible chat',
-      'nieuwe bijbel chat',
-      'new conversation',
-      'nieuwe conversatie',
-    };
-    return defaults.contains(normalized) || normalized.startsWith('nieuwe conversatie');
   }
 
   /// Updates an existing conversation

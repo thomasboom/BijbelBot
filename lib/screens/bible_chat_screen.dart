@@ -110,7 +110,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       // Listen for connectivity changes
       _connectionService.checkConnection().then((_) {
         if (mounted) {
-          final localizations = AppLocalizations.of(context)!;
+          final localizations = AppLocalizations.of(context);
           setState(() {
             _isOnline = _connectionService.isConnected;
             if (!_isOnline && _errorMessage == null) {
@@ -128,7 +128,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   }
 
   Future<void> _retryLastAction() async {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     setState(() {
       _errorMessage = null;
     });
@@ -214,11 +214,13 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       });
     } catch (e) {
       AppLogger.error('Failed to initialize Bible chat', e);
-      final localizations = AppLocalizations.of(context)!;
-      setState(() {
-        _isLoading = false;
-        _errorMessage = localizations.couldNotInitializeChat(e.toString());
-      });
+      if (mounted) {
+        final localizations = AppLocalizations.of(context);
+        setState(() {
+          _isLoading = false;
+          _errorMessage = localizations.couldNotInitializeChat(e.toString());
+        });
+      }
     }
   }
 
@@ -260,7 +262,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   }
 
   Future<void> _sendMessage(String message) async {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     if (message.trim().isEmpty || _isLoading || _chatProvider == null) return;
     if (!_chatProvider!.hasApiKey) {
       setState(() {
@@ -375,34 +377,36 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       });
     } on TimeoutException catch (e) {
       AppLogger.error('Request timed out', e);
-      final localizations = AppLocalizations.of(context)!;
+      if (mounted) {
+        final localizations = AppLocalizations.of(context);
 
-      if (botMessage != null) {
-        await _chatProvider!.updateMessageContent(
-          messageId: botMessage.id,
-          content: localizations.responseTakingLonger,
-        );
-      } else {
-        await _chatProvider!.addMessage(
-          conversationId: widget.conversation.id,
-          content: localizations.responseTakingLonger,
-          sender: MessageSender.bot,
-          type: MessageType.text,
-        );
+        if (botMessage != null) {
+          await _chatProvider!.updateMessageContent(
+            messageId: botMessage.id,
+            content: localizations.responseTakingLonger,
+          );
+        } else {
+          await _chatProvider!.addMessage(
+            conversationId: widget.conversation.id,
+            content: localizations.responseTakingLonger,
+            sender: MessageSender.bot,
+            type: MessageType.text,
+          );
+        }
+
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
+        _syncMessagesFromProvider();
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
       }
-
-      setState(() {
-        _isLoading = false;
-        _errorMessage = e.toString();
-      });
-      _syncMessagesFromProvider();
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
     } catch (e) {
       AppLogger.error('Failed to send message', e);
-      final localizations = AppLocalizations.of(context)!;
+      final localizations = AppLocalizations.of(context);
 
       // Create error message through provider
       if (botMessage != null) {
@@ -456,38 +460,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     });
   }
 
-  Future<void> _showNewConversationDialog() async {
-    final localizations = AppLocalizations.of(context)!;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(localizations.newConversation),
-          content: Text(
-            localizations.confirmNewConversation,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(localizations.cancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(localizations.newConversation),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmed == true) {
-      await _startNewConversation();
-    }
-  }
-
   Future<void> _startNewConversation() async {
     if (_chatProvider == null) return;
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
 
     try {
       setState(() {
@@ -522,7 +497,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       });
     } catch (e) {
       AppLogger.error('Failed to start new conversation', e);
-      final localizations = AppLocalizations.of(context)!;
+      final localizations = AppLocalizations.of(context);
       setState(() {
         _isLoading = false;
         _errorMessage = localizations.couldNotStartNewConversation(e.toString());
@@ -550,7 +525,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final hasApiKey = _chatProvider?.hasApiKey ?? false;
     final showApiKeyRequired = _needsApiKey || !hasApiKey;
 
@@ -654,7 +629,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
 
     return Center(
       child: Padding(
@@ -703,7 +678,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   /// M3 Expressive loading view
   Widget _buildLoadingView() {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     return Container(
       color: Theme.of(context).colorScheme.surface,
       child: Center(
@@ -762,7 +737,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   /// M3 Expressive empty chat state
   Widget _buildEmptyChat() {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     return SingleChildScrollView(
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -873,7 +848,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   }
 
   List<Map<String, String>> _buildHistoryForAi() {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     final history = <Map<String, String>>[];
     for (final message in _messages) {
       if (message.content.trim().isEmpty) continue;

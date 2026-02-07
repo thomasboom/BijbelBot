@@ -567,7 +567,7 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
 
   Future<void> _initializeConversation() async {
     final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
 
     await chatProvider.ensureReady();
 
@@ -611,7 +611,7 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
 
   Future<void> _createNewConversation() async {
     final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     
     try {
       final conversation = await chatProvider.createConversation(
@@ -634,7 +634,7 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations.bibleBot),
