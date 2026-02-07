@@ -56,7 +56,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              _buildMessageBubble(isUser, colorScheme, textTheme),
+              _buildMessageBubble(isUser, colorScheme, textTheme, localizations),
               const SizedBox(height: 4),
               _buildTimestamp(colorScheme, textTheme),
             ],
@@ -68,7 +68,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
               children: [
                 _buildBotLabel(colorScheme, localizations, textTheme),
                 const SizedBox(height: 4),
-                _buildMessageBubble(isUser, colorScheme, textTheme),
+                _buildMessageBubble(isUser, colorScheme, textTheme, localizations),
                 const SizedBox(height: 4),
                 _buildTimestamp(colorScheme, textTheme),
               ],
@@ -132,7 +132,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
   }
 
   /// M3 Expressive message bubble with shape system
-  Widget _buildMessageBubble(bool isUser, ColorScheme colorScheme, TextTheme textTheme) {
+  Widget _buildMessageBubble(bool isUser, ColorScheme colorScheme, TextTheme textTheme, AppLocalizations localizations) {
     return Builder(
       builder: (BuildContext context) {
         final backgroundColor = isError
@@ -178,7 +178,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
+                        localizations.errorProcessingQuestion,
                         style: textTheme.bodyLarge?.copyWith(
                           color: foregroundColor,
                           height: 1.5,

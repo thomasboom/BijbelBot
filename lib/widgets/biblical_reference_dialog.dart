@@ -46,7 +46,8 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     try {
       final parsed = _parseReference(widget.reference);
       if (parsed == null) {
-        throw Exception('Ongeldige bijbelverwijzing: "${widget.reference}"');
+        final localizations = AppLocalizations.of(context)!;
+        throw Exception(localizations.invalidBiblicalReferenceWithRef(widget.reference));
       }
 
       final book = parsed['book'];
@@ -56,8 +57,9 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
 
       final bookNumber = BibleBookMapper.getBookNumber(book);
       if (bookNumber == null) {
+        final localizations = AppLocalizations.of(context)!;
         final validBooks = BibleBookMapper.getAllBookNames();
-        throw Exception('Ongeldig boeknaam: "$book". Geldige boeken: ${validBooks.take(10).join(", ")}...');
+        throw Exception(localizations.invalidBookName(book, validBooks.take(10).join(", ")));
       }
 
       String url;
@@ -378,7 +380,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Laden...',
+                    localizations.loading,
                     style: textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),

@@ -229,6 +229,426 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error creating conversation: '**
   String get errorCreatingConversation;
+
+  /// No description provided for @conversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversations'**
+  String get conversations;
+
+  /// No description provided for @searchConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Search conversations...'**
+  String get searchConversations;
+
+  /// No description provided for @noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get noResults;
+
+  /// No description provided for @noConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations'**
+  String get noConversations;
+
+  /// No description provided for @tryDifferentSearchTerm.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different search term'**
+  String get tryDifferentSearchTerm;
+
+  /// No description provided for @startNewConversationToAppear.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a new conversation to appear here'**
+  String get startNewConversationToAppear;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @monday.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get monday;
+
+  /// No description provided for @tuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get tuesday;
+
+  /// No description provided for @wednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get wednesday;
+
+  /// No description provided for @thursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get thursday;
+
+  /// No description provided for @friday.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get friday;
+
+  /// No description provided for @saturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get saturday;
+
+  /// No description provided for @sunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get sunday;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @aiSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Settings'**
+  String get aiSettings;
+
+  /// No description provided for @apiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'API Key'**
+  String get apiKey;
+
+  /// No description provided for @ollamaApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Ollama API Key'**
+  String get ollamaApiKey;
+
+  /// No description provided for @set.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get set;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @tone.
+  ///
+  /// In en, this message translates to:
+  /// **'Tone'**
+  String get tone;
+
+  /// No description provided for @emojis.
+  ///
+  /// In en, this message translates to:
+  /// **'Emojis'**
+  String get emojis;
+
+  /// No description provided for @responseFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Response Format'**
+  String get responseFormat;
+
+  /// No description provided for @customInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Instruction'**
+  String get customInstruction;
+
+  /// No description provided for @writeExtraInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Write extra instructions for the AI...'**
+  String get writeExtraInstructions;
+
+  /// No description provided for @deleteAllConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all conversations'**
+  String get deleteAllConversations;
+
+  /// No description provided for @thisActionCannotBeUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone'**
+  String get thisActionCannotBeUndone;
+
+  /// No description provided for @select.
+  ///
+  /// In en, this message translates to:
+  /// **'Select...'**
+  String get select;
+
+  /// No description provided for @deleteAllConversationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all conversations'**
+  String get deleteAllConversationsTitle;
+
+  /// No description provided for @deleteAllConversationsConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete all conversations? This action cannot be undone.'**
+  String get deleteAllConversationsConfirm;
+
+  /// No description provided for @allConversationsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'All conversations have been deleted'**
+  String get allConversationsDeleted;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @setApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Set API Key'**
+  String get setApiKey;
+
+  /// No description provided for @enterApiKeyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your Ollama API key to use the chat. The key is only stored locally on this device.'**
+  String get enterApiKeyDescription;
+
+  /// No description provided for @storedLocallyOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Stored locally only'**
+  String get storedLocallyOnly;
+
+  /// No description provided for @showKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Show key'**
+  String get showKey;
+
+  /// No description provided for @hideKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide key'**
+  String get hideKey;
+
+  /// No description provided for @enterValidApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid API key.'**
+  String get enterValidApiKey;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @invalidBiblicalReferenceWithRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid biblical reference: \"{reference}\"'**
+  String invalidBiblicalReferenceWithRef(Object reference);
+
+  /// No description provided for @invalidBookName.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid book name: \"{book}\". Valid books: {books}...'**
+  String invalidBookName(Object book, Object books);
+
+  /// No description provided for @errorProcessingQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry, an error occurred while processing your question. Please try again.'**
+  String get errorProcessingQuestion;
+
+  /// No description provided for @noInternetConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Check your network and try again.'**
+  String get noInternetConnection;
+
+  /// No description provided for @couldNotInitializeChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not initialize chat: {error}'**
+  String couldNotInitializeChat(Object error);
+
+  /// No description provided for @addApiKeyFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please add your API key in the settings first.'**
+  String get addApiKeyFirst;
+
+  /// No description provided for @responseTakingLonger.
+  ///
+  /// In en, this message translates to:
+  /// **'The response is taking longer than expected. Please try again.'**
+  String get responseTakingLonger;
+
+  /// No description provided for @confirmNewConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to start a new conversation? The current conversation will be cleared.'**
+  String get confirmNewConversation;
+
+  /// No description provided for @couldNotStartNewConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start new conversation: {error}'**
+  String couldNotStartNewConversation(Object error);
+
+  /// No description provided for @apiKeyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'API Key Required'**
+  String get apiKeyRequired;
+
+  /// No description provided for @addApiKeyToUseChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your own Ollama API key to use the chat. You can change this later in the settings.'**
+  String get addApiKeyToUseChat;
+
+  /// No description provided for @addApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Add API Key'**
+  String get addApiKey;
+
+  /// No description provided for @initializingBibleChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Initializing Bible Chat...'**
+  String get initializingBibleChat;
+
+  /// No description provided for @startConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a conversation'**
+  String get startConversation;
+
+  /// No description provided for @sampleQuestion1.
+  ///
+  /// In en, this message translates to:
+  /// **'What does the Bible say about forgiveness?'**
+  String get sampleQuestion1;
+
+  /// No description provided for @sampleQuestion2.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain the parable of the prodigal son'**
+  String get sampleQuestion2;
+
+  /// No description provided for @sampleQuestion3.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the meaning of John 3:16?'**
+  String get sampleQuestion3;
+
+  /// No description provided for @askQuestionAboutBible.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a question about the Bible...'**
+  String get askQuestionAboutBible;
+
+  /// No description provided for @warm.
+  ///
+  /// In en, this message translates to:
+  /// **'Warm'**
+  String get warm;
+
+  /// No description provided for @professional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get professional;
+
+  /// No description provided for @functional.
+  ///
+  /// In en, this message translates to:
+  /// **'Functional'**
+  String get functional;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get more;
+
+  /// No description provided for @normal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get normal;
+
+  /// No description provided for @less.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get less;
+
+  /// No description provided for @formatted.
+  ///
+  /// In en, this message translates to:
+  /// **'Formatted'**
+  String get formatted;
+
+  /// No description provided for @longText.
+  ///
+  /// In en, this message translates to:
+  /// **'Long text'**
+  String get longText;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

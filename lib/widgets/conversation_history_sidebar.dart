@@ -67,7 +67,7 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
             children: [
               Expanded(
                 child: Text(
-                  'Gesprekken',
+                  localizations.conversations,
                   style: textTheme.titleLarge?.copyWith(
                     color: colorScheme.onSurface,
                   ),
@@ -99,7 +99,7 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
               });
             },
             decoration: InputDecoration(
-              hintText: 'Zoek gesprekken...',
+              hintText: localizations.searchConversations,
               prefixIcon: const Icon(Icons.search),
               suffixIcon: _searchQuery.isNotEmpty
                   ? IconButton(
@@ -159,6 +159,7 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
 
   /// M3 Expressive empty state
   Widget _buildEmptyState(ColorScheme colorScheme, TextTheme textTheme, bool isSearchResult) {
+    final localizations = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -171,14 +172,14 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
           ),
           const SizedBox(height: 16),
           Text(
-            isSearchResult ? 'Geen resultaten' : 'Geen gesprekken',
+            isSearchResult ? localizations.noResults : localizations.noConversations,
             style: textTheme.titleMedium?.copyWith(
               color: colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            isSearchResult ? 'Probeer een andere zoekterm' : 'Begin een nieuw gesprek om hier te verschijnen',
+            isSearchResult ? localizations.tryDifferentSearchTerm : localizations.startNewConversationToAppear,
             style: textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -254,7 +255,7 @@ class ConversationItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      _formatDate(conversation.lastActivity),
+                      _formatDate(conversation.lastActivity, localizations),
                       style: textTheme.bodySmall?.copyWith(
                         color: isSelected 
                             ? colorScheme.onSecondaryContainer.withValues(alpha: 0.7)
@@ -271,16 +272,16 @@ class ConversationItem extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime dateTime) {
+  String _formatDate(DateTime dateTime, AppLocalizations localizations) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
     if (difference.inDays == 0) {
-      return 'Vandaag ${_formatTime(dateTime)}';
+      return '${localizations.today} ${_formatTime(dateTime)}';
     } else if (difference.inDays == 1) {
-      return 'Gisteren ${_formatTime(dateTime)}';
+      return '${localizations.yesterday} ${_formatTime(dateTime)}';
     } else if (difference.inDays < 7) {
-      return '${_getWeekday(dateTime)} ${_formatTime(dateTime)}';
+      return '${_getWeekday(dateTime, localizations)} ${_formatTime(dateTime)}';
     } else {
       return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
     }
@@ -290,15 +291,15 @@ class ConversationItem extends StatelessWidget {
     return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
-  String _getWeekday(DateTime dateTime) {
+  String _getWeekday(DateTime dateTime, AppLocalizations localizations) {
     switch (dateTime.weekday) {
-      case 1: return 'Ma';
-      case 2: return 'Di';
-      case 3: return 'Wo';
-      case 4: return 'Do';
-      case 5: return 'Vr';
-      case 6: return 'Za';
-      case 7: return 'Zo';
+      case 1: return localizations.monday;
+      case 2: return localizations.tuesday;
+      case 3: return localizations.wednesday;
+      case 4: return localizations.thursday;
+      case 5: return localizations.friday;
+      case 6: return localizations.saturday;
+      case 7: return localizations.sunday;
       default: return '';
     }
   }

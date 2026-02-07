@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../l10n/app_localizations.dart';
 
 /// M3 Expressive chat input field widget
 /// 
@@ -87,6 +88,7 @@ class _ChatInputFieldState extends State<ChatInputField>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final localizations = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -113,7 +115,7 @@ class _ChatInputFieldState extends State<ChatInputField>
                 controller: widget.controller,
                 style: textTheme.bodyLarge,
                 decoration: InputDecoration(
-                  hintText: 'Stel een vraag over de Bijbel...',
+                  hintText: localizations.askQuestionAboutBible,
                   hintStyle: textTheme.bodyLarge?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),

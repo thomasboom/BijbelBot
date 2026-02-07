@@ -74,4 +74,230 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorCreatingConversation => 'Error creating conversation: ';
+
+  @override
+  String get conversations => 'Conversations';
+
+  @override
+  String get searchConversations => 'Search conversations...';
+
+  @override
+  String get noResults => 'No results';
+
+  @override
+  String get noConversations => 'No conversations';
+
+  @override
+  String get tryDifferentSearchTerm => 'Try a different search term';
+
+  @override
+  String get startNewConversationToAppear =>
+      'Start a new conversation to appear here';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get monday => 'Mon';
+
+  @override
+  String get tuesday => 'Tue';
+
+  @override
+  String get wednesday => 'Wed';
+
+  @override
+  String get thursday => 'Thu';
+
+  @override
+  String get friday => 'Fri';
+
+  @override
+  String get saturday => 'Sat';
+
+  @override
+  String get sunday => 'Sun';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get aiSettings => 'AI Settings';
+
+  @override
+  String get apiKey => 'API Key';
+
+  @override
+  String get ollamaApiKey => 'Ollama API Key';
+
+  @override
+  String get set => 'Set';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get tone => 'Tone';
+
+  @override
+  String get emojis => 'Emojis';
+
+  @override
+  String get responseFormat => 'Response Format';
+
+  @override
+  String get customInstruction => 'Custom Instruction';
+
+  @override
+  String get writeExtraInstructions => 'Write extra instructions for the AI...';
+
+  @override
+  String get deleteAllConversations => 'Delete all conversations';
+
+  @override
+  String get thisActionCannotBeUndone => 'This action cannot be undone';
+
+  @override
+  String get select => 'Select...';
+
+  @override
+  String get deleteAllConversationsTitle => 'Delete all conversations';
+
+  @override
+  String get deleteAllConversationsConfirm =>
+      'Are you sure you want to delete all conversations? This action cannot be undone.';
+
+  @override
+  String get allConversationsDeleted => 'All conversations have been deleted';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get setApiKey => 'Set API Key';
+
+  @override
+  String get enterApiKeyDescription =>
+      'Enter your Ollama API key to use the chat. The key is only stored locally on this device.';
+
+  @override
+  String get storedLocallyOnly => 'Stored locally only';
+
+  @override
+  String get showKey => 'Show key';
+
+  @override
+  String get hideKey => 'Hide key';
+
+  @override
+  String get enterValidApiKey => 'Please enter a valid API key.';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String invalidBiblicalReferenceWithRef(Object reference) {
+    return 'Invalid biblical reference: \"$reference\"';
+  }
+
+  @override
+  String invalidBookName(Object book, Object books) {
+    return 'Invalid book name: \"$book\". Valid books: $books...';
+  }
+
+  @override
+  String get errorProcessingQuestion =>
+      'Sorry, an error occurred while processing your question. Please try again.';
+
+  @override
+  String get noInternetConnection =>
+      'No internet connection. Check your network and try again.';
+
+  @override
+  String couldNotInitializeChat(Object error) {
+    return 'Could not initialize chat: $error';
+  }
+
+  @override
+  String get addApiKeyFirst => 'Please add your API key in the settings first.';
+
+  @override
+  String get responseTakingLonger =>
+      'The response is taking longer than expected. Please try again.';
+
+  @override
+  String get confirmNewConversation =>
+      'Are you sure you want to start a new conversation? The current conversation will be cleared.';
+
+  @override
+  String couldNotStartNewConversation(Object error) {
+    return 'Could not start new conversation: $error';
+  }
+
+  @override
+  String get apiKeyRequired => 'API Key Required';
+
+  @override
+  String get addApiKeyToUseChat =>
+      'Add your own Ollama API key to use the chat. You can change this later in the settings.';
+
+  @override
+  String get addApiKey => 'Add API Key';
+
+  @override
+  String get initializingBibleChat => 'Initializing Bible Chat...';
+
+  @override
+  String get startConversation => 'Start a conversation';
+
+  @override
+  String get sampleQuestion1 => 'What does the Bible say about forgiveness?';
+
+  @override
+  String get sampleQuestion2 => 'Explain the parable of the prodigal son';
+
+  @override
+  String get sampleQuestion3 => 'What is the meaning of John 3:16?';
+
+  @override
+  String get askQuestionAboutBible => 'Ask a question about the Bible...';
+
+  @override
+  String get warm => 'Warm';
+
+  @override
+  String get professional => 'Professional';
+
+  @override
+  String get functional => 'Functional';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String get normal => 'Normal';
+
+  @override
+  String get less => 'Less';
+
+  @override
+  String get formatted => 'Formatted';
+
+  @override
+  String get longText => 'Long text';
+
+  @override
+  String get retry => 'Retry';
 }

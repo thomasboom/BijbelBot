@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 /// M3 Expressive API key dialog
 /// 
@@ -66,6 +67,7 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final localizations = AppLocalizations.of(context)!;
 
     return AlertDialog(
       icon: Icon(
@@ -74,7 +76,7 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
         size: 32,
       ),
       title: Text(
-        'API key instellen',
+        localizations.setApiKey,
         style: textTheme.headlineSmall,
       ),
       content: Form(
@@ -83,7 +85,7 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Voer je Ollama API key in om de chat te gebruiken. De key wordt alleen lokaal opgeslagen op dit apparaat.',
+              localizations.enterApiKeyDescription,
               style: textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -94,11 +96,11 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
               obscureText: _obscure,
               style: textTheme.bodyLarge,
               decoration: InputDecoration(
-                labelText: 'Ollama API key',
+                labelText: localizations.ollamaApiKey,
                 labelStyle: textTheme.bodyLarge?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
-                helperText: 'Wordt alleen lokaal opgeslagen',
+                helperText: localizations.storedLocallyOnly,
                 helperStyle: textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
@@ -108,12 +110,12 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
                     _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  tooltip: _obscure ? 'Toon key' : 'Verberg key',
+                  tooltip: _obscure ? localizations.showKey : localizations.hideKey,
                 ),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Vul een geldige API key in.';
+                  return localizations.enterValidApiKey;
                 }
                 return null;
               },
@@ -124,11 +126,11 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Annuleren'),
+          child: Text(localizations.cancel),
         ),
         FilledButton(
           onPressed: _save,
-          child: const Text('Opslaan'),
+          child: Text(localizations.save),
         ),
       ],
     );

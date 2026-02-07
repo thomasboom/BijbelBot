@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/bible_chat_provider.dart';
 import '../models/ai_prompt_settings.dart';
+import '../l10n/app_localizations.dart';
 import 'api_key_dialog.dart';
 
 /// M3 Expressive settings menu widget
@@ -16,10 +17,11 @@ class SettingsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return IconButton(
       icon: const Icon(Icons.settings_outlined),
       onPressed: () => _showSettingsBottomSheet(context),
-      tooltip: 'Instellingen',
+      tooltip: localizations.settings,
     );
   }
 
@@ -69,6 +71,7 @@ class _SettingsBottomSheetContentState
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final localizations = AppLocalizations.of(context)!;
 
     return Consumer<BibleChatProvider>(
       builder: (context, provider, _) {
@@ -82,7 +85,7 @@ class _SettingsBottomSheetContentState
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
               child: Text(
-                'AI-instellingen',
+                localizations.aiSettings,
                 style: textTheme.headlineSmall?.copyWith(
                   color: colorScheme.onSurface,
                 ),
@@ -90,7 +93,7 @@ class _SettingsBottomSheetContentState
             ),
             
             // API Key Section
-            _buildSectionTitle('API key', textTheme, colorScheme),
+            _buildSectionTitle(localizations.apiKey, textTheme, colorScheme),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Card(
@@ -98,31 +101,31 @@ class _SettingsBottomSheetContentState
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   leading: Icon(Icons.vpn_key_outlined, color: colorScheme.primary),
-                  title: Text('Ollama API key', style: textTheme.titleSmall),
+                  title: Text(localizations.ollamaApiKey, style: textTheme.titleSmall),
                   subtitle: Text(
                     provider.hasApiKey
-                        ? 'Ingesteld (${_maskApiKey(provider.apiKey!)})'
-                        : 'Niet ingesteld',
+                        ? '${localizations.set} (${_maskApiKey(provider.apiKey!)})'
+                        : localizations.notSet,
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   trailing: FilledButton.tonal(
                     onPressed: () => _showApiKeyDialog(context, provider),
-                    child: Text(provider.hasApiKey ? 'Wijzigen' : 'Toevoegen'),
+                    child: Text(provider.hasApiKey ? localizations.change : localizations.add),
                   ),
                 ),
               ),
             ),
             
             // Tone Section
-            _buildSectionTitle('Toon', textTheme, colorScheme),
+            _buildSectionTitle(localizations.tone, textTheme, colorScheme),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: _buildDropdown<PromptTone>(
                 value: settings.tone,
                 items: PromptTone.values,
-                labelBuilder: AiPromptSettings.toneLabel,
+                labelBuilder: (tone) => AiPromptSettings.toneLabel(tone, localizations),
                 onChanged: provider.setPromptTone,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
@@ -130,13 +133,13 @@ class _SettingsBottomSheetContentState
             ),
             
             // Emoji Section
-            _buildSectionTitle('Emoji\'s', textTheme, colorScheme),
+            _buildSectionTitle(localizations.emojis, textTheme, colorScheme),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: _buildDropdown<EmojiLevel>(
                 value: settings.emojiLevel,
                 items: EmojiLevel.values,
-                labelBuilder: AiPromptSettings.emojiLabel,
+                labelBuilder: (level) => AiPromptSettings.emojiLabel(level, localizations),
                 onChanged: provider.setEmojiLevel,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
@@ -144,13 +147,13 @@ class _SettingsBottomSheetContentState
             ),
             
             // Response Format Section
-            _buildSectionTitle('Antwoordformaat', textTheme, colorScheme),
+            _buildSectionTitle(localizations.responseFormat, textTheme, colorScheme),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: _buildDropdown<ResponseFormat>(
                 value: settings.responseFormat,
                 items: ResponseFormat.values,
-                labelBuilder: AiPromptSettings.formatLabel,
+                labelBuilder: (format) => AiPromptSettings.formatLabel(format, localizations),
                 onChanged: provider.setResponseFormat,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
@@ -158,7 +161,7 @@ class _SettingsBottomSheetContentState
             ),
             
             // Custom Instruction Section
-            _buildSectionTitle('Eigen instructie', textTheme, colorScheme),
+            _buildSectionTitle(localizations.customInstruction, textTheme, colorScheme),
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
               child: TextField(
@@ -167,7 +170,7 @@ class _SettingsBottomSheetContentState
                 maxLines: 6,
                 style: textTheme.bodyLarge,
                 decoration: InputDecoration(
-                  hintText: 'Schrijf extra instructies voor de AI...',
+                  hintText: localizations.writeExtraInstructions,
                   hintStyle: textTheme.bodyLarge?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -192,13 +195,13 @@ class _SettingsBottomSheetContentState
                     color: colorScheme.onErrorContainer,
                   ),
                   title: Text(
-                    'Verwijder alle gesprekken',
+                    localizations.deleteAllConversations,
                     style: textTheme.titleSmall?.copyWith(
                       color: colorScheme.onErrorContainer,
                     ),
                   ),
                   subtitle: Text(
-                    'Deze actie kan niet ongedaan worden gemaakt',
+                    localizations.thisActionCannotBeUndone,
                     style: textTheme.bodySmall?.copyWith(
                       color: colorScheme.onErrorContainer.withValues(alpha: 0.8),
                     ),
@@ -236,10 +239,11 @@ class _SettingsBottomSheetContentState
     required ColorScheme colorScheme,
     required TextTheme textTheme,
   }) {
+    final localizations = AppLocalizations.of(context)!;
     return DropdownButtonFormField<T>(
       value: value,
       decoration: InputDecoration(
-        hintText: 'Selecteer...',
+        hintText: localizations.select,
         hintStyle: textTheme.bodyLarge?.copyWith(
           color: colorScheme.onSurfaceVariant,
         ),
@@ -293,6 +297,7 @@ class _SettingsBottomSheetContentState
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final localizations = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
@@ -304,17 +309,17 @@ class _SettingsBottomSheetContentState
             size: 32,
           ),
           title: Text(
-            'Alle gesprekken verwijderen',
+            localizations.deleteAllConversationsTitle,
             style: textTheme.headlineSmall,
           ),
           content: Text(
-            'Weet u zeker dat u alle gesprekken wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.',
+            localizations.deleteAllConversationsConfirm,
             style: textTheme.bodyMedium,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Annuleren'),
+              child: Text(localizations.cancel),
             ),
             FilledButton(
               onPressed: () async {
@@ -324,7 +329,7 @@ class _SettingsBottomSheetContentState
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('Alle gesprekken zijn verwijderd'),
+                      content: Text(localizations.allConversationsDeleted),
                     ),
                   );
                 }
@@ -333,7 +338,7 @@ class _SettingsBottomSheetContentState
                 backgroundColor: colorScheme.error,
                 foregroundColor: colorScheme.onError,
               ),
-              child: const Text('Verwijderen'),
+              child: Text(localizations.delete),
             ),
           ],
         );

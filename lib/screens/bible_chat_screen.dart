@@ -110,13 +110,13 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       // Listen for connectivity changes
       _connectionService.checkConnection().then((_) {
         if (mounted) {
+          final localizations = AppLocalizations.of(context)!;
           setState(() {
             _isOnline = _connectionService.isConnected;
             if (!_isOnline && _errorMessage == null) {
-              _errorMessage =
-                  'Geen internetverbinding. Controleer uw netwerk en probeer opnieuw.';
+              _errorMessage = localizations.noInternetConnection;
             } else if (_isOnline &&
-                _errorMessage?.contains('Geen internetverbinding') == true) {
+                _errorMessage?.contains(localizations.noInternetConnection) == true) {
               _errorMessage = null;
             }
           });
@@ -128,14 +128,14 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   }
 
   Future<void> _retryLastAction() async {
+    final localizations = AppLocalizations.of(context)!;
     setState(() {
       _errorMessage = null;
     });
 
     if (!_isOnline) {
       setState(() {
-        _errorMessage =
-            'Geen internetverbinding. Controleer uw netwerk en probeer opnieuw.';
+        _errorMessage = localizations.noInternetConnection;
       });
       return;
     }
@@ -214,9 +214,10 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       });
     } catch (e) {
       AppLogger.error('Failed to initialize Bible chat', e);
+      final localizations = AppLocalizations.of(context)!;
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Kon chat niet initialiseren: ${e.toString()}';
+        _errorMessage = localizations.couldNotInitializeChat(e.toString());
       });
     }
   }
@@ -259,10 +260,11 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   }
 
   Future<void> _sendMessage(String message) async {
+    final localizations = AppLocalizations.of(context)!;
     if (message.trim().isEmpty || _isLoading || _chatProvider == null) return;
     if (!_chatProvider!.hasApiKey) {
       setState(() {
-        _errorMessage = 'Voeg eerst je API key toe in de instellingen.';
+        _errorMessage = localizations.addApiKeyFirst;
         _needsApiKey = true;
       });
       return;
@@ -373,16 +375,17 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       });
     } on TimeoutException catch (e) {
       AppLogger.error('Request timed out', e);
+      final localizations = AppLocalizations.of(context)!;
 
       if (botMessage != null) {
         await _chatProvider!.updateMessageContent(
           messageId: botMessage.id,
-          content: 'De reactie duurt langer dan verwacht. Probeer het opnieuw.',
+          content: localizations.responseTakingLonger,
         );
       } else {
         await _chatProvider!.addMessage(
           conversationId: widget.conversation.id,
-          content: 'De reactie duurt langer dan verwacht. Probeer het opnieuw.',
+          content: localizations.responseTakingLonger,
           sender: MessageSender.bot,
           type: MessageType.text,
         );
@@ -399,19 +402,18 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       });
     } catch (e) {
       AppLogger.error('Failed to send message', e);
+      final localizations = AppLocalizations.of(context)!;
 
       // Create error message through provider
       if (botMessage != null) {
         await _chatProvider!.updateMessageContent(
           messageId: botMessage.id,
-          content:
-              'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
+          content: localizations.errorProcessingQuestion,
         );
       } else {
         await _chatProvider!.addMessage(
           conversationId: widget.conversation.id,
-          content:
-              'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
+          content: localizations.errorProcessingQuestion,
           sender: MessageSender.bot,
           type: MessageType.text,
         );
@@ -462,12 +464,12 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         return AlertDialog(
           title: Text(localizations.newConversation),
           content: Text(
-            'Weet je zeker dat je een nieuwe conversatie wilt starten? De huidige conversatie wordt gewist.',
+            localizations.confirmNewConversation,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuleren'),
+              child: Text(localizations.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
@@ -520,9 +522,10 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       });
     } catch (e) {
       AppLogger.error('Failed to start new conversation', e);
+      final localizations = AppLocalizations.of(context)!;
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Kon nieuwe conversatie niet starten: ${e.toString()}';
+        _errorMessage = localizations.couldNotStartNewConversation(e.toString());
       });
     }
   }
@@ -571,7 +574,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Chat berichten gebied
+            // Chat messages area
             Expanded(
               child: Container(
                 child: showApiKeyRequired
@@ -580,9 +583,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                           ? _buildChatMessages()
                           : _buildLoadingView()),
               ),
-            ),
+              ),
 
-            // Foutmelding indien aanwezig
+            // Error message if present
             if (_errorMessage != null)
               Container(
                 padding: const EdgeInsets.all(16),
@@ -617,7 +620,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                           Icons.refresh_outlined,
                           color: colorScheme.onErrorContainer,
                         ),
-                        tooltip: 'Opnieuw',
+                        tooltip: localizations.retry,
                       ),
                       const SizedBox(width: 8),
                     ],
@@ -627,7 +630,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                         Icons.close_outlined,
                         color: colorScheme.onErrorContainer,
                       ),
-                      tooltip: 'Sluiten',
+                      tooltip: localizations.close,
                     ),
                   ],
                 ),
@@ -651,6 +654,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final localizations = AppLocalizations.of(context)!;
 
     return Center(
       child: Padding(
@@ -669,7 +673,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'API key vereist',
+                    localizations.apiKeyRequired,
                     style: textTheme.headlineSmall?.copyWith(
                       color: colorScheme.onSurface,
                     ),
@@ -677,7 +681,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Voeg je eigen Ollama API key toe om de chat te gebruiken. Je kunt dit later wijzigen in de instellingen.',
+                    localizations.addApiKeyToUseChat,
                     style: textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -686,7 +690,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                   const SizedBox(height: 24),
                   FilledButton(
                     onPressed: _promptForApiKey,
-                    child: const Text('API key toevoegen'),
+                    child: Text(localizations.addApiKey),
                   ),
                 ],
               ),
@@ -699,6 +703,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   /// M3 Expressive loading view
   Widget _buildLoadingView() {
+    final localizations = AppLocalizations.of(context)!;
     return Container(
       color: Theme.of(context).colorScheme.surface,
       child: Center(
@@ -710,7 +715,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
             ),
             const SizedBox(height: 16),
             Text(
-              'Bijbel Chat initialiseren...',
+              localizations.initializingBibleChat,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(
                   context,
@@ -757,6 +762,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   /// M3 Expressive empty chat state
   Widget _buildEmptyChat() {
+    final localizations = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -776,7 +782,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
               ),
               const SizedBox(height: 24),
               Text(
-                'Start een gesprek',
+                localizations.startConversation,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Theme.of(
                     context,
@@ -789,14 +795,14 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Column(
                   children: [
-                    _buildSampleQuestion('Wat zegt de Bijbel over vergeving?'),
+                    _buildSampleQuestion(localizations.sampleQuestion1),
                     const SizedBox(height: 12),
                     _buildSampleQuestion(
-                      'Leg de gelijkenis van de verloren zoon uit',
+                      localizations.sampleQuestion2,
                     ),
                     const SizedBox(height: 12),
                     _buildSampleQuestion(
-                      'Wat is de betekenis van Johannes 3:16?',
+                      localizations.sampleQuestion3,
                     ),
                   ],
                 ),
@@ -867,12 +873,13 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   }
 
   List<Map<String, String>> _buildHistoryForAi() {
+    final localizations = AppLocalizations.of(context)!;
     final history = <Map<String, String>>[];
     for (final message in _messages) {
       if (message.content.trim().isEmpty) continue;
       if (message.sender == MessageSender.bot &&
-          (message.content.contains('fout opgetreden') ||
-              message.content.contains('Sorry, er is een fout'))) {
+          (message.content.contains(localizations.errorProcessingQuestion) ||
+              message.content.contains('Sorry, I encountered an error'))) {
         continue;
       }
 

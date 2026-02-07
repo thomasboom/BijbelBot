@@ -1,3 +1,5 @@
+import '../l10n/app_localizations.dart';
+
 enum PromptTone {
   warm,
   professional,
@@ -88,34 +90,34 @@ class AiPromptSettings {
     }
   }
 
-  static String toneLabel(PromptTone tone) {
+  static String toneLabel(PromptTone tone, AppLocalizations localizations) {
     switch (tone) {
       case PromptTone.warm:
-        return 'Warm';
+        return localizations.warm;
       case PromptTone.professional:
-        return 'Professioneel';
+        return localizations.professional;
       case PromptTone.functional:
-        return 'Functioneel';
+        return localizations.functional;
     }
   }
 
-  static String emojiLabel(EmojiLevel level) {
+  static String emojiLabel(EmojiLevel level, AppLocalizations localizations) {
     switch (level) {
       case EmojiLevel.more:
-        return 'Meer';
+        return localizations.more;
       case EmojiLevel.normal:
-        return 'Normaal';
+        return localizations.normal;
       case EmojiLevel.less:
-        return 'Minder';
+        return localizations.less;
     }
   }
 
-  static String formatLabel(ResponseFormat format) {
+  static String formatLabel(ResponseFormat format, AppLocalizations localizations) {
     switch (format) {
       case ResponseFormat.formatted:
-        return 'Geformatteerd';
+        return localizations.formatted;
       case ResponseFormat.longText:
-        return 'Lange tekst';
+        return localizations.longText;
     }
   }
 }
