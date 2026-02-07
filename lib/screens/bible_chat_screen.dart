@@ -12,20 +12,20 @@ import '../widgets/chat_input_field.dart';
 import '../providers/bible_chat_provider.dart';
 import '../widgets/api_key_dialog.dart';
 
-/// Main chat interface screen for Bible bot functionality.
-///
-/// This screen provides a complete chat interface with:
-/// - Message list with scrollable view
-/// - Integration with BibleBotService
-/// - Loading states and error handling
-/// - Conversation management
+/// M3 Expressive main chat interface screen
+/// 
+/// Features:
+/// - Dynamic color from theme colorScheme
+/// - M3 shape system for components
+/// - Expressive motion for interactions
+/// - Proper typography using M3 type scale
 class BibleChatScreen extends StatefulWidget {
   /// The conversation to display/manage
   final BibleChatConversation conversation;
-
+  
   /// Callback when the conversation is updated
   final Function(BibleChatConversation)? onConversationUpdated;
-
+  
   /// Callback when user wants to go back
   final VoidCallback? onBackPressed;
 
@@ -429,12 +429,13 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     }
   }
 
+  /// M3 Expressive scroll animation with proper easing
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 250), // M3 medium duration
+        curve: Curves.easeOutCubic, // M3 standard easing
       );
     }
   }
@@ -554,7 +555,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       appBar: AppBar(
         leading: widget.onBackPressed != null
             ? IconButton(
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back_outlined),
                 onPressed: widget.onBackPressed,
               )
             : null,
@@ -563,7 +564,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
-        scrolledUnderElevation: 2,
+        scrolledUnderElevation: 3,
       ),
       body: Container(
         color: colorScheme.surface,
@@ -585,7 +586,10 @@ class _BibleChatScreenState extends State<BibleChatScreen>
             if (_errorMessage != null)
               Container(
                 padding: const EdgeInsets.all(16),
-                color: colorScheme.errorContainer,
+                decoration: BoxDecoration(
+                  color: colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(16), // M3 large shape
+                ),
                 constraints: BoxConstraints(
                   maxHeight:
                       MediaQuery.of(context).size.height *
@@ -594,7 +598,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                 child: Row(
                   children: [
                     Icon(
-                      _isOnline ? Icons.error_outline : Icons.wifi_off,
+                      _isOnline ? Icons.error_outline : Icons.wifi_off_outlined,
                       color: colorScheme.onErrorContainer,
                     ),
                     const SizedBox(width: 12),
@@ -610,7 +614,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                       IconButton(
                         onPressed: _retryLastAction,
                         icon: Icon(
-                          Icons.refresh,
+                          Icons.refresh_outlined,
                           color: colorScheme.onErrorContainer,
                         ),
                         tooltip: 'Opnieuw',
@@ -620,7 +624,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                     IconButton(
                       onPressed: () => setState(() => _errorMessage = null),
                       icon: Icon(
-                        Icons.close,
+                        Icons.close_outlined,
                         color: colorScheme.onErrorContainer,
                       ),
                       tooltip: 'Sluiten',
@@ -642,34 +646,45 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     );
   }
 
+  /// M3 Expressive API key required state
   Widget _buildApiKeyRequired() {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.vpn_key, size: 48, color: colorScheme.primary),
-                  const SizedBox(height: 12),
+                  Icon(
+                    Icons.vpn_key_outlined,
+                    size: 56,
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(height: 16),
                   Text(
                     'API key vereist',
-                    style: theme.textTheme.titleLarge,
+                    style: textTheme.headlineSmall?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Voeg je eigen Ollama API key toe om de chat te gebruiken. Je kunt dit later wijzigen in de instellingen.',
-                    style: theme.textTheme.bodyMedium,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
+                  const SizedBox(height: 24),
+                  FilledButton(
                     onPressed: _promptForApiKey,
                     child: const Text('API key toevoegen'),
                   ),
@@ -682,6 +697,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     );
   }
 
+  /// M3 Expressive loading view
   Widget _buildLoadingView() {
     return Container(
       color: Theme.of(context).colorScheme.surface,
@@ -698,7 +714,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(
                   context,
-                ).colorScheme.onSurface.withAlpha((0.7 * 255).round()),
+                ).colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -739,6 +755,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     );
   }
 
+  /// M3 Expressive empty chat state
   Widget _buildEmptyChat() {
     return SingleChildScrollView(
       child: ConstrainedBox(
@@ -751,11 +768,11 @@ class _BibleChatScreenState extends State<BibleChatScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.chat_bubble_outline,
+                Icons.chat_bubble_outline_rounded,
                 size: 80,
                 color: Theme.of(
                   context,
-                ).colorScheme.outline.withAlpha((0.5 * 255).round()),
+                ).colorScheme.outlineVariant.withValues(alpha: 0.5),
               ),
               const SizedBox(height: 24),
               Text(
@@ -763,7 +780,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurface.withAlpha((0.7 * 255).round()),
+                  ).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 32),
@@ -791,27 +808,23 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     );
   }
 
+  /// M3 Expressive sample question chip
   Widget _buildSampleQuestion(String question) {
-    return InkWell(
-      onTap: () => _sendMessage(question),
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Theme.of(
-              context,
-            ).colorScheme.outline.withAlpha((0.3 * 255).round()),
+    return Material(
+      color: Theme.of(context).colorScheme.primaryContainer,
+      borderRadius: BorderRadius.circular(16), // M3 large shape
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => _sendMessage(question),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          child: Text(
+            question,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
+            textAlign: TextAlign.center,
           ),
-        ),
-        child: Text(
-          question,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
-          ),
-          textAlign: TextAlign.center,
         ),
       ),
     );
