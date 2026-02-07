@@ -16,13 +16,15 @@ class SettingsMenu extends StatelessWidget {
   }
 
   void _showSettingsBottomSheet(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
+      backgroundColor: colorScheme.surface,
       builder: (BuildContext context) {
         return const SettingsBottomSheetContent();
       },
@@ -60,32 +62,37 @@ class _SettingsBottomSheetContentState
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Consumer<BibleChatProvider>(
       builder: (context, provider, _) {
         final settings = provider.promptSettings;
 
         return ListView(
           shrinkWrap: true,
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: 16),
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
               child: Text(
                 'AI-instellingen',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: textTheme.titleMedium,
               ),
             ),
-            _sectionTitle('API key'),
+            _sectionTitle('API key', textTheme),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.vpn_key),
-                title: const Text('Ollama API key'),
+                leading: Icon(Icons.vpn_key, color: colorScheme.primary),
+                title: Text('Ollama API key', style: textTheme.bodyLarge),
                 subtitle: Text(
                   provider.hasApiKey
                       ? 'Ingesteld (${_maskApiKey(provider.apiKey!)})'
                       : 'Niet ingesteld',
+                  style: textTheme.bodyMedium,
                 ),
                 trailing: TextButton(
                   onPressed: () => _showApiKeyDialog(context, provider),
@@ -93,17 +100,31 @@ class _SettingsBottomSheetContentState
                 ),
               ),
             ),
-            _sectionTitle('Toon'),
+            _sectionTitle('Toon', textTheme),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: DropdownButtonFormField<PromptTone>(
                 value: settings.tone,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
                 items: PromptTone.values
                     .map(
                       (tone) => DropdownMenuItem(
                         value: tone,
-                        child: Text(AiPromptSettings.toneLabel(tone)),
+                        child: Text(AiPromptSettings.toneLabel(tone), style: textTheme.bodyLarge),
                       ),
                     )
                     .toList(),
@@ -114,17 +135,31 @@ class _SettingsBottomSheetContentState
                 },
               ),
             ),
-            _sectionTitle('Emoji\'s'),
+            _sectionTitle('Emoji\'s', textTheme),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: DropdownButtonFormField<EmojiLevel>(
                 value: settings.emojiLevel,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
                 items: EmojiLevel.values
                     .map(
                       (level) => DropdownMenuItem(
                         value: level,
-                        child: Text(AiPromptSettings.emojiLabel(level)),
+                        child: Text(AiPromptSettings.emojiLabel(level), style: textTheme.bodyLarge),
                       ),
                     )
                     .toList(),
@@ -135,17 +170,31 @@ class _SettingsBottomSheetContentState
                 },
               ),
             ),
-            _sectionTitle('Antwoordformaat'),
+            _sectionTitle('Antwoordformaat', textTheme),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: DropdownButtonFormField<ResponseFormat>(
                 value: settings.responseFormat,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
                 items: ResponseFormat.values
                     .map(
                       (format) => DropdownMenuItem(
                         value: format,
-                        child: Text(AiPromptSettings.formatLabel(format)),
+                        child: Text(AiPromptSettings.formatLabel(format), style: textTheme.bodyLarge),
                       ),
                     )
                     .toList(),
@@ -156,31 +205,50 @@ class _SettingsBottomSheetContentState
                 },
               ),
             ),
-            _sectionTitle('Eigen instructie'),
+            _sectionTitle('Eigen instructie', textTheme),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
               child: TextField(
                 controller: _customController,
                 minLines: 3,
                 maxLines: 6,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                style: textTheme.bodyLarge,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                  ),
                   hintText: 'Schrijf extra instructies voor de AI...',
+                  hintStyle: textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurface.withAlpha((0.5 * 255).round()),
+                  ),
+                  contentPadding: const EdgeInsets.all(16),
                 ),
                 onChanged: provider.setCustomInstruction,
               ),
             ),
             const Divider(height: 24),
-            ListTile(
-              leading: const Icon(Icons.delete_forever, color: Colors.red),
-              title: const Text(
-                'Verwijder alle gesprekken',
-                style: TextStyle(color: Colors.red),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ListTile(
+                leading: Icon(Icons.delete_forever, color: colorScheme.tertiary),
+                title: Text(
+                  'Verwijder alle gesprekken',
+                  style: textTheme.bodyLarge?.copyWith(color: colorScheme.tertiary),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _showDeleteAllChatsDialog(context, provider);
+                },
               ),
-              onTap: () {
-                Navigator.of(context).pop();
-                _showDeleteAllChatsDialog(context, provider);
-              },
             ),
           ],
         );
@@ -188,12 +256,12 @@ class _SettingsBottomSheetContentState
     );
   }
 
-  Widget _sectionTitle(String title) {
+  Widget _sectionTitle(String title, TextTheme textTheme) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        style: textTheme.labelLarge,
       ),
     );
   }
@@ -222,18 +290,27 @@ class _SettingsBottomSheetContentState
     BuildContext context,
     BibleChatProvider provider,
   ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Alle gesprekken verwijderen'),
-          content: const Text(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          backgroundColor: colorScheme.surface,
+          title: Text('Alle gesprekken verwijderen', style: textTheme.titleLarge),
+          content: Text(
             'Weet u zeker dat u alle gesprekken wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.',
+            style: textTheme.bodyMedium,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Annuleren'),
+              child: Text('Annuleren', style: textTheme.labelLarge),
             ),
             TextButton(
               onPressed: () async {
@@ -242,16 +319,16 @@ class _SettingsBottomSheetContentState
 
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Alle gesprekken zijn verwijderd'),
-                      backgroundColor: Colors.green,
+                    SnackBar(
+                      content: Text('Alle gesprekken zijn verwijderd', style: textTheme.bodyMedium?.copyWith(color: colorScheme.onPrimary)),
+                      backgroundColor: colorScheme.primary,
                     ),
                   );
                 }
               },
-              child: const Text(
+              child: Text(
                 'Verwijderen',
-                style: TextStyle(color: Colors.red),
+                style: textTheme.labelLarge?.copyWith(color: colorScheme.tertiary),
               ),
             ),
           ],
