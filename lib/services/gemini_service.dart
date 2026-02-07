@@ -387,9 +387,10 @@ class AiService {
 
           if (fallbackText.isNotEmpty) {
             AppLogger.info('Using fallback text extraction');
+            final normalizedText = _normalizeModelText(fallbackText);
             return BibleQAResponse(
-              answer: fallbackText,
-              references: _extractBibleReferences(fallbackText),
+              answer: normalizedText,
+              references: _extractBibleReferences(normalizedText),
             );
           }
         }
