@@ -337,6 +337,8 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
     final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
     final localizations = AppLocalizations.of(context)!;
 
+    await chatProvider.ensureReady();
+
     // Create initial conversation if none exists
     if (chatProvider.activeConversation == null) {
       try {

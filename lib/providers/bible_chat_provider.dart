@@ -15,6 +15,7 @@ class BibleChatProvider extends ChangeNotifier {
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
 
   SharedPreferences? _prefs;
+  late final Future<void> _ready;
 
   // In-memory storage for quick access
   final Map<String, BibleChatConversation> _conversations = {};
@@ -27,7 +28,7 @@ class BibleChatProvider extends ChangeNotifier {
 
   BibleChatProvider() {
     AppLogger.info('BibleChatProvider initializing...');
-    _loadChatData();
+    _ready = _loadChatData();
   }
 
   /// Whether chat data is currently being loaded
@@ -39,6 +40,13 @@ class BibleChatProvider extends ChangeNotifier {
   /// List of all conversations
   List<BibleChatConversation> get conversations => _conversations.values.toList();
 
+  /// Conversations sorted by last activity (oldest to newest).
+  List<BibleChatConversation> get conversationsByLastActivity {
+    final items = _conversations.values.toList();
+    items.sort((a, b) => a.lastActivity.compareTo(b.lastActivity));
+    return items;
+  }
+
   /// List of active conversations only
   List<BibleChatConversation> get activeConversations =>
       _conversations.values.where((conv) => conv.isActive).toList();
@@ -46,6 +54,11 @@ class BibleChatProvider extends ChangeNotifier {
   /// The currently active conversation
   BibleChatConversation? get activeConversation =>
       _activeConversationId != null ? _conversations[_activeConversationId] : null;
+
+  /// Waits until chat data is fully loaded and storage is ready.
+  Future<void> ensureReady() async {
+    await _ensureReady();
+  }
 
   /// Gets a conversation by ID
   BibleChatConversation? getConversation(String conversationId) =>
@@ -73,6 +86,7 @@ class BibleChatProvider extends ChangeNotifier {
     Map<String, dynamic>? metadata,
   }) async {
     try {
+      await _ensureReady();
       final conversation = BibleChatConversation(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         startTime: DateTime.now(),
@@ -83,9 +97,11 @@ class BibleChatProvider extends ChangeNotifier {
       );
 
       await _saveConversation(conversation);
+      _setActiveIfMissing(conversation.id);
 
       AppLogger.info('Created new conversation: ${conversation.id}');
 
+      notifyListeners();
       return conversation;
     } catch (e) {
       _error = 'Failed to create conversation: ${e.toString()}';
@@ -96,7 +112,7 @@ class BibleChatProvider extends ChangeNotifier {
   }
 
   /// Cleans up empty conversations (those with no messages)
-  Future<void> cleanupEmptyConversations({Duration? minimumAge}) async {
+  Future<void> cleanupEmptyConversations({Duration? minimumAge, bool skipReadyCheck = false}) async {
     try {
       final now = DateTime.now();
       final grace = minimumAge ?? _emptyConversationGracePeriod;
@@ -115,7 +131,7 @@ class BibleChatProvider extends ChangeNotifier {
           continue;
         }
 
-        await deleteConversation(conversation.id);
+        await deleteConversation(conversation.id, skipReadyCheck: skipReadyCheck);
       }
 
       AppLogger.info('Cleaned up ${emptyConversations.length} empty conversations');
@@ -134,6 +150,7 @@ class BibleChatProvider extends ChangeNotifier {
     Map<String, dynamic>? metadata,
   }) async {
     try {
+      await _ensureReady();
       final message = BibleChatMessage(
         id: DateTime.now().microsecondsSinceEpoch.toString(),
         content: content,
@@ -142,8 +159,6 @@ class BibleChatProvider extends ChangeNotifier {
         bibleReferences: bibleReferences,
         metadata: metadata,
       );
-
-      await _saveMessage(message);
 
       // Update conversation with new message
       var updatedConversation = _conversations[conversationId];
@@ -159,13 +174,27 @@ class BibleChatProvider extends ChangeNotifier {
           }
         }
         
-        await _saveConversation(updatedConversation);
+      } else {
+        // Recover from missing conversation by creating a placeholder
+        updatedConversation = BibleChatConversation(
+          id: conversationId,
+          startTime: DateTime.now(),
+          messageIds: [message.id],
+          title: null,
+        );
       }
+
+      _messages[message.id] = message;
+      _conversations[updatedConversation.id] = updatedConversation;
+
+      await _saveAllMessages();
+      await _saveAllConversations();
 
       // Clean up empty conversations after adding a message
       await cleanupEmptyConversations();
 
       AppLogger.info('Added message ${message.id} to conversation $conversationId');
+      notifyListeners();
       return message;
     } catch (e) {
       _error = 'Failed to add message: ${e.toString()}';
@@ -241,8 +270,10 @@ class BibleChatProvider extends ChangeNotifier {
   /// Updates an existing conversation
   Future<void> updateConversation(BibleChatConversation conversation) async {
     try {
+      await _ensureReady();
       await _saveConversation(conversation);
       AppLogger.info('Updated conversation: ${conversation.id}');
+      notifyListeners();
     } catch (e) {
       _error = 'Failed to update conversation: ${e.toString()}';
       AppLogger.error(_error!, e);
@@ -252,8 +283,11 @@ class BibleChatProvider extends ChangeNotifier {
   }
 
   /// Deletes a conversation and all its messages
-  Future<void> deleteConversation(String conversationId) async {
+  Future<void> deleteConversation(String conversationId, {bool skipReadyCheck = false}) async {
     try {
+      if (!skipReadyCheck) {
+        await _ensureReady();
+      }
       final conversation = _conversations[conversationId];
       if (conversation == null) return;
 
@@ -287,6 +321,7 @@ class BibleChatProvider extends ChangeNotifier {
   /// Sets the active conversation
   Future<void> setActiveConversation(String? conversationId) async {
     try {
+      await _ensureReady();
       _activeConversationId = conversationId;
       if (conversationId != null) {
         await _prefs?.setString(_activeConversationKey, conversationId);
@@ -307,10 +342,12 @@ class BibleChatProvider extends ChangeNotifier {
   /// Marks a message as read
   Future<void> markMessageAsRead(String messageId) async {
     try {
+      await _ensureReady();
       final message = _messages[messageId];
       if (message != null && !message.isRead) {
         final updatedMessage = message.copyWith(isRead: true);
         await _saveMessage(updatedMessage);
+        notifyListeners();
       }
     } catch (e) {
       AppLogger.error('Failed to mark message as read: $messageId', e);
@@ -344,6 +381,7 @@ class BibleChatProvider extends ChangeNotifier {
   /// Imports chat data from backup
   Future<void> importChatData(Map<String, dynamic> data) async {
     try {
+      await _ensureReady();
       _conversations.clear();
       _messages.clear();
 
@@ -383,6 +421,7 @@ class BibleChatProvider extends ChangeNotifier {
   /// Clears all chat data
   Future<void> clearAllData() async {
     try {
+      await _ensureReady();
       _conversations.clear();
       _messages.clear();
       _activeConversationId = null;
@@ -433,8 +472,9 @@ class BibleChatProvider extends ChangeNotifier {
         await _prefs?.setString(_activeConversationKey, mostRecent.id);
       }
 
+      _reconcileConversations();
       // Clean up empty conversations after loading
-      await cleanupEmptyConversations();
+      await cleanupEmptyConversations(skipReadyCheck: true);
 
       AppLogger.info('Chat data loaded: ${_conversations.length} conversations, ${_messages.length} messages');
     } catch (e) {
@@ -539,6 +579,34 @@ class BibleChatProvider extends ChangeNotifier {
       }
     });
     return completer.future;
+  }
+
+  Future<void> _ensureReady() async {
+    await _ready;
+    if (_prefs == null) {
+      throw Exception('Chat storage not initialized');
+    }
+  }
+
+  void _setActiveIfMissing(String conversationId) {
+    if (_activeConversationId == null) {
+      _activeConversationId = conversationId;
+      _prefs?.setString(_activeConversationKey, conversationId);
+    }
+  }
+
+  void _reconcileConversations() {
+    for (final entry in _conversations.entries) {
+      final conversation = entry.value;
+      final filteredMessageIds = conversation.messageIds
+          .where((id) => _messages.containsKey(id))
+          .toList();
+      if (filteredMessageIds.length != conversation.messageIds.length) {
+        _conversations[conversation.id] = conversation.copyWith(
+          messageIds: filteredMessageIds,
+        );
+      }
+    }
   }
 
   /// Shows the biblical reference dialog for a given reference

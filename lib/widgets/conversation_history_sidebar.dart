@@ -20,6 +20,7 @@ class ConversationHistorySidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final provider = Provider.of<BibleChatProvider>(context);
+    final conversations = provider.conversationsByLastActivity.reversed.toList();
 
     return Container(
       width: 280,
@@ -68,7 +69,7 @@ class ConversationHistorySidebar extends StatelessWidget {
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : provider.conversations.isEmpty
+                : conversations.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -97,10 +98,10 @@ class ConversationHistorySidebar extends StatelessWidget {
                       )
                     : ListView.separated(
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        itemCount: provider.conversations.length,
+                        itemCount: conversations.length,
                         separatorBuilder: (context, index) => const Divider(height: 1),
                         itemBuilder: (context, index) {
-                          final conversation = provider.conversations.reversed.toList()[index];
+                          final conversation = conversations[index];
                           return ConversationItem(
                             conversation: conversation,
                             isSelected: selectedConversationId == conversation.id,

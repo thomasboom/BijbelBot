@@ -197,15 +197,12 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         return;
       }
 
-      // Load messages from the provider
-      final messages = _chatProvider!.getConversationMessages(widget.conversation.id);
-      if (mounted) {
-        setState(() {
-          _messages = messages;
-        });
-      }
+      await _chatProvider!.ensureReady();
 
-      AppLogger.info('Loaded ${messages.length} messages for conversation ${widget.conversation.id}');
+      // Load messages from the provider
+      _syncMessagesFromProvider();
+
+      AppLogger.info('Loaded ${_messages.length} messages for conversation ${widget.conversation.id}');
     } catch (e) {
       AppLogger.error('Failed to load conversation messages', e);
       setState(() {
@@ -230,7 +227,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
     try {
       // Add user message through provider
-      final userMessage = await _chatProvider!.addMessage(
+      await _chatProvider!.addMessage(
         conversationId: widget.conversation.id,
         content: message.trim(),
         sender: MessageSender.user,
@@ -238,10 +235,10 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       );
 
       setState(() {
-        _messages.add(userMessage);
         _isLoading = true;
         _errorMessage = null;
       });
+      _syncMessagesFromProvider();
 
       // Clear input field
       _messageController.clear();
@@ -262,7 +259,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       ).timeout(const Duration(seconds: 45));
 
       // Create bot response message
-      final botMessage = await _chatProvider!.addMessage(
+      await _chatProvider!.addMessage(
         conversationId: widget.conversation.id,
         content: response.answer,
         sender: MessageSender.bot,
@@ -273,9 +270,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       );
 
       setState(() {
-        _messages.add(botMessage);
         _isLoading = false;
       });
+      _syncMessagesFromProvider();
 
       // Scroll to bottom to show bot response
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -285,7 +282,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     } on TimeoutException catch (e) {
       AppLogger.error('Request timed out', e);
 
-      final errorMessage = await _chatProvider!.addMessage(
+      await _chatProvider!.addMessage(
         conversationId: widget.conversation.id,
         content: 'De reactie duurt langer dan verwacht. Probeer het opnieuw.',
         sender: MessageSender.bot,
@@ -293,10 +290,10 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       );
 
       setState(() {
-        _messages.add(errorMessage);
         _isLoading = false;
         _errorMessage = e.toString();
       });
+      _syncMessagesFromProvider();
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToBottom();
@@ -305,7 +302,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       AppLogger.error('Failed to send message', e);
 
       // Create error message through provider
-      final errorMessage = await _chatProvider!.addMessage(
+      await _chatProvider!.addMessage(
         conversationId: widget.conversation.id,
         content: 'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
         sender: MessageSender.bot,
@@ -313,10 +310,10 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       );
 
       setState(() {
-        _messages.add(errorMessage);
         _isLoading = false;
         _errorMessage = e.toString();
       });
+      _syncMessagesFromProvider();
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToBottom();
@@ -636,6 +633,11 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     if (!mounted || _chatProvider == null) return;
     if (_chatProvider!.isLoading) return;
 
+    _syncMessagesFromProvider();
+  }
+
+  void _syncMessagesFromProvider() {
+    if (!mounted || _chatProvider == null) return;
     final messages = _chatProvider!.getConversationMessages(widget.conversation.id);
     setState(() {
       _messages = messages;
