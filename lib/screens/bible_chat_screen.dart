@@ -564,7 +564,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
         elevation: 0,
-        scrolledUnderElevation: 3,
+        scrolledUnderElevation: 0, // M3: No elevation when scrolled
       ),
       body: Container(
         color: colorScheme.surface,
