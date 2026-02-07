@@ -58,6 +58,10 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   String? _lastApiKey;
   bool _didInitChat = false;
 
+  // Throttling for scroll-to-bottom during streaming
+  Timer? _scrollDebounceTimer;
+  static const Duration _scrollDebounceDelay = Duration(milliseconds: 100);
+
   @override
   void initState() {
     super.initState();
@@ -87,6 +91,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   @override
   void dispose() {
+    _scrollDebounceTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     _detachProviderListener();
     _connectionService.dispose();
@@ -315,9 +320,8 @@ class _BibleChatScreenState extends State<BibleChatScreen>
           persist: false,
         );
         _syncMessagesFromProvider();
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToBottom();
-        });
+        // Use debounced scroll during streaming to prevent jank
+        _scrollToBottomDebounced();
       }
 
       final fullText = buffer.toString().trim();
@@ -433,6 +437,20 @@ class _BibleChatScreenState extends State<BibleChatScreen>
         curve: Curves.easeOut,
       );
     }
+  }
+
+  /// Debounced scroll to bottom for use during streaming to prevent jank.
+  /// Only scrolls at most once every 100ms.
+  void _scrollToBottomDebounced() {
+    _scrollDebounceTimer?.cancel();
+    _scrollDebounceTimer = Timer(_scrollDebounceDelay, () {
+      if (mounted && _scrollController.hasClients) {
+        // Use jumpTo for better performance during streaming
+        _scrollController.jumpTo(
+          _scrollController.position.maxScrollExtent,
+        );
+      }
+    });
   }
 
   Future<void> _showNewConversationDialog() async {
@@ -698,15 +716,23 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       controller: _scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: _messages.length,
+      // Performance optimizations for smooth scrolling
+      physics: const ClampingScrollPhysics(),
+      cacheExtent: 200.0,
+      addAutomaticKeepAlives: true,
+      addRepaintBoundaries: true,
       itemBuilder: (context, index) {
         final message = _messages[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: ChatMessageBubble(
-            message: message,
-            isError:
-                message.type == MessageType.text &&
-                message.content.contains('Sorry, I encountered an error'),
+        return RepaintBoundary(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: ChatMessageBubble(
+              key: ValueKey(message.id),
+              message: message,
+              isError:
+                  message.type == MessageType.text &&
+                  message.content.contains('Sorry, I encountered an error'),
+            ),
           ),
         );
       },

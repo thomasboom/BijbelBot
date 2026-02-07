@@ -7,7 +7,10 @@ import '../models/bible_chat_message.dart';
 import '../providers/bible_chat_provider.dart';
 
 /// Widget for displaying a chat message bubble
-class ChatMessageBubble extends StatelessWidget {
+/// 
+/// Uses AutomaticKeepAlive to maintain state during scrolling and prevent
+/// unnecessary rebuilds when streaming content updates.
+class ChatMessageBubble extends StatefulWidget {
   final BibleChatMessage message;
   final bool isError;
 
@@ -18,7 +21,20 @@ class ChatMessageBubble extends StatelessWidget {
   });
 
   @override
+  State<ChatMessageBubble> createState() => _ChatMessageBubbleState();
+}
+
+class _ChatMessageBubbleState extends State<ChatMessageBubble>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  BibleChatMessage get message => widget.message;
+  bool get isError => widget.isError;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
     final localizations = AppLocalizations.of(context)!;
     final isUser = message.sender == MessageSender.user;
     final theme = Theme.of(context);
