@@ -191,7 +191,7 @@ class AiService {
         );
       } else if (e.toString().contains('404') || e.toString().contains('Not Found')) {
         throw AiError(
-          message: 'Model "gpt-oss:120b" niet gevonden. Controleer of dit model beschikbaar is op https://ollama.com',
+          message: 'Model "ministral-3:14b-cloud" niet gevonden. Controleer of dit model beschikbaar is op https://ollama.com',
         );
       } else if (e.toString().contains('Connection refused') || e.toString().contains('SocketException')) {
         throw AiError(
@@ -265,7 +265,7 @@ class AiService {
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
     final requestBody = json.encode({
-      'model': 'gpt-oss:120b', // Use the cloud model as specified in the API key
+      'model': 'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
       'messages': _buildMessages(question, history),
     });
 
@@ -712,7 +712,7 @@ Explanation: [Additional context if needed]
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
     final requestBody = json.encode({
-      'model': 'gpt-oss:120b', // Use the cloud model as specified in the API key
+      'model': 'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
       'messages': _buildMessages(question, history),
       'stream': true
     });

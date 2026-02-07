@@ -150,15 +150,12 @@ class BibleChatProvider extends ChangeNotifier {
       if (updatedConversation != null) {
         updatedConversation = updatedConversation.withNewMessage(message.id);
         
-        // Generate a title for the conversation if it doesn't have one and this is the first AI response
-        if (updatedConversation.title == null || updatedConversation.title!.startsWith('Nieuwe conversatie')) {
-          if (sender == MessageSender.bot && updatedConversation.messageIds.length <= 2) {
-            // Generate title based on the first user message in the conversation
-            final firstUserMessage = await _getFirstUserMessageInConversation(conversationId);
-            if (firstUserMessage != null) {
-              final generatedTitle = await _generateTitleFromMessage(firstUserMessage);
-              updatedConversation = updatedConversation.copyWith(title: generatedTitle);
-            }
+        // Generate a title every time the AI responds, based on the latest user message
+        if (sender == MessageSender.bot) {
+          final latestUserMessage = await _getLatestUserMessageInConversation(conversationId);
+          if (latestUserMessage != null) {
+            final generatedTitle = await _generateTitleFromMessage(latestUserMessage);
+            updatedConversation = updatedConversation.copyWith(title: generatedTitle);
           }
         }
         
@@ -193,6 +190,20 @@ class BibleChatProvider extends ChangeNotifier {
     return null;
   }
 
+  /// Gets the latest user message in a conversation
+  Future<BibleChatMessage?> _getLatestUserMessageInConversation(String conversationId) async {
+    final conversation = _conversations[conversationId];
+    if (conversation == null) return null;
+
+    for (final messageId in conversation.messageIds.reversed) {
+      final message = _messages[messageId];
+      if (message != null && message.sender == MessageSender.user) {
+        return message;
+      }
+    }
+    return null;
+  }
+
   /// Generates a title from the first user message
   Future<String> _generateTitleFromMessage(BibleChatMessage message) async {
     // Create a title based on the first 60 characters of the user's message
@@ -213,6 +224,18 @@ class BibleChatProvider extends ChangeNotifier {
     }
     
     return title;
+  }
+
+  bool _isDefaultTitle(String? title) {
+    if (title == null || title.trim().isEmpty) return true;
+    final normalized = title.trim().toLowerCase();
+    const defaults = {
+      'new bible chat',
+      'nieuwe bijbel chat',
+      'new conversation',
+      'nieuwe conversatie',
+    };
+    return defaults.contains(normalized) || normalized.startsWith('nieuwe conversatie');
   }
 
   /// Updates an existing conversation
