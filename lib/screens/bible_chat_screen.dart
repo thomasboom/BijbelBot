@@ -225,6 +225,8 @@ class _BibleChatScreenState extends State<BibleChatScreen>
   Future<void> _sendMessage(String message) async {
     if (message.trim().isEmpty || _isLoading || _chatProvider == null) return;
 
+    BibleChatMessage? botMessage;
+
     try {
       // Add user message through provider
       await _chatProvider!.addMessage(
@@ -250,24 +252,60 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
       final history = _buildHistoryForAi();
 
-      // Send question to BibleBot service
-      final response = await _bibleBotService.askQuestion(
-        question: message,
-        questionType: 'general_question',
+      // Create placeholder bot message for streaming updates
+      botMessage = await _chatProvider!.addMessage(
         conversationId: widget.conversation.id,
-        history: history,
-      ).timeout(const Duration(seconds: 45));
-
-      // Create bot response message
-      await _chatProvider!.addMessage(
-        conversationId: widget.conversation.id,
-        content: response.answer,
+        content: '',
         sender: MessageSender.bot,
         type: MessageType.explanation,
-        bibleReferences: response.references.map((ref) =>
-          '${ref.book} ${ref.chapter}:${ref.verse}${ref.endVerse != null ? '-${ref.endVerse}' : ''}'
-        ).toList(),
       );
+
+      // Stream response chunks
+      final buffer = StringBuffer();
+      await for (final chunk in _bibleBotService.askQuestionStream(
+        question: message,
+        history: history,
+      ).timeout(const Duration(seconds: 45))) {
+        buffer.write(chunk);
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: buffer.toString(),
+          persist: false,
+        );
+        _syncMessagesFromProvider();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
+      }
+
+      final fullText = buffer.toString().trim();
+
+      if (fullText.isEmpty) {
+        // Fallback to non-streaming if stream produced nothing
+        final response = await _bibleBotService.askQuestion(
+          question: message,
+          questionType: 'general_question',
+          conversationId: widget.conversation.id,
+          history: history,
+        ).timeout(const Duration(seconds: 45));
+
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: response.answer,
+          bibleReferences: response.references.map((ref) =>
+            '${ref.book} ${ref.chapter}:${ref.verse}${ref.endVerse != null ? '-${ref.endVerse}' : ''}'
+          ).toList(),
+        );
+      } else {
+        final references = _bibleBotService.extractBibleReferences(fullText);
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: fullText,
+          bibleReferences: references.map((ref) =>
+            '${ref.book} ${ref.chapter}:${ref.verse}${ref.endVerse != null ? '-${ref.endVerse}' : ''}'
+          ).toList(),
+        );
+      }
 
       setState(() {
         _isLoading = false;
@@ -282,12 +320,19 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     } on TimeoutException catch (e) {
       AppLogger.error('Request timed out', e);
 
-      await _chatProvider!.addMessage(
-        conversationId: widget.conversation.id,
-        content: 'De reactie duurt langer dan verwacht. Probeer het opnieuw.',
-        sender: MessageSender.bot,
-        type: MessageType.text,
-      );
+      if (botMessage != null) {
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: 'De reactie duurt langer dan verwacht. Probeer het opnieuw.',
+        );
+      } else {
+        await _chatProvider!.addMessage(
+          conversationId: widget.conversation.id,
+          content: 'De reactie duurt langer dan verwacht. Probeer het opnieuw.',
+          sender: MessageSender.bot,
+          type: MessageType.text,
+        );
+      }
 
       setState(() {
         _isLoading = false;
@@ -302,12 +347,19 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       AppLogger.error('Failed to send message', e);
 
       // Create error message through provider
-      await _chatProvider!.addMessage(
-        conversationId: widget.conversation.id,
-        content: 'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
-        sender: MessageSender.bot,
-        type: MessageType.text,
-      );
+      if (botMessage != null) {
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: 'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
+        );
+      } else {
+        await _chatProvider!.addMessage(
+          conversationId: widget.conversation.id,
+          content: 'Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.',
+          sender: MessageSender.bot,
+          type: MessageType.text,
+        );
+      }
 
       setState(() {
         _isLoading = false;

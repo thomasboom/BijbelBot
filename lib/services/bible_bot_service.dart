@@ -56,4 +56,20 @@ class BibleBotService {
       throw Exception('Failed to get answer: $e');
     }
   }
+
+  /// Ask a question to the Bible bot with streaming support
+  Stream<String> askQuestionStream({
+    required String question,
+    List<Map<String, String>>? history,
+  }) {
+    return AiService.instance.askBibleQuestionStream(
+      question,
+      history: history,
+    );
+  }
+
+  /// Extract Bible references from a text response
+  List<BibleReference> extractBibleReferences(String text) {
+    return AiService.instance.extractBibleReferences(text);
+  }
 }

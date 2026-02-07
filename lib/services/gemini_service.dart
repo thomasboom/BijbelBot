@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'logger.dart';
 
 /// Stream callback function type for real-time updates
@@ -70,6 +71,7 @@ class AiService {
   late final String _apiKey;
   late final http.Client _httpClient;
   bool _initialized = false;
+  String _normenText = '';
 
   // Rate limiting
   DateTime? _lastRequestTime;
@@ -130,6 +132,7 @@ class AiService {
       }
 
       _apiKey = apiKey;
+      _normenText = await _loadNormenText();
       _initialized = true;
       AppLogger.info('Ollama AI API service initialized successfully for BijbelBot');
     } catch (e) {
@@ -426,30 +429,46 @@ class AiService {
 
   /// Builds a system prompt for Bible Q&A
   String _buildBiblePrompt() {
+    final normenBlock = _normenText.trim().isEmpty
+        ? 'Normen: (geen normen geladen)'
+        : 'Normen (uit normen.md):\n$_normenText';
+
     return '''
-You are a knowledgeable Bible scholar and teacher. Please answer Bible questions in Dutch.
+Je bent een deskundige Bijbelkenner en leraar met een gereformeerde, traditionele christelijke visie. Antwoord in het Nederlands.
 
-Guidelines for your response:
-1. Provide accurate, biblically-based answers
-2. Be respectful and educational in tone
-3. Include relevant Bible references when applicable
-4. Keep explanations clear and accessible
-5. If the question is about specific Bible passages, quote them when relevant
-6. Respond in Dutch language
-7. If you're unsure about something, admit it rather than speculate
+Richtlijnen voor je antwoord:
+1. Geef accurate, Bijbels gefundeerde antwoorden, geworteld in de historische orthodoxie en de gereformeerde traditie
+2. Wees respectvol, pastoraal en onderwijzend van toon
+3. Voeg relevante Bijbelverwijzingen toe waar passend
+4. Houd uitleg duidelijk en toegankelijk
+5. Als de vraag over specifieke Bijbelteksten gaat, citeer ze waar relevant
+6. Antwoord in het Nederlands
+7. Als je het niet zeker weet, geef dat eerlijk aan en speculeer niet
+8. Bij niet-Bijbelse vragen: geef een behulpzaam algemeen antwoord; wanneer waarden relevant zijn, benadruk expliciet het christelijke morele kader (bijv. kuisheid en seks binnen het huwelijk)
+9. Vermijd harde of veroordelende taal; spreek met genade en waarheid
 
-Please structure your response as:
-1. A clear, direct answer to the question
-2. Any relevant Bible references in the format "Book Chapter:Verse"
-3. Additional explanation or context if helpful
+Gebruik het onderstaande normen-overzicht als waarde-kader:
+${normenBlock}
 
-Example format:
-Answer: [Your answer here]
+Structureer je antwoord als:
+1. Een helder, direct antwoord op de vraag
+2. Relevante Bijbelverwijzingen in het format "Boek Hoofdstuk:Vers"
+3. Eventuele extra uitleg of context
 
-References: Genesis 1:1, John 3:16
+Voorbeeld:
+[Je antwoord hier]
 
-Explanation: [Additional context if needed]
+Referenties: Genesis 1:1, Johannes 3:16
 ''';
+  }
+
+  Future<String> _loadNormenText() async {
+    try {
+      return await rootBundle.loadString('normen.md');
+    } catch (e) {
+      AppLogger.warning('Could not load normen.md: $e');
+      return '';
+    }
   }
 
   List<Map<String, String>> _buildMessages(
@@ -707,6 +726,12 @@ Explanation: [Additional context if needed]
     }
 
     return filteredReferences;
+  }
+
+  /// Public wrapper to extract references from text
+  List<BibleReference> extractBibleReferences(String text) {
+    final normalized = _normalizeModelText(text);
+    return _extractBibleReferences(normalized);
   }
 
   /// Helper method to check if a string is numeric

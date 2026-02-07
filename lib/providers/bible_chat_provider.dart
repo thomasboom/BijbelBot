@@ -355,6 +355,35 @@ class BibleChatProvider extends ChangeNotifier {
     }
   }
 
+  /// Updates message content (and optional references) for streaming UI updates
+  Future<void> updateMessageContent({
+    required String messageId,
+    required String content,
+    List<String>? bibleReferences,
+    bool persist = true,
+  }) async {
+    try {
+      await _ensureReady();
+      final message = _messages[messageId];
+      if (message == null) return;
+
+      final updatedMessage = message.copyWith(
+        content: content,
+        bibleReferences: bibleReferences ?? message.bibleReferences,
+      );
+
+      _messages[messageId] = updatedMessage;
+
+      if (persist) {
+        await _saveAllMessages();
+      }
+
+      notifyListeners();
+    } catch (e) {
+      AppLogger.error('Failed to update message content: $messageId', e);
+    }
+  }
+
   /// Gets conversation statistics
   Map<String, dynamic> getConversationStats() {
     final totalConversations = _conversations.length;
