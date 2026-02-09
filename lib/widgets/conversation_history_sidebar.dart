@@ -5,7 +5,7 @@ import '../models/bible_chat_conversation.dart';
 import '../providers/bible_chat_provider.dart';
 
 /// M3 Expressive conversation history sidebar
-/// 
+///
 /// Features:
 /// - M3 navigation drawer styling
 /// - Dynamic color from theme colorScheme
@@ -25,10 +25,12 @@ class ConversationHistorySidebar extends StatefulWidget {
   });
 
   @override
-  State<ConversationHistorySidebar> createState() => _ConversationHistorySidebarState();
+  State<ConversationHistorySidebar> createState() =>
+      _ConversationHistorySidebarState();
 }
 
-class _ConversationHistorySidebarState extends State<ConversationHistorySidebar> {
+class _ConversationHistorySidebarState
+    extends State<ConversationHistorySidebar> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
@@ -38,7 +40,9 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
     super.dispose();
   }
 
-  List<BibleChatConversation> _filterConversations(List<BibleChatConversation> conversations) {
+  List<BibleChatConversation> _filterConversations(
+    List<BibleChatConversation> conversations,
+  ) {
     if (_searchQuery.isEmpty) {
       return conversations;
     }
@@ -53,7 +57,8 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final provider = Provider.of<BibleChatProvider>(context);
-    final allConversations = provider.conversationsByLastActivity.reversed.toList();
+    final allConversations = provider.conversationsByLastActivity.reversed
+        .toList();
     final filteredConversations = _filterConversations(allConversations);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
@@ -87,7 +92,7 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
             ],
           ),
         ),
-        
+
         // Search field
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -118,47 +123,54 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
                 borderRadius: BorderRadius.circular(28),
                 borderSide: BorderSide.none,
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
             ),
           ),
         ),
-        
+
         // M3 Divider
-        Divider(
-          height: 1,
-          thickness: 1,
-          color: colorScheme.outlineVariant,
-        ),
-        
+        Divider(height: 1, thickness: 1, color: colorScheme.outlineVariant),
+
         // Conversation list
         Expanded(
           child: provider.isLoading
               ? Center(
-                  child: CircularProgressIndicator(
-                    color: colorScheme.primary,
-                  ),
+                  child: CircularProgressIndicator(color: colorScheme.primary),
                 )
               : filteredConversations.isEmpty
-                  ? _buildEmptyState(colorScheme, textTheme, _searchQuery.isNotEmpty)
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      itemCount: filteredConversations.length,
-                      itemBuilder: (context, index) {
-                        final conversation = filteredConversations[index];
-                        return ConversationItem(
-                          conversation: conversation,
-                          isSelected: widget.selectedConversationId == conversation.id,
-                          onTap: () => widget.onConversationSelected?.call(conversation),
-                        );
-                      },
-                    ),
+              ? _buildEmptyState(
+                  colorScheme,
+                  textTheme,
+                  _searchQuery.isNotEmpty,
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: filteredConversations.length,
+                  itemBuilder: (context, index) {
+                    final conversation = filteredConversations[index];
+                    return ConversationItem(
+                      conversation: conversation,
+                      isSelected:
+                          widget.selectedConversationId == conversation.id,
+                      onTap: () =>
+                          widget.onConversationSelected?.call(conversation),
+                    );
+                  },
+                ),
         ),
       ],
     );
   }
 
   /// M3 Expressive empty state
-  Widget _buildEmptyState(ColorScheme colorScheme, TextTheme textTheme, bool isSearchResult) {
+  Widget _buildEmptyState(
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+    bool isSearchResult,
+  ) {
     final localizations = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -166,20 +178,26 @@ class _ConversationHistorySidebarState extends State<ConversationHistorySidebar>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            isSearchResult ? Icons.search_off_rounded : Icons.chat_bubble_outline_rounded,
+            isSearchResult
+                ? Icons.search_off_rounded
+                : Icons.chat_bubble_outline_rounded,
             size: 64,
             color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
           Text(
-            isSearchResult ? localizations.noResults : localizations.noConversations,
+            isSearchResult
+                ? localizations.noResults
+                : localizations.noConversations,
             style: textTheme.titleMedium?.copyWith(
               color: colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            isSearchResult ? localizations.tryDifferentSearchTerm : localizations.startNewConversationToAppear,
+            isSearchResult
+                ? localizations.tryDifferentSearchTerm
+                : localizations.startNewConversationToAppear,
             style: textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -211,9 +229,7 @@ class ConversationItem extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Material(
-      color: isSelected 
-          ? colorScheme.secondaryContainer
-          : Colors.transparent,
+      color: isSelected ? colorScheme.secondaryContainer : Colors.transparent,
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -225,7 +241,7 @@ class ConversationItem extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: isSelected 
+                  color: isSelected
                       ? colorScheme.onSecondaryContainer
                       : colorScheme.surfaceContainerHighest,
                   shape: BoxShape.circle,
@@ -233,7 +249,7 @@ class ConversationItem extends StatelessWidget {
                 child: Icon(
                   Icons.chat_rounded,
                   size: 20,
-                  color: isSelected 
+                  color: isSelected
                       ? colorScheme.secondaryContainer
                       : colorScheme.onSurfaceVariant,
                 ),
@@ -246,7 +262,7 @@ class ConversationItem extends StatelessWidget {
                     Text(
                       conversation.title ?? localizations.newConversation,
                       style: textTheme.titleSmall?.copyWith(
-                        color: isSelected 
+                        color: isSelected
                             ? colorScheme.onSecondaryContainer
                             : colorScheme.onSurface,
                       ),
@@ -257,8 +273,10 @@ class ConversationItem extends StatelessWidget {
                     Text(
                       _formatDate(conversation.lastActivity, localizations),
                       style: textTheme.bodySmall?.copyWith(
-                        color: isSelected 
-                            ? colorScheme.onSecondaryContainer.withValues(alpha: 0.7)
+                        color: isSelected
+                            ? colorScheme.onSecondaryContainer.withValues(
+                                alpha: 0.7,
+                              )
                             : colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -293,14 +311,22 @@ class ConversationItem extends StatelessWidget {
 
   String _getWeekday(DateTime dateTime, AppLocalizations localizations) {
     switch (dateTime.weekday) {
-      case 1: return localizations.monday;
-      case 2: return localizations.tuesday;
-      case 3: return localizations.wednesday;
-      case 4: return localizations.thursday;
-      case 5: return localizations.friday;
-      case 6: return localizations.saturday;
-      case 7: return localizations.sunday;
-      default: return '';
+      case 1:
+        return localizations.monday;
+      case 2:
+        return localizations.tuesday;
+      case 3:
+        return localizations.wednesday;
+      case 4:
+        return localizations.thursday;
+      case 5:
+        return localizations.friday;
+      case 6:
+        return localizations.saturday;
+      case 7:
+        return localizations.sunday;
+      default:
+        return '';
     }
   }
 }

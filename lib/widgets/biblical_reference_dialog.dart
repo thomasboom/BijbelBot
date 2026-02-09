@@ -8,7 +8,7 @@ import '../constants/urls.dart';
 import '../utils/bible_book_mapper.dart';
 
 /// M3 Expressive biblical reference dialog
-/// 
+///
 /// Features:
 /// - M3 dialog shape with extraLarge corner radius
 /// - Dynamic color from theme colorScheme
@@ -20,7 +20,8 @@ class BiblicalReferenceDialog extends StatefulWidget {
   const BiblicalReferenceDialog({super.key, required this.reference});
 
   @override
-  State<BiblicalReferenceDialog> createState() => _BiblicalReferenceDialogState();
+  State<BiblicalReferenceDialog> createState() =>
+      _BiblicalReferenceDialogState();
 }
 
 class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
@@ -47,7 +48,9 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
       final parsed = _parseReference(widget.reference);
       if (parsed == null) {
         final localizations = AppLocalizations.of(context);
-        throw Exception(localizations.invalidBiblicalReferenceWithRef(widget.reference));
+        throw Exception(
+          localizations.invalidBiblicalReferenceWithRef(widget.reference),
+        );
       }
 
       final book = parsed['book'];
@@ -59,12 +62,15 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
       if (bookNumber == null) {
         final localizations = AppLocalizations.of(context);
         final validBooks = BibleBookMapper.getAllBookNames();
-        throw Exception(localizations.invalidBookName(book, validBooks.take(10).join(", ")));
+        throw Exception(
+          localizations.invalidBookName(book, validBooks.take(10).join(", ")),
+        );
       }
 
       String url;
       if (startVerse != null && endVerse != null) {
-        url = '${AppUrls.bibleApiBase}?b=$bookNumber&h=$chapter&v=$startVerse-$endVerse';
+        url =
+            '${AppUrls.bibleApiBase}?b=$bookNumber&h=$chapter&v=$startVerse-$endVerse';
       } else if (startVerse != null) {
         url = '${AppUrls.bibleApiBase}?b=$bookNumber&h=$chapter&v=$startVerse';
       } else {
@@ -76,16 +82,19 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
         throw Exception('invalid_api_url');
       }
 
-      final response = await _client.get(uri).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          throw Exception('timeout_error');
-        },
-      );
+      final response = await _client
+          .get(uri)
+          .timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              throw Exception('timeout_error');
+            },
+          );
 
       if (response.statusCode == 200) {
         final contentType = response.headers['content-type'];
-        if (contentType == null || (!contentType.contains('xml') && !contentType.contains('text'))) {
+        if (contentType == null ||
+            (!contentType.contains('xml') && !contentType.contains('text'))) {
           throw Exception('invalid_content_type');
         }
 
@@ -112,7 +121,8 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
           if (content.isEmpty) {
             final alternativeVerseElements = document.findAllElements('verse');
             for (final verse in alternativeVerseElements) {
-              final verseNumber = verse.getAttribute('name') ?? verse.getAttribute('number');
+              final verseNumber =
+                  verse.getAttribute('name') ?? verse.getAttribute('number');
               final verseText = verse.innerText.trim();
 
               if (verseNumber != null && verseText.isNotEmpty) {
@@ -215,7 +225,10 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     });
   }
 
-  void _collectAllElements(xml.XmlElement element, List<xml.XmlElement> collection) {
+  void _collectAllElements(
+    xml.XmlElement element,
+    List<xml.XmlElement> collection,
+  ) {
     collection.add(element);
     for (final child in element.childElements) {
       _collectAllElements(child, collection);
@@ -326,7 +339,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
     String displayError = _error;
-    
+
     switch (_error) {
       case 'network_error':
         displayError = localizations.networkError;
@@ -338,7 +351,8 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
         displayError = localizations.invalidApiUrl;
         break;
       case 'invalid_content_type':
-        displayError = '${localizations.invalidContentType}. Content-Type: ... Response: ...';
+        displayError =
+            '${localizations.invalidContentType}. Content-Type: ... Response: ...';
         break;
       case 'no_text_found':
         displayError = localizations.noTextFound;
@@ -358,13 +372,17 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
           displayError = '${localizations.serverError} $statusCode)';
         }
     }
-    
+
     return AlertDialog(
-      icon: _isLoading 
-          ? null 
-          : (_error.isNotEmpty 
-              ? Icon(Icons.error_outline, color: colorScheme.error, size: 32)
-              : Icon(Icons.menu_book_outlined, color: colorScheme.primary, size: 32)),
+      icon: _isLoading
+          ? null
+          : (_error.isNotEmpty
+                ? Icon(Icons.error_outline, color: colorScheme.error, size: 32)
+                : Icon(
+                    Icons.menu_book_outlined,
+                    color: colorScheme.primary,
+                    size: 32,
+                  )),
       title: Text(
         localizations.biblicalReference,
         style: textTheme.headlineSmall,
@@ -375,9 +393,7 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(
-                    color: colorScheme.primary,
-                  ),
+                  CircularProgressIndicator(color: colorScheme.primary),
                   const SizedBox(height: 16),
                   Text(
                     localizations.loading,
@@ -388,15 +404,13 @@ class _BiblicalReferenceDialogState extends State<BiblicalReferenceDialog> {
                 ],
               )
             : displayError.isNotEmpty
-                ? Text(displayError, style: textTheme.bodyMedium)
-                : SingleChildScrollView(
-                    child: SelectableText(
-                      _content,
-                      style: textTheme.bodyLarge?.copyWith(
-                        height: 1.6,
-                      ),
-                    ),
-                  ),
+            ? Text(displayError, style: textTheme.bodyMedium)
+            : SingleChildScrollView(
+                child: SelectableText(
+                  _content,
+                  style: textTheme.bodyLarge?.copyWith(height: 1.6),
+                ),
+              ),
       ),
       actions: [
         FilledButton(

@@ -7,7 +7,7 @@ import '../models/bible_chat_message.dart';
 import '../providers/bible_chat_provider.dart';
 
 /// M3 Expressive chat message bubble widget
-/// 
+///
 /// Features:
 /// - Dynamic color from theme colorScheme
 /// - M3 shape system with appropriate corner radii
@@ -45,7 +45,9 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
     final textTheme = theme.textTheme;
 
     return Row(
-      mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: isUser
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!isUser) ...[
@@ -56,7 +58,12 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              _buildMessageBubble(isUser, colorScheme, textTheme, localizations),
+              _buildMessageBubble(
+                isUser,
+                colorScheme,
+                textTheme,
+                localizations,
+              ),
               const SizedBox(height: 4),
               _buildTimestamp(colorScheme, textTheme),
             ],
@@ -68,7 +75,12 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
               children: [
                 _buildBotLabel(colorScheme, localizations, textTheme),
                 const SizedBox(height: 4),
-                _buildMessageBubble(isUser, colorScheme, textTheme, localizations),
+                _buildMessageBubble(
+                  isUser,
+                  colorScheme,
+                  textTheme,
+                  localizations,
+                ),
                 const SizedBox(height: 4),
                 _buildTimestamp(colorScheme, textTheme),
               ],
@@ -86,11 +98,15 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
   Widget _buildAvatar(bool isUser, ColorScheme colorScheme) {
     final backgroundColor = isError
         ? colorScheme.errorContainer
-        : (isUser ? colorScheme.primaryContainer : colorScheme.secondaryContainer);
-    
+        : (isUser
+              ? colorScheme.primaryContainer
+              : colorScheme.secondaryContainer);
+
     final foregroundColor = isError
         ? colorScheme.onErrorContainer
-        : (isUser ? colorScheme.onPrimaryContainer : colorScheme.onSecondaryContainer);
+        : (isUser
+              ? colorScheme.onPrimaryContainer
+              : colorScheme.onSecondaryContainer);
 
     return Material(
       color: backgroundColor,
@@ -101,7 +117,9 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
         height: 40,
         alignment: Alignment.center,
         child: Icon(
-          isError ? Icons.error_outline : (isUser ? Icons.person_outline : Icons.smart_toy_outlined),
+          isError
+              ? Icons.error_outline
+              : (isUser ? Icons.person_outline : Icons.smart_toy_outlined),
           color: foregroundColor,
           size: 22,
         ),
@@ -110,7 +128,11 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
   }
 
   /// M3 Expressive bot label chip
-  Widget _buildBotLabel(ColorScheme colorScheme, AppLocalizations localizations, TextTheme textTheme) {
+  Widget _buildBotLabel(
+    ColorScheme colorScheme,
+    AppLocalizations localizations,
+    TextTheme textTheme,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
@@ -132,13 +154,20 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
   }
 
   /// M3 Expressive message bubble with shape system
-  Widget _buildMessageBubble(bool isUser, ColorScheme colorScheme, TextTheme textTheme, AppLocalizations localizations) {
+  Widget _buildMessageBubble(
+    bool isUser,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+    AppLocalizations localizations,
+  ) {
     return Builder(
       builder: (BuildContext context) {
         final backgroundColor = isError
             ? colorScheme.errorContainer
-            : (isUser ? colorScheme.primaryContainer : colorScheme.surfaceContainerHighest);
-        
+            : (isUser
+                  ? colorScheme.primaryContainer
+                  : colorScheme.surfaceContainerHighest);
+
         final foregroundColor = isError
             ? colorScheme.onErrorContainer
             : (isUser ? colorScheme.onPrimaryContainer : colorScheme.onSurface);
@@ -152,8 +181,12 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
             color: backgroundColor,
             // M3 shape system: large corner radius with asymmetric corners for chat bubbles
             borderRadius: BorderRadius.circular(20).copyWith(
-              bottomLeft: isUser ? const Radius.circular(20) : const Radius.circular(4),
-              bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(20),
+              bottomLeft: isUser
+                  ? const Radius.circular(20)
+                  : const Radius.circular(4),
+              bottomRight: isUser
+                  ? const Radius.circular(4)
+                  : const Radius.circular(20),
             ),
             // Subtle border for error state
             border: isError
@@ -170,11 +203,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 18,
-                      color: foregroundColor,
-                    ),
+                    Icon(Icons.error_outline, size: 18, color: foregroundColor),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -190,7 +219,8 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
               ] else ...[
                 _buildMessageContent(isUser, colorScheme, textTheme),
               ],
-              if (message.bibleReferences != null && message.bibleReferences!.isNotEmpty) ...[
+              if (message.bibleReferences != null &&
+                  message.bibleReferences!.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 _buildBibleReferences(colorScheme, context, textTheme),
               ],
@@ -202,7 +232,11 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
   }
 
   /// M3 Expressive bible reference chips
-  Widget _buildBibleReferences(ColorScheme colorScheme, BuildContext context, TextTheme textTheme) {
+  Widget _buildBibleReferences(
+    ColorScheme colorScheme,
+    BuildContext context,
+    TextTheme textTheme,
+  ) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -213,7 +247,10 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: () {
-              final provider = Provider.of<BibleChatProvider>(context, listen: false);
+              final provider = Provider.of<BibleChatProvider>(
+                context,
+                listen: false,
+              );
               provider.showBiblicalReference(context, reference);
             },
             child: Container(
@@ -243,24 +280,45 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
     );
   }
 
-  Widget _buildMessageContent(bool isUser, ColorScheme colorScheme, TextTheme textTheme) {
-    final textColor = isUser ? colorScheme.onPrimaryContainer : colorScheme.onSurface;
+  Widget _buildMessageContent(
+    bool isUser,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
+    final textColor = isUser
+        ? colorScheme.onPrimaryContainer
+        : colorScheme.onSurface;
 
     if (isUser) {
-      return _buildMarkdownContent(message.content, textColor, colorScheme, textTheme);
+      return _buildMarkdownContent(
+        message.content,
+        textColor,
+        colorScheme,
+        textTheme,
+      );
     }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: _buildMarkdownContent(message.content, textColor, colorScheme, textTheme),
+          child: _buildMarkdownContent(
+            message.content,
+            textColor,
+            colorScheme,
+            textTheme,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildMarkdownContent(String content, Color textColor, ColorScheme colorScheme, TextTheme textTheme) {
+  Widget _buildMarkdownContent(
+    String content,
+    Color textColor,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
     try {
       return MarkdownBody(
         data: content,
@@ -271,21 +329,19 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
     } catch (e) {
       return Text(
         content,
-        style: textTheme.bodyLarge?.copyWith(
-          color: textColor,
-          height: 1.5,
-        ),
+        style: textTheme.bodyLarge?.copyWith(color: textColor, height: 1.5),
       );
     }
   }
 
   /// M3 Expressive markdown styling
-  MarkdownStyleSheet _getMarkdownStyleSheet(Color textColor, ColorScheme colorScheme, TextTheme textTheme) {
+  MarkdownStyleSheet _getMarkdownStyleSheet(
+    Color textColor,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
     return MarkdownStyleSheet(
-      p: textTheme.bodyLarge?.copyWith(
-        color: textColor,
-        height: 1.5,
-      ),
+      p: textTheme.bodyLarge?.copyWith(color: textColor, height: 1.5),
       h1: textTheme.headlineLarge?.copyWith(
         color: textColor,
         fontWeight: FontWeight.w500,
@@ -321,21 +377,13 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
       blockquoteDecoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         border: Border(
-          left: BorderSide(
-            color: colorScheme.outlineVariant,
-            width: 4,
-          ),
+          left: BorderSide(color: colorScheme.outlineVariant, width: 4),
         ),
       ),
-      listBullet: textTheme.bodyLarge?.copyWith(
-        color: textColor,
-      ),
+      listBullet: textTheme.bodyLarge?.copyWith(color: textColor),
       horizontalRuleDecoration: BoxDecoration(
         border: Border(
-          top: BorderSide(
-            color: colorScheme.outlineVariant,
-            width: 1,
-          ),
+          top: BorderSide(color: colorScheme.outlineVariant, width: 1),
         ),
       ),
     );

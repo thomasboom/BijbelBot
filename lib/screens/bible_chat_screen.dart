@@ -13,7 +13,7 @@ import '../providers/bible_chat_provider.dart';
 import '../widgets/api_key_dialog.dart';
 
 /// M3 Expressive main chat interface screen
-/// 
+///
 /// Features:
 /// - Dynamic color from theme colorScheme
 /// - M3 shape system for components
@@ -22,10 +22,10 @@ import '../widgets/api_key_dialog.dart';
 class BibleChatScreen extends StatefulWidget {
   /// The conversation to display/manage
   final BibleChatConversation conversation;
-  
+
   /// Callback when the conversation is updated
   final Function(BibleChatConversation)? onConversationUpdated;
-  
+
   /// Callback when user wants to go back
   final VoidCallback? onBackPressed;
 
@@ -116,7 +116,8 @@ class _BibleChatScreenState extends State<BibleChatScreen>
             if (!_isOnline && _errorMessage == null) {
               _errorMessage = localizations.noInternetConnection;
             } else if (_isOnline &&
-                _errorMessage?.contains(localizations.noInternetConnection) == true) {
+                _errorMessage?.contains(localizations.noInternetConnection) ==
+                    true) {
               _errorMessage = null;
             }
           });
@@ -453,9 +454,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     _scrollDebounceTimer = Timer(_scrollDebounceDelay, () {
       if (mounted && _scrollController.hasClients) {
         // Use jumpTo for better performance during streaming
-        _scrollController.jumpTo(
-          _scrollController.position.maxScrollExtent,
-        );
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       }
     });
   }
@@ -500,7 +499,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       final localizations = AppLocalizations.of(context);
       setState(() {
         _isLoading = false;
-        _errorMessage = localizations.couldNotStartNewConversation(e.toString());
+        _errorMessage = localizations.couldNotStartNewConversation(
+          e.toString(),
+        );
       });
     }
   }
@@ -558,7 +559,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                           ? _buildChatMessages()
                           : _buildLoadingView()),
               ),
-              ),
+            ),
 
             // Error message if present
             if (_errorMessage != null)
@@ -692,9 +693,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
             Text(
               localizations.initializingBibleChat,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -759,9 +758,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
               Text(
                 localizations.startConversation,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 32),
@@ -772,13 +769,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                   children: [
                     _buildSampleQuestion(localizations.sampleQuestion1),
                     const SizedBox(height: 12),
-                    _buildSampleQuestion(
-                      localizations.sampleQuestion2,
-                    ),
+                    _buildSampleQuestion(localizations.sampleQuestion2),
                     const SizedBox(height: 12),
-                    _buildSampleQuestion(
-                      localizations.sampleQuestion3,
-                    ),
+                    _buildSampleQuestion(localizations.sampleQuestion3),
                   ],
                 ),
               ),

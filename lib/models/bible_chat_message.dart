@@ -78,7 +78,6 @@ class BibleChatMessage {
   /// The type of message content.
   final MessageType type;
 
-
   /// Optional Bible references associated with this message.
   final List<String>? bibleReferences;
 
@@ -169,7 +168,8 @@ class BibleChatMessage {
   }
 
   @override
-  String toString() => 'BibleChatMessage(id: $id, sender: $sender, type: $type, content: "$content")';
+  String toString() =>
+      'BibleChatMessage(id: $id, sender: $sender, type: $type, content: "$content")';
 
   @override
   bool operator ==(Object other) {
@@ -184,12 +184,5 @@ class BibleChatMessage {
   }
 
   @override
-  int get hashCode => Object.hash(
-        id,
-        content,
-        timestamp,
-        sender,
-        type,
-        isRead,
-      );
+  int get hashCode => Object.hash(id, content, timestamp, sender, type, isRead);
 }

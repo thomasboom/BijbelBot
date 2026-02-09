@@ -15,7 +15,6 @@ class BibleChatConversation {
   /// Maximum number of messages to keep in history.
   final int maxHistoryLimit;
 
-
   /// User's context or preferences for this conversation.
   final Map<String, dynamic>? userContext;
 
@@ -158,7 +157,8 @@ class BibleChatConversation {
   Duration get duration => lastActivity.difference(startTime);
 
   @override
-  String toString() => 'BibleChatConversation(id: $id, messages: $messageCount, active: $isActive)';
+  String toString() =>
+      'BibleChatConversation(id: $id, messages: $messageCount, active: $isActive)';
 
   @override
   bool operator ==(Object other) {
@@ -172,11 +172,6 @@ class BibleChatConversation {
   }
 
   @override
-  int get hashCode => Object.hash(
-        id,
-        startTime,
-        lastActivity,
-        messageIds.length,
-        isActive,
-      );
+  int get hashCode =>
+      Object.hash(id, startTime, lastActivity, messageIds.length, isActive);
 }

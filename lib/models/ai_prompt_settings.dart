@@ -1,21 +1,10 @@
 import '../l10n/app_localizations.dart';
 
-enum PromptTone {
-  warm,
-  professional,
-  functional,
-}
+enum PromptTone { warm, professional, functional }
 
-enum EmojiLevel {
-  more,
-  normal,
-  less,
-}
+enum EmojiLevel { more, normal, less }
 
-enum ResponseFormat {
-  formatted,
-  longText,
-}
+enum ResponseFormat { formatted, longText }
 
 class AiPromptSettings {
   final PromptTone tone;
@@ -112,7 +101,10 @@ class AiPromptSettings {
     }
   }
 
-  static String formatLabel(ResponseFormat format, AppLocalizations localizations) {
+  static String formatLabel(
+    ResponseFormat format,
+    AppLocalizations localizations,
+  ) {
     switch (format) {
       case ResponseFormat.formatted:
         return localizations.formatted;

@@ -6,7 +6,7 @@ import '../l10n/app_localizations.dart';
 import 'api_key_dialog.dart';
 
 /// M3 Expressive settings menu widget
-/// 
+///
 /// Features:
 /// - M3 bottom sheet with drag handle
 /// - Dynamic color from theme colorScheme
@@ -91,7 +91,7 @@ class _SettingsBottomSheetContentState
                 ),
               ),
             ),
-            
+
             // API Key Section
             _buildSectionTitle(localizations.apiKey, textTheme, colorScheme),
             Padding(
@@ -99,9 +99,18 @@ class _SettingsBottomSheetContentState
               child: Card(
                 margin: EdgeInsets.zero,
                 child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  leading: Icon(Icons.vpn_key_outlined, color: colorScheme.primary),
-                  title: Text(localizations.ollamaApiKey, style: textTheme.titleSmall),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  leading: Icon(
+                    Icons.vpn_key_outlined,
+                    color: colorScheme.primary,
+                  ),
+                  title: Text(
+                    localizations.ollamaApiKey,
+                    style: textTheme.titleSmall,
+                  ),
                   subtitle: Text(
                     provider.hasApiKey
                         ? '${localizations.set} (${_maskApiKey(provider.apiKey!)})'
@@ -112,12 +121,16 @@ class _SettingsBottomSheetContentState
                   ),
                   trailing: FilledButton.tonal(
                     onPressed: () => _showApiKeyDialog(context, provider),
-                    child: Text(provider.hasApiKey ? localizations.change : localizations.add),
+                    child: Text(
+                      provider.hasApiKey
+                          ? localizations.change
+                          : localizations.add,
+                    ),
                   ),
                 ),
               ),
             ),
-            
+
             // Tone Section
             _buildSectionTitle(localizations.tone, textTheme, colorScheme),
             Padding(
@@ -125,13 +138,14 @@ class _SettingsBottomSheetContentState
               child: _buildDropdown<PromptTone>(
                 value: settings.tone,
                 items: PromptTone.values,
-                labelBuilder: (tone) => AiPromptSettings.toneLabel(tone, localizations),
+                labelBuilder: (tone) =>
+                    AiPromptSettings.toneLabel(tone, localizations),
                 onChanged: provider.setPromptTone,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
               ),
             ),
-            
+
             // Emoji Section
             _buildSectionTitle(localizations.emojis, textTheme, colorScheme),
             Padding(
@@ -139,29 +153,39 @@ class _SettingsBottomSheetContentState
               child: _buildDropdown<EmojiLevel>(
                 value: settings.emojiLevel,
                 items: EmojiLevel.values,
-                labelBuilder: (level) => AiPromptSettings.emojiLabel(level, localizations),
+                labelBuilder: (level) =>
+                    AiPromptSettings.emojiLabel(level, localizations),
                 onChanged: provider.setEmojiLevel,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
               ),
             ),
-            
+
             // Response Format Section
-            _buildSectionTitle(localizations.responseFormat, textTheme, colorScheme),
+            _buildSectionTitle(
+              localizations.responseFormat,
+              textTheme,
+              colorScheme,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: _buildDropdown<ResponseFormat>(
                 value: settings.responseFormat,
                 items: ResponseFormat.values,
-                labelBuilder: (format) => AiPromptSettings.formatLabel(format, localizations),
+                labelBuilder: (format) =>
+                    AiPromptSettings.formatLabel(format, localizations),
                 onChanged: provider.setResponseFormat,
                 colorScheme: colorScheme,
                 textTheme: textTheme,
               ),
             ),
-            
+
             // Custom Instruction Section
-            _buildSectionTitle(localizations.customInstruction, textTheme, colorScheme),
+            _buildSectionTitle(
+              localizations.customInstruction,
+              textTheme,
+              colorScheme,
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
               child: TextField(
@@ -178,7 +202,7 @@ class _SettingsBottomSheetContentState
                 onChanged: provider.setCustomInstruction,
               ),
             ),
-            
+
             // Danger Zone
             const SizedBox(height: 16),
             Divider(color: colorScheme.outlineVariant),
@@ -189,7 +213,10 @@ class _SettingsBottomSheetContentState
                 margin: EdgeInsets.zero,
                 color: colorScheme.errorContainer,
                 child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
                   leading: Icon(
                     Icons.delete_forever_outlined,
                     color: colorScheme.onErrorContainer,
@@ -203,7 +230,9 @@ class _SettingsBottomSheetContentState
                   subtitle: Text(
                     localizations.thisActionCannotBeUndone,
                     style: textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onErrorContainer.withValues(alpha: 0.8),
+                      color: colorScheme.onErrorContainer.withValues(
+                        alpha: 0.8,
+                      ),
                     ),
                   ),
                   onTap: () {
@@ -219,14 +248,16 @@ class _SettingsBottomSheetContentState
     );
   }
 
-  Widget _buildSectionTitle(String title, TextTheme textTheme, ColorScheme colorScheme) {
+  Widget _buildSectionTitle(
+    String title,
+    TextTheme textTheme,
+    ColorScheme colorScheme,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
       child: Text(
         title,
-        style: textTheme.labelLarge?.copyWith(
-          color: colorScheme.primary,
-        ),
+        style: textTheme.labelLarge?.copyWith(color: colorScheme.primary),
       ),
     );
   }
@@ -252,10 +283,7 @@ class _SettingsBottomSheetContentState
           .map(
             (item) => DropdownMenuItem(
               value: item,
-              child: Text(
-                labelBuilder(item),
-                style: textTheme.bodyLarge,
-              ),
+              child: Text(labelBuilder(item), style: textTheme.bodyLarge),
             ),
           )
           .toList(),

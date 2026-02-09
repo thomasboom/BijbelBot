@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../l10n/app_localizations.dart';
 
 /// M3 Expressive chat input field widget
-/// 
+///
 /// Features:
 /// - M3 shape system with extraLarge corner radius
 /// - Dynamic color from theme colorScheme
@@ -70,7 +70,9 @@ class _ChatInputFieldState extends State<ChatInputField>
 
     if (!selection.isValid) {
       controller.text = '$text\n';
-      controller.selection = TextSelection.collapsed(offset: controller.text.length);
+      controller.selection = TextSelection.collapsed(
+        offset: controller.text.length,
+      );
       return;
     }
 
@@ -95,10 +97,7 @@ class _ChatInputFieldState extends State<ChatInputField>
       decoration: BoxDecoration(
         color: colorScheme.surface,
         border: Border(
-          top: BorderSide(
-            color: colorScheme.outlineVariant,
-            width: 1,
-          ),
+          top: BorderSide(color: colorScheme.outlineVariant, width: 1),
         ),
       ),
       child: Row(
@@ -108,8 +107,10 @@ class _ChatInputFieldState extends State<ChatInputField>
             child: CallbackShortcuts(
               bindings: <ShortcutActivator, VoidCallback>{
                 const SingleActivator(LogicalKeyboardKey.enter): _sendMessage,
-                const SingleActivator(LogicalKeyboardKey.enter, shift: true): _insertNewline,
-                const SingleActivator(LogicalKeyboardKey.enter, control: true): _insertNewline,
+                const SingleActivator(LogicalKeyboardKey.enter, shift: true):
+                    _insertNewline,
+                const SingleActivator(LogicalKeyboardKey.enter, control: true):
+                    _insertNewline,
               },
               child: TextField(
                 controller: widget.controller,
@@ -130,7 +131,10 @@ class _ChatInputFieldState extends State<ChatInputField>
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(28),
-                    borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                    borderSide: BorderSide(
+                      color: colorScheme.primary,
+                      width: 2,
+                    ),
                   ),
                   filled: true,
                   fillColor: colorScheme.surfaceContainerHighest,
@@ -151,7 +155,9 @@ class _ChatInputFieldState extends State<ChatInputField>
           ScaleTransition(
             scale: _sendButtonScale,
             child: FloatingActionButton(
-              onPressed: (widget.isLoading || !widget.isEnabled) ? null : _sendMessage,
+              onPressed: (widget.isLoading || !widget.isEnabled)
+                  ? null
+                  : _sendMessage,
               backgroundColor: (widget.isLoading || !widget.isEnabled)
                   ? colorScheme.surfaceContainerHighest
                   : colorScheme.primaryContainer,

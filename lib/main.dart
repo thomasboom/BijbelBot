@@ -13,7 +13,7 @@ void main() async {
 }
 
 /// Material 3 Expressive theme configuration for BijbelBot
-/// 
+///
 /// This implementation follows M3 Expressive guidelines:
 /// - Dynamic color schemes from seed color
 /// - Proper M3 type scale with correct line heights
@@ -38,17 +38,14 @@ class BijbelBotApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [
-          const Locale('en'),
-          const Locale('nl'),
-        ],
+        supportedLocales: [const Locale('en'), const Locale('nl')],
         home: const BijbelBotHomePage(),
       ),
     );
   }
 
   /// Material 3 Expressive Light Theme
-  /// 
+  ///
   /// Uses dynamic color generation from seed color with proper M3 color roles.
   /// Typography follows M3 type scale with expressive font weights.
   /// Shape system uses M3 shape scale for consistent corner radii.
@@ -56,7 +53,7 @@ class BijbelBotApp extends StatelessWidget {
     // M3 Expressive seed color - neutral blue for spiritual/biblical app
     // Using a more neutral blue that avoids purple tones in dynamic generation
     const seedColor = Color(0xFF1976D2);
-    
+
     // Generate dynamic color scheme from seed
     final colorScheme = ColorScheme.fromSeed(
       seedColor: seedColor,
@@ -66,11 +63,11 @@ class BijbelBotApp extends StatelessWidget {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      
+
       // M3 Expressive Typography Scale
       // Following exact M3 type scale specifications
       textTheme: _buildM3TextTheme(Brightness.light, colorScheme),
-      
+
       // M3 Expressive Shape System
       // Using M3 shape scale: extraSmall (4dp), small (8dp), medium (12dp), large (16dp), extraLarge (28dp)
       cardTheme: CardThemeData(
@@ -82,7 +79,7 @@ class BijbelBotApp extends StatelessWidget {
         color: colorScheme.surfaceContainerHighest,
         surfaceTintColor: colorScheme.surfaceTint,
       ),
-      
+
       // Elevated Button - M3 Expressive style
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -100,7 +97,7 @@ class BijbelBotApp extends StatelessWidget {
           ),
         ),
       ),
-      
+
       // Filled Button - M3 style
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
@@ -115,7 +112,7 @@ class BijbelBotApp extends StatelessWidget {
           ),
         ),
       ),
-      
+
       // Text Button - M3 style
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -131,7 +128,7 @@ class BijbelBotApp extends StatelessWidget {
           ),
         ),
       ),
-      
+
       // AppBar - M3 Expressive style with scroll elevation
       appBarTheme: AppBarTheme(
         centerTitle: true,
@@ -147,7 +144,7 @@ class BijbelBotApp extends StatelessWidget {
           letterSpacing: 0,
         ),
       ),
-      
+
       // Navigation Drawer - M3 style
       drawerTheme: DrawerThemeData(
         backgroundColor: colorScheme.surface,
@@ -157,7 +154,7 @@ class BijbelBotApp extends StatelessWidget {
           ),
         ),
       ),
-      
+
       // Bottom Sheet - M3 Expressive style
       bottomSheetTheme: BottomSheetThemeData(
         showDragHandle: true,
@@ -168,7 +165,7 @@ class BijbelBotApp extends StatelessWidget {
           ),
         ),
       ),
-      
+
       // Dialog - M3 style
       dialogTheme: DialogThemeData(
         backgroundColor: colorScheme.surfaceContainerHigh,
@@ -186,7 +183,7 @@ class BijbelBotApp extends StatelessWidget {
           color: colorScheme.onSurfaceVariant,
         ),
       ),
-      
+
       // SnackBar - M3 style
       snackBarTheme: SnackBarThemeData(
         backgroundColor: colorScheme.inverseSurface,
@@ -194,12 +191,10 @@ class BijbelBotApp extends StatelessWidget {
           color: colorScheme.onInverseSurface,
           fontSize: 14,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         behavior: SnackBarBehavior.floating,
       ),
-      
+
       // Input Decoration - M3 Expressive style
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -224,9 +219,12 @@ class BijbelBotApp extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: colorScheme.error, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
-      
+
       // Page Transitions - M3 Expressive motion
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -234,7 +232,7 @@ class BijbelBotApp extends StatelessWidget {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      
+
       scaffoldBackgroundColor: colorScheme.surface,
     );
   }
@@ -244,7 +242,7 @@ class BijbelBotApp extends StatelessWidget {
     // M3 Expressive seed color - same neutral blue as light for consistency
     // Using a more neutral blue that avoids purple tones in dynamic generation
     const seedColor = Color(0xFF1976D2);
-    
+
     // Generate dynamic color scheme from seed for dark mode
     final colorScheme = ColorScheme.fromSeed(
       seedColor: seedColor,
@@ -254,21 +252,19 @@ class BijbelBotApp extends StatelessWidget {
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      
+
       // M3 Expressive Typography Scale
       textTheme: _buildM3TextTheme(Brightness.dark, colorScheme),
-      
+
       // M3 Expressive Shape System
       cardTheme: CardThemeData(
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         clipBehavior: Clip.antiAlias,
         color: colorScheme.surfaceContainerHighest,
         surfaceTintColor: colorScheme.surfaceTint,
       ),
-      
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -285,7 +281,7 @@ class BijbelBotApp extends StatelessWidget {
           ),
         ),
       ),
-      
+
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -299,7 +295,7 @@ class BijbelBotApp extends StatelessWidget {
           ),
         ),
       ),
-      
+
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -314,7 +310,7 @@ class BijbelBotApp extends StatelessWidget {
           ),
         ),
       ),
-      
+
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
@@ -329,31 +325,25 @@ class BijbelBotApp extends StatelessWidget {
           letterSpacing: 0,
         ),
       ),
-      
+
       drawerTheme: DrawerThemeData(
         backgroundColor: colorScheme.surface,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.horizontal(
-            right: Radius.circular(28),
-          ),
+          borderRadius: BorderRadius.horizontal(right: Radius.circular(28)),
         ),
       ),
-      
+
       bottomSheetTheme: BottomSheetThemeData(
         showDragHandle: true,
         backgroundColor: colorScheme.surfaceContainerLow,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(28),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
       ),
-      
+
       dialogTheme: DialogThemeData(
         backgroundColor: colorScheme.surfaceContainerHigh,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(28),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         titleTextStyle: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w400,
@@ -365,19 +355,17 @@ class BijbelBotApp extends StatelessWidget {
           color: colorScheme.onSurfaceVariant,
         ),
       ),
-      
+
       snackBarTheme: SnackBarThemeData(
         backgroundColor: colorScheme.inverseSurface,
         contentTextStyle: TextStyle(
           color: colorScheme.onInverseSurface,
           fontSize: 14,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         behavior: SnackBarBehavior.floating,
       ),
-      
+
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: colorScheme.surfaceContainerHighest,
@@ -401,22 +389,25 @@ class BijbelBotApp extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: colorScheme.error, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
-      
+
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
           TargetPlatform.android: CupertinoPageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      
+
       scaffoldBackgroundColor: colorScheme.surface,
     );
   }
 
   /// Build M3 Expressive Typography Scale
-  /// 
+  ///
   /// M3 Type Scale specifications:
   /// - Display: Large (57), Medium (45), Small (36)
   /// - Headline: Large (32), Medium (28), Small (24)
@@ -425,9 +416,13 @@ class BijbelBotApp extends StatelessWidget {
   /// - Label: Large (14), Medium (12), Small (11)
   TextTheme _buildM3TextTheme(Brightness brightness, ColorScheme colorScheme) {
     final isDark = brightness == Brightness.dark;
-    final onSurfaceColor = isDark ? colorScheme.onSurface : colorScheme.onSurface;
-    final onSurfaceVariant = isDark ? colorScheme.onSurfaceVariant : colorScheme.onSurfaceVariant;
-    
+    final onSurfaceColor = isDark
+        ? colorScheme.onSurface
+        : colorScheme.onSurface;
+    final onSurfaceVariant = isDark
+        ? colorScheme.onSurfaceVariant
+        : colorScheme.onSurfaceVariant;
+
     return TextTheme(
       // Display styles - for large, short text like onboarding
       displayLarge: TextStyle(
@@ -451,7 +446,7 @@ class BijbelBotApp extends StatelessWidget {
         letterSpacing: 0,
         color: onSurfaceColor,
       ),
-      
+
       // Headline styles - for section headers
       headlineLarge: TextStyle(
         fontSize: 32,
@@ -474,7 +469,7 @@ class BijbelBotApp extends StatelessWidget {
         letterSpacing: 0,
         color: onSurfaceColor,
       ),
-      
+
       // Title styles - for component titles
       titleLarge: TextStyle(
         fontSize: 22,
@@ -497,7 +492,7 @@ class BijbelBotApp extends StatelessWidget {
         letterSpacing: 0.1,
         color: onSurfaceColor,
       ),
-      
+
       // Body styles - for longer content
       bodyLarge: TextStyle(
         fontSize: 16,
@@ -520,7 +515,7 @@ class BijbelBotApp extends StatelessWidget {
         letterSpacing: 0.4,
         color: onSurfaceVariant,
       ),
-      
+
       // Label styles - for buttons, inputs, etc.
       labelLarge: TextStyle(
         fontSize: 14,
@@ -582,9 +577,7 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${localizations.errorInitializing} $e'),
-            ),
+            SnackBar(content: Text('${localizations.errorInitializing} $e')),
           );
         }
       }
@@ -612,7 +605,7 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
   Future<void> _createNewConversation() async {
     final chatProvider = Provider.of<BibleChatProvider>(context, listen: false);
     final localizations = AppLocalizations.of(context);
-    
+
     try {
       final conversation = await chatProvider.createConversation(
         title: localizations.newConversation,
@@ -639,12 +632,11 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
       appBar: AppBar(
         title: Text(localizations.bibleBot),
         leading: Builder(
-          builder: (context) =>
-            IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              tooltip: localizations.openConversations,
-            ),
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            tooltip: localizations.openConversations,
+          ),
         ),
         actions: [
           IconButton(

@@ -22,10 +22,7 @@ class BibleQAResponse {
   final String answer;
   final List<BibleReference> references;
 
-  const BibleQAResponse({
-    required this.answer,
-    required this.references,
-  });
+  const BibleQAResponse({required this.answer, required this.references});
 }
 
 /// Model class for Bible reference extraction
@@ -54,14 +51,11 @@ class AiError implements Exception {
   final int? statusCode;
   final String? errorCode;
 
-  const AiError({
-    required this.message,
-    this.statusCode,
-    this.errorCode,
-  });
+  const AiError({required this.message, this.statusCode, this.errorCode});
 
   @override
-  String toString() => 'AiError: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
+  String toString() =>
+      'AiError: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
 }
 
 /// A service that provides an interface to the AI API for Bible Q&A.
@@ -105,19 +99,24 @@ class AiService {
       final trimmedKey = apiKey.trim();
       if (trimmedKey.isEmpty) {
         throw const AiError(
-          message: 'API key is required. Add your Ollama API key in the app settings.',
+          message:
+              'API key is required. Add your Ollama API key in the app settings.',
         );
       }
 
       // Validate API key format for cloud API
       if (trimmedKey.length < 20) {
-        AppLogger.warning('OLLAMA_API_KEY appears to be too short - please verify it is correct');
+        AppLogger.warning(
+          'OLLAMA_API_KEY appears to be too short - please verify it is correct',
+        );
       }
 
       _apiKey = trimmedKey;
       _normenText = await _loadNormenText();
       _initialized = true;
-      AppLogger.info('Ollama AI API service initialized successfully for BijbelBot');
+      AppLogger.info(
+        'Ollama AI API service initialized successfully for BijbelBot',
+      );
     } catch (e) {
       AppLogger.error('Failed to initialize Ollama AI API service', e);
       _initialized = false;
@@ -152,7 +151,8 @@ class AiService {
 
     if (!_initialized || _apiKey.isEmpty) {
       throw const AiError(
-        message: 'Ollama AI API service is not properly configured. Add your API key in the app settings.',
+        message:
+            'Ollama AI API service is not properly configured. Add your API key in the app settings.',
       );
     }
 
@@ -178,17 +178,23 @@ class AiService {
       AppLogger.error('Failed to get Bible answer', e);
 
       // Provide helpful error messages for common cloud API issues
-      if (e.toString().contains('401') || e.toString().contains('Unauthorized')) {
+      if (e.toString().contains('401') ||
+          e.toString().contains('Unauthorized')) {
         throw AiError(
-          message: 'Ongeldige API key. Controleer je API key in de instellingen. Verkrijg een nieuwe key van https://ollama.com/settings/keys',
+          message:
+              'Ongeldige API key. Controleer je API key in de instellingen. Verkrijg een nieuwe key van https://ollama.com/settings/keys',
         );
-      } else if (e.toString().contains('404') || e.toString().contains('Not Found')) {
+      } else if (e.toString().contains('404') ||
+          e.toString().contains('Not Found')) {
         throw AiError(
-          message: 'Model "ministral-3:14b-cloud" niet gevonden. Controleer of dit model beschikbaar is op https://ollama.com',
+          message:
+              'Model "ministral-3:14b-cloud" niet gevonden. Controleer of dit model beschikbaar is op https://ollama.com',
         );
-      } else if (e.toString().contains('Connection refused') || e.toString().contains('SocketException')) {
+      } else if (e.toString().contains('Connection refused') ||
+          e.toString().contains('SocketException')) {
         throw AiError(
-          message: 'Kan geen verbinding maken met Ollama cloud API. Controleer je internetverbinding.',
+          message:
+              'Kan geen verbinding maken met Ollama cloud API. Controleer je internetverbinding.',
         );
       }
 
@@ -212,7 +218,8 @@ class AiService {
 
     if (!_initialized || _apiKey.isEmpty) {
       throw const AiError(
-        message: 'Ollama AI API service is not properly configured. Add your API key in the app settings.',
+        message:
+            'Ollama AI API service is not properly configured. Add your API key in the app settings.',
       );
     }
 
@@ -261,7 +268,8 @@ class AiService {
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
     final requestBody = json.encode({
-      'model': 'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
+      'model':
+          'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
       'messages': _buildMessages(question, history, promptSettings),
     });
 
@@ -269,9 +277,7 @@ class AiService {
 
     for (int attempt = 1; attempt <= AiConfig.maxRetries; attempt++) {
       try {
-        final headers = {
-          'Content-Type': 'application/json',
-        };
+        final headers = {'Content-Type': 'application/json'};
 
         // Only add Authorization header if we have an API key
         if (_apiKey.isNotEmpty) {
@@ -279,19 +285,18 @@ class AiService {
         }
 
         final response = await _httpClient
-            .post(
-              url,
-              headers: headers,
-              body: requestBody,
-            )
+            .post(url, headers: headers, body: requestBody)
             .timeout(AiConfig.requestTimeout);
 
         if (response.statusCode == 200) {
           return response;
-        } else if (response.statusCode == 429 && attempt < AiConfig.maxRetries) {
+        } else if (response.statusCode == 429 &&
+            attempt < AiConfig.maxRetries) {
           // Rate limited, wait and retry
           final delay = AiConfig.retryDelay * attempt;
-          AppLogger.warning('Rate limited, retrying in ${delay.inSeconds}s (attempt $attempt)');
+          AppLogger.warning(
+            'Rate limited, retrying in ${delay.inSeconds}s (attempt $attempt)',
+          );
           await Future.delayed(delay);
           continue;
         } else {
@@ -327,7 +332,9 @@ class AiService {
       }
 
       // Handle streaming response format - split by newlines and parse each JSON object
-      final lines = responseBody.split('\n').where((line) => line.trim().isNotEmpty);
+      final lines = responseBody
+          .split('\n')
+          .where((line) => line.trim().isNotEmpty);
 
       String fullContent = '';
       bool isDone = false;
@@ -373,7 +380,9 @@ class AiService {
         final responseStr = responseBody.toString();
         if (responseStr.contains('"content"')) {
           // Extract all content fields using regex
-          final contentMatches = RegExp(r'"content"\s*:\s*"([^"]*)"').allMatches(responseStr);
+          final contentMatches = RegExp(
+            r'"content"\s*:\s*"([^"]*)"',
+          ).allMatches(responseStr);
           String fallbackText = '';
           for (final match in contentMatches) {
             if (match.groupCount >= 1) {
@@ -395,7 +404,8 @@ class AiService {
       }
 
       return BibleQAResponse(
-        answer: 'Er is een fout opgetreden bij het verwerken van het antwoord. Probeer het opnieuw.',
+        answer:
+            'Er is een fout opgetreden bij het verwerken van het antwoord. Probeer het opnieuw.',
         references: [],
       );
     }
@@ -484,7 +494,8 @@ Referenties: Genesis 1:1, Johannes 3:16
         emojiLine = 'Emoji\'s: gebruik regelmatig emoji\'s waar passend.';
         break;
       case EmojiLevel.normal:
-        emojiLine = 'Emoji\'s: gebruik spaarzaam een paar emoji\'s waar passend.';
+        emojiLine =
+            'Emoji\'s: gebruik spaarzaam een paar emoji\'s waar passend.';
         break;
       case EmojiLevel.less:
         emojiLine = 'Emoji\'s: gebruik bij voorkeur geen emoji\'s.';
@@ -494,7 +505,8 @@ Referenties: Genesis 1:1, Johannes 3:16
     String formatLine;
     switch (settings.responseFormat) {
       case ResponseFormat.formatted:
-        formatLine = 'Opmaak: gebruik duidelijke structuur met kopjes en/of lijstjes waar passend.';
+        formatLine =
+            'Opmaak: gebruik duidelijke structuur met kopjes en/of lijstjes waar passend.';
         break;
       case ResponseFormat.longText:
         formatLine =
@@ -521,16 +533,18 @@ Referenties: Genesis 1:1, Johannes 3:16
   ) {
     final resolvedSettings = promptSettings ?? AiPromptSettings.defaults();
     final messages = <Map<String, String>>[
-      {
-        'role': 'system',
-        'content': _buildBiblePrompt(resolvedSettings),
-      },
+      {'role': 'system', 'content': _buildBiblePrompt(resolvedSettings)},
     ];
 
     if (history != null && history.isNotEmpty) {
       final trimmedHistory = history
-          .where((entry) => entry['content'] != null && entry['content']!.trim().isNotEmpty)
-          .where((entry) => entry['role'] == 'user' || entry['role'] == 'assistant')
+          .where(
+            (entry) =>
+                entry['content'] != null && entry['content']!.trim().isNotEmpty,
+          )
+          .where(
+            (entry) => entry['role'] == 'user' || entry['role'] == 'assistant',
+          )
           .toList();
 
       final startIndex = trimmedHistory.length > AiConfig.maxHistoryMessages
@@ -542,11 +556,10 @@ Referenties: Genesis 1:1, Johannes 3:16
 
     if (question.trim().isNotEmpty) {
       final last = messages.isNotEmpty ? messages.last : null;
-      if (last == null || last['role'] != 'user' || last['content'] != question.trim()) {
-        messages.add({
-          'role': 'user',
-          'content': question.trim(),
-        });
+      if (last == null ||
+          last['role'] != 'user' ||
+          last['content'] != question.trim()) {
+        messages.add({'role': 'user', 'content': question.trim()});
       }
     }
 
@@ -600,7 +613,9 @@ Referenties: Genesis 1:1, Johannes 3:16
         references: references,
       );
     } catch (e) {
-      AppLogger.warning('Failed to parse Bible response, using raw response: $e');
+      AppLogger.warning(
+        'Failed to parse Bible response, using raw response: $e',
+      );
       return BibleQAResponse(
         answer: _normalizeModelText(response),
         references: [],
@@ -728,7 +743,9 @@ Referenties: Genesis 1:1, Johannes 3:16
           String book = match.group(1) ?? '';
           final chapter = int.tryParse(match.group(2) ?? '0') ?? 0;
           final verse = int.tryParse(match.group(3) ?? '0') ?? 0;
-          final endVerse = match.group(4) != null ? int.tryParse(match.group(4)!) : null;
+          final endVerse = match.group(4) != null
+              ? int.tryParse(match.group(4)!)
+              : null;
 
           if (book.isNotEmpty && chapter > 0 && verse > 0) {
             // Convert abbreviation to full book name if needed
@@ -747,12 +764,14 @@ Referenties: Genesis 1:1, Johannes 3:16
 
             // Additional validation - ensure we have a valid book name
             if (fullBookName.length >= 2 && !_isNumeric(fullBookName)) {
-              references.add(BibleReference(
-                book: fullBookName,
-                chapter: chapter,
-                verse: verse,
-                endVerse: endVerse,
-              ));
+              references.add(
+                BibleReference(
+                  book: fullBookName,
+                  chapter: chapter,
+                  verse: verse,
+                  endVerse: endVerse,
+                ),
+              );
             }
           }
         }
@@ -793,16 +812,15 @@ Referenties: Genesis 1:1, Johannes 3:16
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
     final requestBody = json.encode({
-      'model': 'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
+      'model':
+          'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
       'messages': _buildMessages(question, history, promptSettings),
-      'stream': true
+      'stream': true,
     });
 
     AppLogger.info('Making streaming request to Ollama API');
 
-    final headers = {
-      'Content-Type': 'application/json',
-    };
+    final headers = {'Content-Type': 'application/json'};
 
     // Only add Authorization header if we have an API key
     if (_apiKey.isNotEmpty) {
@@ -813,7 +831,9 @@ Referenties: Genesis 1:1, Johannes 3:16
       ..headers.addAll(headers)
       ..body = requestBody;
 
-    final streamed = await _httpClient.send(request).timeout(AiConfig.requestTimeout);
+    final streamed = await _httpClient
+        .send(request)
+        .timeout(AiConfig.requestTimeout);
 
     return streamed.stream
         .transform(utf8.decoder)

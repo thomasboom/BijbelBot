@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 
 /// M3 Expressive API key dialog
-/// 
+///
 /// Features:
 /// - M3 dialog shape with extraLarge corner radius
 /// - Dynamic color from theme colorScheme
@@ -16,19 +16,13 @@ Future<void> showApiKeyDialog({
   return showDialog<void>(
     context: context,
     builder: (context) {
-      return _ApiKeyDialog(
-        existingKey: existingKey,
-        onSave: onSave,
-      );
+      return _ApiKeyDialog(existingKey: existingKey, onSave: onSave);
     },
   );
 }
 
 class _ApiKeyDialog extends StatefulWidget {
-  const _ApiKeyDialog({
-    required this.existingKey,
-    required this.onSave,
-  });
+  const _ApiKeyDialog({required this.existingKey, required this.onSave});
 
   final String? existingKey;
   final Future<void> Function(String) onSave;
@@ -70,15 +64,8 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
     final localizations = AppLocalizations.of(context);
 
     return AlertDialog(
-      icon: Icon(
-        Icons.vpn_key_outlined,
-        color: colorScheme.primary,
-        size: 32,
-      ),
-      title: Text(
-        localizations.setApiKey,
-        style: textTheme.headlineSmall,
-      ),
+      icon: Icon(Icons.vpn_key_outlined, color: colorScheme.primary, size: 32),
+      title: Text(localizations.setApiKey, style: textTheme.headlineSmall),
       content: Form(
         key: _formKey,
         child: Column(
@@ -107,10 +94,14 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
                 suffixIcon: IconButton(
                   onPressed: () => setState(() => _obscure = !_obscure),
                   icon: Icon(
-                    _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    _obscure
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  tooltip: _obscure ? localizations.showKey : localizations.hideKey,
+                  tooltip: _obscure
+                      ? localizations.showKey
+                      : localizations.hideKey,
                 ),
               ),
               validator: (value) {
@@ -128,10 +119,7 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(localizations.cancel),
         ),
-        FilledButton(
-          onPressed: _save,
-          child: Text(localizations.save),
-        ),
+        FilledButton(onPressed: _save, child: Text(localizations.save)),
       ],
     );
   }
