@@ -648,6 +648,7 @@ class _BijbelBotHomePageState extends State<BijbelBotHomePage> {
         ],
       ),
       drawer: Drawer(
+        width: 320,
         child: ConversationHistorySidebar(
           selectedConversationId: _currentConversation?.id,
           onConversationSelected: (conversation) {

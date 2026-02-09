@@ -5,6 +5,7 @@ import 'dart:convert';
 import '../models/bible_chat_message.dart';
 import '../models/bible_chat_conversation.dart';
 import '../models/ai_prompt_settings.dart';
+import '../services/bible_bot_service.dart';
 import '../services/logger.dart';
 import '../widgets/biblical_reference_dialog.dart';
 
@@ -19,6 +20,9 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _promptCustomKey = 'ai_prompt_custom';
   static const String _apiKeyKey = 'ollama_api_key';
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
+  static const int _titleHistoryLimit = 12;
+  static const String _titlePrompt =
+      'Geef een korte titel van maximaal één zin die beschrijft waar dit gesprek over ging. Gebruik geen vragen of opsommingen.';
 
   SharedPreferences? _prefs;
   late final Future<void> _ready;
@@ -26,9 +30,13 @@ class BibleChatProvider extends ChangeNotifier {
   // In-memory storage for quick access
   final Map<String, BibleChatConversation> _conversations = {};
   final Map<String, BibleChatMessage> _messages = {};
+  final Map<String, String> _messageToConversation = {};
   String? _activeConversationId;
   AiPromptSettings _promptSettings = AiPromptSettings.defaults();
   String? _apiKey;
+  final BibleBotService _bibleBotService = BibleBotService.instance;
+  String? _lastInitializedApiKey;
+  final Set<String> _titleGenerationInProgress = {};
 
   bool _isLoading = true;
   String? _error;
@@ -227,20 +235,6 @@ class BibleChatProvider extends ChangeNotifier {
       if (updatedConversation != null) {
         updatedConversation = updatedConversation.withNewMessage(message.id);
 
-        // Generate a title every time the AI responds, based on the latest user message
-        if (sender == MessageSender.bot) {
-          final latestUserMessage = await _getLatestUserMessageInConversation(
-            conversationId,
-          );
-          if (latestUserMessage != null) {
-            final generatedTitle = await _generateTitleFromMessage(
-              latestUserMessage,
-            );
-            updatedConversation = updatedConversation.copyWith(
-              title: generatedTitle,
-            );
-          }
-        }
       } else {
         // Recover from missing conversation by creating a placeholder
         updatedConversation = BibleChatConversation(
@@ -252,6 +246,7 @@ class BibleChatProvider extends ChangeNotifier {
       }
 
       _messages[message.id] = message;
+      _messageToConversation[message.id] = updatedConversation.id;
       _conversations[updatedConversation.id] = updatedConversation;
 
       await _saveAllMessages();
@@ -271,44 +266,6 @@ class BibleChatProvider extends ChangeNotifier {
       notifyListeners();
       rethrow;
     }
-  }
-
-  /// Gets the latest user message in a conversation
-  Future<BibleChatMessage?> _getLatestUserMessageInConversation(
-    String conversationId,
-  ) async {
-    final conversation = _conversations[conversationId];
-    if (conversation == null) return null;
-
-    for (final messageId in conversation.messageIds.reversed) {
-      final message = _messages[messageId];
-      if (message != null && message.sender == MessageSender.user) {
-        return message;
-      }
-    }
-    return null;
-  }
-
-  /// Generates a title from the first user message
-  Future<String> _generateTitleFromMessage(BibleChatMessage message) async {
-    // Create a title based on the first 60 characters of the user's message
-    String title = message.content.trim();
-    if (title.length > 60) {
-      title = title.substring(0, 60);
-      // Find the last space to avoid cutting words
-      final lastSpaceIndex = title.lastIndexOf(' ');
-      if (lastSpaceIndex > 0) {
-        title = title.substring(0, lastSpaceIndex);
-      }
-      title += '...';
-    }
-
-    // Capitalize the first letter
-    if (title.isNotEmpty) {
-      title = title[0].toUpperCase() + title.substring(1);
-    }
-
-    return title;
   }
 
   /// Updates an existing conversation
@@ -341,6 +298,7 @@ class BibleChatProvider extends ChangeNotifier {
       // Remove all messages in this conversation
       for (final messageId in conversation.messageIds) {
         _messages.remove(messageId);
+        _messageToConversation.remove(messageId);
       }
 
       // Remove conversation
@@ -425,10 +383,138 @@ class BibleChatProvider extends ChangeNotifier {
         await _saveAllMessages();
       }
 
+      final conversationId = _messageToConversation[messageId];
+      if (persist &&
+          message.sender == MessageSender.bot &&
+          conversationId != null) {
+        unawaited(_generateTitleForConversation(conversationId));
+      }
+
       notifyListeners();
     } catch (e) {
       AppLogger.error('Failed to update message content: $messageId', e);
     }
+  }
+
+  Future<void> _generateTitleForConversation(String conversationId) async {
+    if (_titleGenerationInProgress.contains(conversationId)) return;
+    final history = _buildTitleHistoryForConversation(conversationId);
+    if (history.isEmpty) return;
+
+    _titleGenerationInProgress.add(conversationId);
+    try {
+      await _ensureBibleBotServiceReady();
+
+      final response = await _bibleBotService.askQuestion(
+        question: _titlePrompt,
+        questionType: 'conversation_title',
+        history: history,
+        promptSettings: _promptSettings,
+      );
+
+      final generatedTitle = _extractTitleFromAnswer(response.answer);
+      if (generatedTitle.isEmpty) return;
+
+      final conversation = _conversations[conversationId];
+      if (conversation == null ||
+          generatedTitle == conversation.title) {
+        return;
+      }
+
+      final updatedConversation = conversation.copyWith(
+        title: generatedTitle,
+      );
+      _conversations[conversationId] = updatedConversation;
+      await _saveAllConversations();
+
+      AppLogger.info(
+        'Generated AI title for conversation $conversationId: $generatedTitle',
+      );
+      notifyListeners();
+    } catch (e) {
+      AppLogger.warning(
+        'Failed to generate title for conversation $conversationId: $e',
+      );
+    } finally {
+      _titleGenerationInProgress.remove(conversationId);
+    }
+  }
+
+  Future<void> _ensureBibleBotServiceReady() async {
+    final key = _apiKey?.trim();
+    if (key == null || key.isEmpty) {
+      throw Exception('API key ontbreekt voor titelgeneratie');
+    }
+    if (_lastInitializedApiKey == key &&
+        _bibleBotService.isInitialized) {
+      return;
+    }
+    await _bibleBotService.initialize(apiKey: key);
+    _lastInitializedApiKey = key;
+  }
+
+  List<Map<String, String>> _buildTitleHistoryForConversation(
+    String conversationId,
+  ) {
+    final conversation = _conversations[conversationId];
+    if (conversation == null) return [];
+    final history = <Map<String, String>>[];
+
+    for (final messageId in conversation.messageIds) {
+      final message = _messages[messageId];
+      if (message == null) continue;
+      final content = message.content.trim();
+      if (content.isEmpty) continue;
+      history.add({
+        'role': message.sender == MessageSender.user ? 'user' : 'assistant',
+        'content': content,
+      });
+    }
+
+    if (history.length > _titleHistoryLimit) {
+      return history.sublist(history.length - _titleHistoryLimit);
+    }
+
+    return history;
+  }
+
+  String _extractTitleFromAnswer(String answer) {
+    final cleaned = _removeMarkdown(answer);
+    final normalized = cleaned.replaceAll(RegExp(r'\s+'), ' ').trim();
+    if (normalized.isEmpty) return '';
+
+    int endIndex = normalized.length;
+    final punctuationMatch = RegExp(r'[.!?]').firstMatch(normalized);
+    if (punctuationMatch != null && punctuationMatch.start > 0) {
+      endIndex = punctuationMatch.start;
+    }
+
+    String title = normalized.substring(0, endIndex).trim();
+    if (title.isEmpty) return '';
+
+    if (title.length == 1) {
+      return title.toUpperCase();
+    }
+
+    return '${title[0].toUpperCase()}${title.substring(1)}';
+  }
+
+  String _removeMarkdown(String text) {
+    var cleaned = text;
+    cleaned = cleaned.replaceAll(
+      RegExp(r'```[\s\S]*?```', multiLine: true),
+      '',
+    );
+    cleaned = cleaned.replaceAllMapped(
+      RegExp(r'\[(.*?)\]\([^)]*\)'),
+      (match) => match.group(1) ?? '',
+    );
+    cleaned = cleaned.replaceAll(RegExp(r'`'), '');
+    cleaned = cleaned.replaceAll(RegExp(r'[*_~]'), '');
+    cleaned = cleaned.replaceAll(RegExp(r'^#{1,6}\s+', multiLine: true), '');
+    cleaned = cleaned.replaceAll(RegExp(r'^>+\s?', multiLine: true), '');
+    cleaned = cleaned.replaceAll(RegExp(r'^\s*[-*+]\s+', multiLine: true), '');
+    return cleaned.trim();
   }
 
   /// Gets conversation statistics
@@ -490,12 +576,14 @@ class BibleChatProvider extends ChangeNotifier {
       await _saveAllConversations();
       await _saveAllMessages();
       if (_activeConversationId != null) {
-        await _prefs?.setString(_activeConversationKey, _activeConversationId!);
-      }
+      await _prefs?.setString(_activeConversationKey, _activeConversationId!);
+    }
 
-      AppLogger.info(
-        'Imported chat data: ${_conversations.length} conversations, ${_messages.length} messages',
-      );
+    _rebuildMessageToConversationMap();
+
+    AppLogger.info(
+      'Imported chat data: ${_conversations.length} conversations, ${_messages.length} messages',
+    );
       notifyListeners();
     } catch (e) {
       _error = 'Failed to import chat data: ${e.toString()}';
@@ -511,6 +599,7 @@ class BibleChatProvider extends ChangeNotifier {
       await _ensureReady();
       _conversations.clear();
       _messages.clear();
+      _messageToConversation.clear();
       _activeConversationId = null;
 
       await _prefs?.remove(_conversationsKey);
@@ -566,6 +655,7 @@ class BibleChatProvider extends ChangeNotifier {
       }
 
       _reconcileConversations();
+      _rebuildMessageToConversationMap();
       // Clean up empty conversations after loading
       await cleanupEmptyConversations(skipReadyCheck: true);
 
@@ -738,6 +828,15 @@ class BibleChatProvider extends ChangeNotifier {
         _conversations[conversation.id] = conversation.copyWith(
           messageIds: filteredMessageIds,
         );
+      }
+    }
+  }
+
+  void _rebuildMessageToConversationMap() {
+    _messageToConversation.clear();
+    for (final conversation in _conversations.values) {
+      for (final messageId in conversation.messageIds) {
+        _messageToConversation[messageId] = conversation.id;
       }
     }
   }
