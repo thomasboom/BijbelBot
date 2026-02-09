@@ -1,9 +1,9 @@
 import '../services/logger.dart';
-import 'gemini_service.dart';
+import 'ai_service.dart';
 import '../models/ai_prompt_settings.dart';
 
 // Re-export types for convenience
-export 'gemini_service.dart' show BibleReference, BibleQAResponse;
+export 'ai_service.dart' show BibleReference, BibleQAResponse;
 
 /// Service for handling Bible bot interactions
 class BibleBotService {

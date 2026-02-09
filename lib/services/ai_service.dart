@@ -553,7 +553,7 @@ Referenties: Genesis 1:1, Johannes 3:16
     return messages;
   }
 
-  /// Parses the Gemini response to extract Bible answer and references
+  /// Parses the AI response to extract Bible answer and references
   BibleQAResponse _parseBibleResponse(String response) {
     try {
       final normalizedResponse = _normalizeModelText(response);
