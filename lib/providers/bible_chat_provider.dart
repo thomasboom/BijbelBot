@@ -22,7 +22,7 @@ class BibleChatProvider extends ChangeNotifier {
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
   static const int _titleHistoryLimit = 12;
   static const String _titlePrompt =
-      'Geef een korte titel van maximaal één zin die beschrijft waar dit gesprek over ging. Gebruik geen vragen of opsommingen.';
+      'Geef een korte, duidelijke titel van exact één zin zonder vraagteken en zonder opsommingen of voortekens. Gebruik geen Markdown-opmaak, geen codeblokken, geen emoji\'s en verwijder speciale tekens zoals "#", "/", "`", "*", "-", "•" of bullets; schrijf alleen een normale zin met alledaagse woorden.';
 
   SharedPreferences? _prefs;
   late final Future<void> _ready;
@@ -490,6 +490,7 @@ class BibleChatProvider extends ChangeNotifier {
     }
 
     String title = normalized.substring(0, endIndex).trim();
+    title = _normalizeTitle(title);
     if (title.isEmpty) return '';
 
     if (title.length == 1) {
@@ -497,6 +498,15 @@ class BibleChatProvider extends ChangeNotifier {
     }
 
     return '${title[0].toUpperCase()}${title.substring(1)}';
+  }
+
+  String _normalizeTitle(String title) {
+    var trimmed = title.trim();
+    trimmed = trimmed.replaceFirst(
+      RegExp(r'^[/\\#\*\-\–\—\•\u2022:\s]+'),
+      '',
+    );
+    return trimmed;
   }
 
   String _removeMarkdown(String text) {
