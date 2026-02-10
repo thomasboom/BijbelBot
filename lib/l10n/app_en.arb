@@ -91,5 +91,6 @@
   "formatted": "Formatted",
   "longText": "Long text",
   "retry": "Retry",
-  "microphone": "Microphone"
+  "microphone": "Microphone",
+  "aiDisclaimer": "AI may make mistakes"
 }

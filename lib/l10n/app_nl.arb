@@ -91,5 +91,6 @@
   "formatted": "Geformatteerd",
   "longText": "Lange tekst",
   "retry": "Opnieuw",
-  "microphone": "Microfoon"
+  "microphone": "Microfoon",
+  "aiDisclaimer": "AI kan fouten maken"
 }

@@ -145,98 +145,114 @@ class _ChatInputFieldState extends State<ChatInputField>
           top: BorderSide(color: colorScheme.outlineVariant, width: 1),
         ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          if (_speechEnabled)
-            IconButton(
-              onPressed: widget.isLoading ? null : _toggleListening,
-              icon: Icon(
-                _isListening ? Icons.mic : Icons.mic_none,
-                color: _isListening
-                    ? colorScheme.primary
-                    : widget.isLoading || !widget.isEnabled
-                    ? colorScheme.onSurfaceVariant
-                    : colorScheme.onSurface,
-              ),
-              tooltip: localizations.microphone,
-            ),
-          Expanded(
-            child: CallbackShortcuts(
-              bindings: <ShortcutActivator, VoidCallback>{
-                const SingleActivator(LogicalKeyboardKey.enter): _sendMessage,
-                const SingleActivator(LogicalKeyboardKey.enter, shift: true):
-                    _insertNewline,
-                const SingleActivator(LogicalKeyboardKey.enter, control: true):
-                    _insertNewline,
-              },
-              child: TextField(
-                controller: widget.controller,
-                style: textTheme.bodyLarge,
-                decoration: InputDecoration(
-                  hintText: localizations.askQuestionAboutBible,
-                  hintStyle: textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (_speechEnabled)
+                IconButton(
+                  onPressed: widget.isLoading ? null : _toggleListening,
+                  icon: Icon(
+                    _isListening ? Icons.mic : Icons.mic_none,
+                    color: _isListening
+                        ? colorScheme.primary
+                        : widget.isLoading || !widget.isEnabled
+                        ? colorScheme.onSurfaceVariant
+                        : colorScheme.onSurface,
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(28),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(28),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(28),
-                    borderSide: BorderSide(
-                      color: colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: colorScheme.surfaceContainerHighest,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 14,
-                  ),
+                  tooltip: localizations.microphone,
                 ),
-                maxLines: null,
-                minLines: 1,
-                textCapitalization: TextCapitalization.sentences,
-                enabled: !widget.isLoading && widget.isEnabled,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          ScaleTransition(
-            scale: _sendButtonScale,
-            child: FloatingActionButton(
-              onPressed: (widget.isLoading || !widget.isEnabled)
-                  ? null
-                  : _sendMessage,
-              backgroundColor: (widget.isLoading || !widget.isEnabled)
-                  ? colorScheme.surfaceContainerHighest
-                  : colorScheme.primaryContainer,
-              foregroundColor: (widget.isLoading || !widget.isEnabled)
-                  ? colorScheme.onSurfaceVariant
-                  : colorScheme.onPrimaryContainer,
-              elevation: 0,
-              focusElevation: 0,
-              hoverElevation: 0,
-              highlightElevation: 0,
-              shape: const CircleBorder(),
-              child: widget.isLoading
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          colorScheme.onPrimaryContainer,
+              Expanded(
+                child: CallbackShortcuts(
+                  bindings: <ShortcutActivator, VoidCallback>{
+                    const SingleActivator(LogicalKeyboardKey.enter): _sendMessage,
+                    const SingleActivator(LogicalKeyboardKey.enter, shift: true):
+                        _insertNewline,
+                    const SingleActivator(LogicalKeyboardKey.enter, control: true):
+                        _insertNewline,
+                  },
+                  child: TextField(
+                    controller: widget.controller,
+                    style: textTheme.bodyLarge,
+                    decoration: InputDecoration(
+                      hintText: localizations.askQuestionAboutBible,
+                      hintStyle: textTheme.bodyLarge?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28),
+                        borderSide: BorderSide(
+                          color: colorScheme.primary,
+                          width: 2,
                         ),
                       ),
-                    )
-                  : const Icon(Icons.send_rounded, size: 22),
+                      filled: true,
+                      fillColor: colorScheme.surfaceContainerHighest,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
+                    ),
+                    maxLines: null,
+                    minLines: 1,
+                    textCapitalization: TextCapitalization.sentences,
+                    enabled: !widget.isLoading && widget.isEnabled,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              ScaleTransition(
+                scale: _sendButtonScale,
+                child: FloatingActionButton(
+                  onPressed: (widget.isLoading || !widget.isEnabled)
+                      ? null
+                      : _sendMessage,
+                  backgroundColor: (widget.isLoading || !widget.isEnabled)
+                      ? colorScheme.surfaceContainerHighest
+                      : colorScheme.primaryContainer,
+                  foregroundColor: (widget.isLoading || !widget.isEnabled)
+                      ? colorScheme.onSurfaceVariant
+                      : colorScheme.onPrimaryContainer,
+                  elevation: 0,
+                  focusElevation: 0,
+                  hoverElevation: 0,
+                  highlightElevation: 0,
+                  shape: const CircleBorder(),
+                  child: widget.isLoading
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        )
+                      : const Icon(Icons.send_rounded, size: 22),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              localizations.aiDisclaimer,
+              style: textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontSize: 11,
+              ),
             ),
           ),
         ],

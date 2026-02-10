@@ -655,6 +655,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Microphone'**
   String get microphone;
+
+  /// No description provided for @aiDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'AI may make mistakes'**
+  String get aiDisclaimer;
 }
 
 class _AppLocalizationsDelegate

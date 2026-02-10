@@ -306,4 +306,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get microphone => 'Microfoon';
+
+  @override
+  String get aiDisclaimer => 'AI kan fouten maken';
 }
