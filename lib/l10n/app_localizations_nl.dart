@@ -363,4 +363,30 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get conversationUnpinned => 'Gesprek losgemaakt';
+
+  @override
+  String get edit => 'Bewerken';
+
+  @override
+  String get editPrompt => 'Prompt bewerken';
+
+  @override
+  String get editPromptTitle => 'Bewerk je bericht';
+
+  @override
+  String get editPromptDescription =>
+      'Bewerk je bericht. Het gesprek wordt vanaf dit punt opnieuw gestart.';
+
+  @override
+  String get editPromptHint => 'Voer je bericht in...';
+
+  @override
+  String get messageEdited => 'Bericht bewerkt';
+
+  @override
+  String get restartConversation => 'Gesprek herstarten';
+
+  @override
+  String get restartConversationConfirm =>
+      'Door dit bericht te bewerken wordt het gesprek vanaf dit punt opnieuw gestart. Alle berichten na dit bericht worden verwijderd. Doorgaan?';
 }

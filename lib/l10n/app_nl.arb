@@ -109,5 +109,13 @@
   "pin": "Vastzetten",
   "unpin": "Losmaken",
   "conversationPinned": "Gesprek vastgezet",
-  "conversationUnpinned": "Gesprek losgemaakt"
+  "conversationUnpinned": "Gesprek losgemaakt",
+  "edit": "Bewerken",
+  "editPrompt": "Prompt bewerken",
+  "editPromptTitle": "Bewerk je bericht",
+  "editPromptDescription": "Bewerk je bericht. Het gesprek wordt vanaf dit punt opnieuw gestart.",
+  "editPromptHint": "Voer je bericht in...",
+  "messageEdited": "Bericht bewerkt",
+  "restartConversation": "Gesprek herstarten",
+  "restartConversationConfirm": "Door dit bericht te bewerken wordt het gesprek vanaf dit punt opnieuw gestart. Alle berichten na dit bericht worden verwijderd. Doorgaan?"
 }

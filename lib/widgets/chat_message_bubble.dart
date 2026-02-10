@@ -16,11 +16,13 @@ import '../providers/bible_chat_provider.dart';
 class ChatMessageBubble extends StatefulWidget {
   final BibleChatMessage message;
   final bool isError;
+  final VoidCallback? onEdit;
 
   const ChatMessageBubble({
     super.key,
     required this.message,
     this.isError = false,
+    this.onEdit,
   });
 
   @override
@@ -65,7 +67,7 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
                 localizations,
               ),
               const SizedBox(height: 4),
-              _buildTimestamp(colorScheme, textTheme),
+              _buildUserActions(colorScheme, textTheme, localizations),
             ],
           )
         else
@@ -398,6 +400,50 @@ class _ChatMessageBubbleState extends State<ChatMessageBubble>
       style: textTheme.labelSmall?.copyWith(
         color: colorScheme.onSurfaceVariant,
       ),
+    );
+  }
+
+  /// M3 Expressive user actions (edit button) for user messages
+  Widget _buildUserActions(
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+    AppLocalizations localizations,
+  ) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildTimestamp(colorScheme, textTheme),
+        if (widget.onEdit != null) ...[
+          const SizedBox(width: 8),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: widget.onEdit,
+              borderRadius: BorderRadius.circular(16),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.edit_outlined,
+                      size: 14,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      localizations.edit,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

@@ -109,5 +109,13 @@
   "pin": "Pin",
   "unpin": "Unpin",
   "conversationPinned": "Conversation pinned",
-  "conversationUnpinned": "Conversation unpinned"
+  "conversationUnpinned": "Conversation unpinned",
+  "edit": "Edit",
+  "editPrompt": "Edit prompt",
+  "editPromptTitle": "Edit your message",
+  "editPromptDescription": "Edit your message. The conversation will restart from this point.",
+  "editPromptHint": "Enter your message...",
+  "messageEdited": "Message edited",
+  "restartConversation": "Restart conversation",
+  "restartConversationConfirm": "Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?"
 }

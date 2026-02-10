@@ -523,6 +523,242 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     }
   }
 
+  Future<void> _showEditMessageDialog(BibleChatMessage message) async {
+    final localizations = AppLocalizations.of(context);
+    final TextEditingController editController =
+        TextEditingController(text: message.content);
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(localizations.editPromptTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                localizations.editPromptDescription,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: editController,
+                maxLines: 5,
+                minLines: 1,
+                decoration: InputDecoration(
+                  hintText: localizations.editPromptHint,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(localizations.cancel),
+            ),
+            FilledButton(
+              onPressed: () {
+                if (editController.text.trim().isNotEmpty) {
+                  Navigator.of(context).pop(true);
+                }
+              },
+              child: Text(localizations.restartConversation),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true && _chatProvider != null) {
+      final newContent = editController.text.trim();
+      if (newContent.isNotEmpty && newContent != message.content) {
+        await _chatProvider!.editMessageAndRestart(
+          messageId: message.id,
+          newContent: newContent,
+        );
+
+        // Sync messages from provider after edit
+        _syncMessagesFromProvider();
+
+        // Scroll to bottom to show the edited message
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_scrollController.hasClients) {
+            _scrollToBottom();
+          }
+        });
+
+        // Automatically get a new AI response for the edited message
+        await _getAiResponseForEditedMessage(newContent);
+      }
+    }
+
+    editController.dispose();
+  }
+
+  /// Gets an AI response for an edited message without adding a new user message
+  Future<void> _getAiResponseForEditedMessage(String message) async {
+    final localizations = AppLocalizations.of(context);
+    if (message.trim().isEmpty || _isLoading || _chatProvider == null) return;
+    if (!_chatProvider!.hasApiKey) {
+      setState(() {
+        _errorMessage = localizations.addApiKeyFirst;
+        _needsApiKey = true;
+      });
+      return;
+    }
+
+    BibleChatMessage? botMessage;
+
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      final history = _buildHistoryForAi();
+
+      // Create placeholder bot message for streaming updates
+      botMessage = await _chatProvider!.addMessage(
+        conversationId: widget.conversation.id,
+        content: '',
+        sender: MessageSender.bot,
+        type: MessageType.explanation,
+      );
+
+      // Stream response chunks
+      final buffer = StringBuffer();
+      await for (final chunk
+          in _bibleBotService
+              .askQuestionStream(
+                question: message,
+                history: history,
+                promptSettings: _chatProvider!.promptSettings,
+              )
+              .timeout(const Duration(seconds: 45))) {
+        buffer.write(chunk);
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: buffer.toString(),
+          persist: false,
+        );
+        _syncMessagesFromProvider();
+        // Use debounced scroll during streaming to prevent jank
+        _scrollToBottomDebounced();
+      }
+
+      final fullText = buffer.toString().trim();
+
+      if (fullText.isEmpty) {
+        // Fallback to non-streaming if stream produced nothing
+        final response = await _bibleBotService
+            .askQuestion(
+              question: message,
+              questionType: 'general_question',
+              conversationId: widget.conversation.id,
+              history: history,
+              promptSettings: _chatProvider!.promptSettings,
+            )
+            .timeout(const Duration(seconds: 45));
+
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: response.answer,
+          bibleReferences: response.references
+              .map(
+                (ref) =>
+                    '${ref.book} ${ref.chapter}:${ref.verse}${ref.endVerse != null ? '-${ref.endVerse}' : ''}',
+              )
+              .toList(),
+        );
+      } else {
+        final references = _bibleBotService.extractBibleReferences(fullText);
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: fullText,
+          bibleReferences: references
+              .map(
+                (ref) =>
+                    '${ref.book} ${ref.chapter}:${ref.verse}${ref.endVerse != null ? '-${ref.endVerse}' : ''}',
+              )
+              .toList(),
+        );
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+      _syncMessagesFromProvider();
+
+      // Scroll to bottom to show bot response
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
+    } on TimeoutException catch (e) {
+      AppLogger.error('Request timed out', e);
+      if (mounted) {
+        final localizations = AppLocalizations.of(context);
+
+        if (botMessage != null) {
+          await _chatProvider!.updateMessageContent(
+            messageId: botMessage.id,
+            content: localizations.responseTakingLonger,
+          );
+        } else {
+          await _chatProvider!.addMessage(
+            conversationId: widget.conversation.id,
+            content: localizations.responseTakingLonger,
+            sender: MessageSender.bot,
+            type: MessageType.text,
+          );
+        }
+
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
+        _syncMessagesFromProvider();
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
+      }
+    } catch (e) {
+      AppLogger.error('Failed to get AI response', e);
+      final localizations = AppLocalizations.of(context);
+
+      // Create error message through provider
+      if (botMessage != null) {
+        await _chatProvider!.updateMessageContent(
+          messageId: botMessage.id,
+          content: localizations.errorProcessingQuestion,
+        );
+      } else {
+        await _chatProvider!.addMessage(
+          conversationId: widget.conversation.id,
+          content: localizations.errorProcessingQuestion,
+          sender: MessageSender.bot,
+          type: MessageType.text,
+        );
+      }
+
+      setState(() {
+        _isLoading = false;
+        _errorMessage = e.toString();
+      });
+      _syncMessagesFromProvider();
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -727,6 +963,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
               isError:
                   message.type == MessageType.text &&
                   message.content.contains('Sorry, I encountered an error'),
+              onEdit: message.sender == MessageSender.user
+                  ? () => _showEditMessageDialog(message)
+                  : null,
             ),
           ),
         );

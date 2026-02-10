@@ -881,4 +881,82 @@ class BibleChatProvider extends ChangeNotifier {
       // Could show a snackbar or toast here to inform the user
     }
   }
+
+  /// Edits a user message and restarts the conversation from that point
+  /// All messages after the edited message will be removed
+  Future<BibleChatMessage?> editMessageAndRestart({
+    required String messageId,
+    required String newContent,
+  }) async {
+    try {
+      await _ensureReady();
+      
+      final message = _messages[messageId];
+      if (message == null) {
+        AppLogger.warning('Message not found for editing: $messageId');
+        return null;
+      }
+
+      if (message.sender != MessageSender.user) {
+        AppLogger.warning('Cannot edit non-user message: $messageId');
+        return null;
+      }
+
+      final conversationId = _messageToConversation[messageId];
+      if (conversationId == null) {
+        AppLogger.warning('Conversation not found for message: $messageId');
+        return null;
+      }
+
+      final conversation = _conversations[conversationId];
+      if (conversation == null) {
+        AppLogger.warning('Conversation not found: $conversationId');
+        return null;
+      }
+
+      // Find the index of the message in the conversation
+      final messageIndex = conversation.messageIds.indexOf(messageId);
+      if (messageIndex == -1) {
+        AppLogger.warning('Message not found in conversation: $messageId');
+        return null;
+      }
+
+      // Remove all messages after the edited message
+      final messagesToRemove = conversation.messageIds.sublist(messageIndex + 1);
+      for (final msgId in messagesToRemove) {
+        _messages.remove(msgId);
+        _messageToConversation.remove(msgId);
+      }
+
+      // Update the message content
+      final updatedMessage = message.copyWith(
+        content: newContent,
+        timestamp: DateTime.now(),
+      );
+      _messages[messageId] = updatedMessage;
+
+      // Update the conversation with only messages up to and including the edited message
+      final updatedMessageIds = conversation.messageIds.sublist(0, messageIndex + 1);
+      final updatedConversation = conversation.copyWith(
+        messageIds: updatedMessageIds,
+        lastActivity: DateTime.now(),
+      );
+      _conversations[conversationId] = updatedConversation;
+
+      // Save changes
+      await _saveAllMessages();
+      await _saveAllConversations();
+
+      AppLogger.info(
+        'Edited message $messageId and removed ${messagesToRemove.length} messages after it',
+      );
+      notifyListeners();
+      return updatedMessage;
+    } catch (e) {
+      _error = 'Failed to edit message: ${e.toString()}';
+      AppLogger.error(_error!, e);
+      notifyListeners();
+      return null;
+    }
+  }
 }

@@ -763,6 +763,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Conversation unpinned'**
   String get conversationUnpinned;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @editPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit prompt'**
+  String get editPrompt;
+
+  /// No description provided for @editPromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit your message'**
+  String get editPromptTitle;
+
+  /// No description provided for @editPromptDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit your message. The conversation will restart from this point.'**
+  String get editPromptDescription;
+
+  /// No description provided for @editPromptHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your message...'**
+  String get editPromptHint;
+
+  /// No description provided for @messageEdited.
+  ///
+  /// In en, this message translates to:
+  /// **'Message edited'**
+  String get messageEdited;
+
+  /// No description provided for @restartConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart conversation'**
+  String get restartConversation;
+
+  /// No description provided for @restartConversationConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?'**
+  String get restartConversationConfirm;
 }
 
 class _AppLocalizationsDelegate

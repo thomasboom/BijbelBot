@@ -360,4 +360,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get conversationUnpinned => 'Conversation unpinned';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get editPrompt => 'Edit prompt';
+
+  @override
+  String get editPromptTitle => 'Edit your message';
+
+  @override
+  String get editPromptDescription =>
+      'Edit your message. The conversation will restart from this point.';
+
+  @override
+  String get editPromptHint => 'Enter your message...';
+
+  @override
+  String get messageEdited => 'Message edited';
+
+  @override
+  String get restartConversation => 'Restart conversation';
+
+  @override
+  String get restartConversationConfirm =>
+      'Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?';
 }
