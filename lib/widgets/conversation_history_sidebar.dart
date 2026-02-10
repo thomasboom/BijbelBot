@@ -157,6 +157,8 @@ class _ConversationHistorySidebarState
                           widget.selectedConversationId == conversation.id,
                       onTap: () =>
                           widget.onConversationSelected?.call(conversation),
+                      onRename: () => _showRenameDialog(context, conversation),
+                      onDelete: () => _showDeleteDialog(context, conversation),
                     );
                   },
                 ),
@@ -207,6 +209,130 @@ class _ConversationHistorySidebarState
       ),
     );
   }
+
+  /// Shows a dialog to rename a conversation
+  void _showRenameDialog(
+    BuildContext context,
+    BibleChatConversation conversation,
+  ) {
+    final localizations = AppLocalizations.of(context);
+    final provider = Provider.of<BibleChatProvider>(context, listen: false);
+    final textController = TextEditingController(
+      text: conversation.title ?? localizations.newConversation,
+    );
+    final formKey = GlobalKey<FormState>();
+
+    Future<void> save() async {
+      if (formKey.currentState?.validate() != true) return;
+      final newTitle = textController.text.trim();
+      _renameConversation(provider, conversation, newTitle);
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        final textTheme = theme.textTheme;
+
+        return AlertDialog(
+          icon: Icon(
+            Icons.edit_outlined,
+            color: colorScheme.primary,
+            size: 32,
+          ),
+          title: Text(
+            localizations.renameConversation,
+            style: textTheme.headlineSmall,
+          ),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    controller: textController,
+                    autofocus: true,
+                    style: textTheme.bodyLarge,
+                    decoration: InputDecoration(
+                      labelText: localizations.enterNewTitle,
+                      labelStyle: textTheme.bodyLarge?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) => save(),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return localizations.enterNewTitle;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(localizations.cancel),
+            ),
+            FilledButton(onPressed: save, child: Text(localizations.save)),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Renames a conversation
+  void _renameConversation(
+    BibleChatProvider provider,
+    BibleChatConversation conversation,
+    String newTitle,
+  ) {
+    final updatedConversation = conversation.copyWith(title: newTitle);
+    provider.updateConversation(updatedConversation);
+  }
+
+  /// Shows a confirmation dialog to delete a conversation
+  void _showDeleteDialog(
+    BuildContext context,
+    BibleChatConversation conversation,
+  ) {
+    final localizations = AppLocalizations.of(context);
+    final provider = Provider.of<BibleChatProvider>(context, listen: false);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(localizations.deleteConversation),
+        content: Text(localizations.deleteConversationConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(localizations.cancel),
+          ),
+          FilledButton(
+            onPressed: () {
+              provider.deleteConversation(conversation.id);
+              Navigator.of(context).pop();
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            child: Text(localizations.delete),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// M3 Expressive conversation list item
@@ -214,12 +340,16 @@ class ConversationItem extends StatelessWidget {
   final BibleChatConversation conversation;
   final bool isSelected;
   final VoidCallback? onTap;
+  final VoidCallback? onRename;
+  final VoidCallback? onDelete;
 
   const ConversationItem({
     super.key,
     required this.conversation,
     required this.isSelected,
     this.onTap,
+    this.onRename,
+    this.onDelete,
   });
 
   @override
@@ -282,6 +412,62 @@ class ConversationItem extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              // Menu button for delete and rename
+              PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: isSelected
+                      ? colorScheme.onSecondaryContainer
+                      : colorScheme.onSurfaceVariant,
+                ),
+                color: colorScheme.surface,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                onSelected: (value) {
+                  switch (value) {
+                    case 'rename':
+                      onRename?.call();
+                      break;
+                    case 'delete':
+                      onDelete?.call();
+                      break;
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem<String>(
+                    value: 'rename',
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.edit_outlined,
+                          size: 20,
+                          color: colorScheme.onSurface,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(localizations.rename),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.delete_outline,
+                          size: 20,
+                          color: colorScheme.error,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          localizations.delete,
+                          style: TextStyle(color: colorScheme.error),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

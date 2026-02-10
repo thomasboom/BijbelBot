@@ -697,6 +697,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dutch'**
   String get dutch;
+
+  /// No description provided for @rename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get rename;
+
+  /// No description provided for @renameConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename conversation'**
+  String get renameConversation;
+
+  /// No description provided for @deleteConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete conversation'**
+  String get deleteConversation;
+
+  /// No description provided for @deleteConversationConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this conversation? This action cannot be undone.'**
+  String get deleteConversationConfirm;
+
+  /// No description provided for @conversationDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation deleted'**
+  String get conversationDeleted;
+
+  /// No description provided for @conversationRenamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation renamed'**
+  String get conversationRenamed;
+
+  /// No description provided for @enterNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new title'**
+  String get enterNewTitle;
 }
 
 class _AppLocalizationsDelegate

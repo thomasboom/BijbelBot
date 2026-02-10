@@ -329,4 +329,26 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get dutch => 'Nederlands';
+
+  @override
+  String get rename => 'Hernoemen';
+
+  @override
+  String get renameConversation => 'Gesprek hernoemen';
+
+  @override
+  String get deleteConversation => 'Gesprek verwijderen';
+
+  @override
+  String get deleteConversationConfirm =>
+      'Weet je zeker dat je dit gesprek wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.';
+
+  @override
+  String get conversationDeleted => 'Gesprek verwijderd';
+
+  @override
+  String get conversationRenamed => 'Gesprek hernoemd';
+
+  @override
+  String get enterNewTitle => 'Voer nieuwe titel in';
 }

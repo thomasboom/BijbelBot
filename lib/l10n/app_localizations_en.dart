@@ -326,4 +326,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dutch => 'Dutch';
+
+  @override
+  String get rename => 'Rename';
+
+  @override
+  String get renameConversation => 'Rename conversation';
+
+  @override
+  String get deleteConversation => 'Delete conversation';
+
+  @override
+  String get deleteConversationConfirm =>
+      'Are you sure you want to delete this conversation? This action cannot be undone.';
+
+  @override
+  String get conversationDeleted => 'Conversation deleted';
+
+  @override
+  String get conversationRenamed => 'Conversation renamed';
+
+  @override
+  String get enterNewTitle => 'Enter new title';
 }

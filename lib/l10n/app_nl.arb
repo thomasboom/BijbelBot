@@ -98,5 +98,12 @@
   "language": "Taal",
   "systemLanguage": "Systeem",
   "english": "Engels",
-  "dutch": "Nederlands"
+  "dutch": "Nederlands",
+  "rename": "Hernoemen",
+  "renameConversation": "Gesprek hernoemen",
+  "deleteConversation": "Gesprek verwijderen",
+  "deleteConversationConfirm": "Weet je zeker dat je dit gesprek wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+  "conversationDeleted": "Gesprek verwijderd",
+  "conversationRenamed": "Gesprek hernoemd",
+  "enterNewTitle": "Voer nieuwe titel in"
 }
