@@ -121,5 +121,10 @@
   "editPromptHint": "Voer je bericht in...",
   "messageEdited": "Bericht bewerkt",
   "restartConversation": "Gesprek herstarten",
-  "restartConversationConfirm": "Door dit bericht te bewerken wordt het gesprek vanaf dit punt opnieuw gestart. Alle berichten na dit bericht worden verwijderd. Doorgaan?"
+  "restartConversationConfirm": "Door dit bericht te bewerken wordt het gesprek vanaf dit punt opnieuw gestart. Alle berichten na dit bericht worden verwijderd. Doorgaan?",
+  "aiModel": "AI-model",
+  "lowCostModel": "Lage kosten",
+  "mediumCostModel": "Middelmatige kosten",
+  "highCostModel": "Hoge kosten",
+  "modelDescription": "Kies het AI-model dat je wilt gebruiken. Modellen met hogere kosten geven betere kwaliteit maar kunnen langzamer en duurder zijn."
 }

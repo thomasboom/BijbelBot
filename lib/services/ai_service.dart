@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
 import 'logger.dart';
 import '../models/ai_prompt_settings.dart';
+import '../models/ai_model_selection.dart';
 import 'system_prompt_config.dart';
 
 /// Stream callback function type for real-time updates
@@ -68,6 +69,7 @@ class AiService {
   bool _initialized = false;
   String _normenText = '';
   SystemPromptConfig? _promptConfig;
+  String _model = AiModels.mediumCost.id; // Default to medium cost model
 
   // Rate limiting
   DateTime? _lastRequestTime;
@@ -92,6 +94,15 @@ class AiService {
 
   /// Gets the API key for external access
   String get apiKey => _apiKey;
+
+  /// Gets the current model ID
+  String get model => _model;
+
+  /// Sets the AI model to use
+  void setModel(String modelId) {
+    _model = modelId;
+    AppLogger.info('AI model set to: $modelId');
+  }
 
   /// Initializes the AI service with a user-provided API key
   Future<void> initialize({required String apiKey}) async {
@@ -271,8 +282,7 @@ class AiService {
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
     final requestBody = json.encode({
-      'model':
-          'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
+      'model': _model, // Use the selected model
       'messages': _buildMessages(question, history, promptSettings),
     });
 
@@ -814,8 +824,7 @@ $responseStructure
     final url = Uri.parse('${AiConfig.baseUrl}/api/chat');
 
     final requestBody = json.encode({
-      'model':
-          'ministral-3:14b-cloud', // Use the cloud model as specified in the API key
+      'model': _model, // Use the selected model
       'messages': _buildMessages(question, history, promptSettings),
       'stream': true,
     });

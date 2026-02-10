@@ -398,4 +398,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get restartConversationConfirm =>
       'Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?';
+
+  @override
+  String get aiModel => 'AI Model';
+
+  @override
+  String get lowCostModel => 'Low Cost';
+
+  @override
+  String get mediumCostModel => 'Medium Cost';
+
+  @override
+  String get highCostModel => 'High Cost';
+
+  @override
+  String get modelDescription =>
+      'Choose the AI model to use. Higher cost models provide better quality but may be slower and more expensive.';
 }

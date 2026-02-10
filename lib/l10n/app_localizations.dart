@@ -835,6 +835,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?'**
   String get restartConversationConfirm;
+
+  /// No description provided for @aiModel.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Model'**
+  String get aiModel;
+
+  /// No description provided for @lowCostModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Cost'**
+  String get lowCostModel;
+
+  /// No description provided for @mediumCostModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium Cost'**
+  String get mediumCostModel;
+
+  /// No description provided for @highCostModel.
+  ///
+  /// In en, this message translates to:
+  /// **'High Cost'**
+  String get highCostModel;
+
+  /// No description provided for @modelDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the AI model to use. Higher cost models provide better quality but may be slower and more expensive.'**
+  String get modelDescription;
 }
 
 class _AppLocalizationsDelegate

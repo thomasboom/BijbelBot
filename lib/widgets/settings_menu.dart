@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/bible_chat_provider.dart';
 import '../models/ai_prompt_settings.dart';
+import '../models/ai_model_selection.dart';
 import '../l10n/app_localizations.dart';
 import 'api_key_dialog.dart';
 
@@ -127,6 +128,29 @@ class _SettingsBottomSheetContentState
                           : localizations.add,
                     ),
                   ),
+                ),
+              ),
+            ),
+
+            // AI Model Section
+            _buildSectionTitle(localizations.aiModel, textTheme, colorScheme),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: _buildDropdown<AiModel>(
+                value: AiModels.getModelById(provider.aiModel) ?? AiModels.lowCost,
+                items: AiModels.allModels,
+                labelBuilder: (model) => model.getLabel(localizations),
+                onChanged: (model) => provider.setAiModel(model.id),
+                colorScheme: colorScheme,
+                textTheme: textTheme,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                localizations.modelDescription,
+                style: textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ),

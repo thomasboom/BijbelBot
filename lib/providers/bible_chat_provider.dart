@@ -5,7 +5,9 @@ import 'dart:convert';
 import '../models/bible_chat_message.dart';
 import '../models/bible_chat_conversation.dart';
 import '../models/ai_prompt_settings.dart';
+import '../models/ai_model_selection.dart';
 import '../services/bible_bot_service.dart';
+import '../services/ai_service.dart';
 import '../services/logger.dart';
 import '../services/title_prompt_config.dart';
 import '../widgets/biblical_reference_dialog.dart';
@@ -22,6 +24,7 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _apiKeyKey = 'ollama_api_key';
   static const String _languageKey = 'app_language';
   static const String _themeModeKey = 'app_theme_mode';
+  static const String _aiModelKey = 'ai_model';
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
   static const int _titleHistoryLimit = 12;
 
@@ -37,6 +40,7 @@ class BibleChatProvider extends ChangeNotifier {
   String? _apiKey;
   String _language = 'system'; // Default to system language
   ThemeMode _themeMode = ThemeMode.system; // Default to system theme
+  String _aiModel = AiModels.lowCost.id; // Default to low cost model
   final BibleBotService _bibleBotService = BibleBotService.instance;
   String? _lastInitializedApiKey;
   final Set<String> _titleGenerationInProgress = {};
@@ -114,6 +118,19 @@ class BibleChatProvider extends ChangeNotifier {
     await _ensureReady();
     _themeMode = mode;
     await _prefs?.setString(_themeModeKey, mode.name);
+    notifyListeners();
+  }
+
+  /// Current AI model setting
+  String get aiModel => _aiModel;
+
+  /// Sets the AI model preference
+  Future<void> setAiModel(String modelId) async {
+    await _ensureReady();
+    _aiModel = modelId;
+    await _prefs?.setString(_aiModelKey, modelId);
+    // Update the AI service with the new model
+    AiService.instance.setModel(modelId);
     notifyListeners();
   }
 
@@ -671,6 +688,9 @@ class BibleChatProvider extends ChangeNotifier {
       _apiKey = _prefs?.getString(_apiKeyKey);
       _language = _prefs?.getString(_languageKey) ?? 'system';
       _themeMode = _loadThemeMode();
+      _aiModel = _prefs?.getString(_aiModelKey) ?? AiModels.lowCost.id;
+      // Update the AI service with the loaded model
+      AiService.instance.setModel(_aiModel);
 
       // Load conversations
       await _loadConversations();

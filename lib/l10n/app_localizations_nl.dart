@@ -401,4 +401,20 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get restartConversationConfirm =>
       'Door dit bericht te bewerken wordt het gesprek vanaf dit punt opnieuw gestart. Alle berichten na dit bericht worden verwijderd. Doorgaan?';
+
+  @override
+  String get aiModel => 'AI-model';
+
+  @override
+  String get lowCostModel => 'Lage kosten';
+
+  @override
+  String get mediumCostModel => 'Middelmatige kosten';
+
+  @override
+  String get highCostModel => 'Hoge kosten';
+
+  @override
+  String get modelDescription =>
+      'Kies het AI-model dat je wilt gebruiken. Modellen met hogere kosten geven betere kwaliteit maar kunnen langzamer en duurder zijn.';
 }

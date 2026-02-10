@@ -121,5 +121,10 @@
   "editPromptHint": "Enter your message...",
   "messageEdited": "Message edited",
   "restartConversation": "Restart conversation",
-  "restartConversationConfirm": "Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?"
+  "restartConversationConfirm": "Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?",
+  "aiModel": "AI Model",
+  "lowCostModel": "Low Cost",
+  "mediumCostModel": "Medium Cost",
+  "highCostModel": "High Cost",
+  "modelDescription": "Choose the AI model to use. Higher cost models provide better quality but may be slower and more expensive."
 }
