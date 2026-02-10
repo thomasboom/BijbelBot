@@ -1,6 +1,6 @@
 {
-    "name": "bijbelbot",
-    "short_name": "bijbelbot",
+    "name": "BijbelBot",
+    "short_name": "BijbelBot",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
