@@ -303,4 +303,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get retry => 'Opnieuw';
+
+  @override
+  String get microphone => 'Microfoon';
 }

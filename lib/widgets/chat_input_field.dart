@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import '../l10n/app_localizations.dart';
 
 /// M3 Expressive chat input field widget
@@ -9,6 +10,7 @@ import '../l10n/app_localizations.dart';
 /// - Dynamic color from theme colorScheme
 /// - Expressive motion for interactions
 /// - Proper typography using M3 type scale
+/// - Speech to text functionality
 class ChatInputField extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onSendMessage;
@@ -29,29 +31,72 @@ class ChatInputField extends StatefulWidget {
 
 class _ChatInputFieldState extends State<ChatInputField>
     with SingleTickerProviderStateMixin {
-  // Animation controller for expressive send button
   late AnimationController _sendButtonController;
   late Animation<double> _sendButtonScale;
+  final SpeechToText _speechToText = SpeechToText();
+  bool _isListening = false;
+  bool _speechEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _sendButtonController = AnimationController(
-      duration: const Duration(milliseconds: 150), // M3 short duration
+      duration: const Duration(milliseconds: 150),
       vsync: this,
     );
     _sendButtonScale = Tween<double>(begin: 1.0, end: 0.9).animate(
       CurvedAnimation(
         parent: _sendButtonController,
-        curve: Curves.easeOutCubic, // M3 standard easing
+        curve: Curves.easeOutCubic,
       ),
     );
+    _initSpeech();
   }
 
   @override
   void dispose() {
     _sendButtonController.dispose();
+    _speechToText.stop();
     super.dispose();
+  }
+
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _startListening() async {
+    if (!_speechEnabled) return;
+    await _speechToText.listen(
+      onResult: (result) {
+        setState(() {
+          widget.controller.text = result.recognizedWords;
+        });
+      },
+      listenFor: const Duration(seconds: 30),
+      pauseFor: const Duration(seconds: 3),
+      partialResults: true,
+    );
+    setState(() {
+      _isListening = true;
+    });
+  }
+
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {
+      _isListening = false;
+    });
+  }
+
+  void _toggleListening() {
+    if (_isListening) {
+      _stopListening();
+    } else {
+      _startListening();
+    }
   }
 
   void _sendMessage() {
@@ -103,6 +148,19 @@ class _ChatInputFieldState extends State<ChatInputField>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          if (_speechEnabled)
+            IconButton(
+              onPressed: widget.isLoading ? null : _toggleListening,
+              icon: Icon(
+                _isListening ? Icons.mic : Icons.mic_none,
+                color: _isListening
+                    ? colorScheme.primary
+                    : widget.isLoading || !widget.isEnabled
+                    ? colorScheme.onSurfaceVariant
+                    : colorScheme.onSurface,
+              ),
+              tooltip: localizations.microphone,
+            ),
           Expanded(
             child: CallbackShortcuts(
               bindings: <ShortcutActivator, VoidCallback>{
@@ -120,7 +178,6 @@ class _ChatInputFieldState extends State<ChatInputField>
                   hintStyle: textTheme.bodyLarge?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  // M3 shape: extraLarge (28dp) for text fields
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(28),
                     borderSide: BorderSide.none,
@@ -151,7 +208,6 @@ class _ChatInputFieldState extends State<ChatInputField>
             ),
           ),
           const SizedBox(width: 12),
-          // M3 Expressive FAB-style send button
           ScaleTransition(
             scale: _sendButtonScale,
             child: FloatingActionButton(

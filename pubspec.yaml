@@ -64,6 +64,9 @@ dependencies:
   # Google Gemini AI (kept for compatibility)
   google_generative_ai: ^0.4.7
 
+  # Speech to text
+  speech_to_text: ^7.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

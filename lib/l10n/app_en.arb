@@ -90,5 +90,6 @@
   "less": "Less",
   "formatted": "Formatted",
   "longText": "Long text",
-  "retry": "Retry"
+  "retry": "Retry",
+  "microphone": "Microphone"
 }

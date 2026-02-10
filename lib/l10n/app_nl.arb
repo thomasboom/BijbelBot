@@ -90,5 +90,6 @@
   "less": "Minder",
   "formatted": "Geformatteerd",
   "longText": "Lange tekst",
-  "retry": "Opnieuw"
+  "retry": "Opnieuw",
+  "microphone": "Microfoon"
 }
