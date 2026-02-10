@@ -659,7 +659,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiDisclaimer.
   ///
   /// In en, this message translates to:
-  /// **'AI may make mistakes'**
+  /// **'AI can make mistakes. Always verify important information. No AI response replaces personal Bible study and prayer.'**
   String get aiDisclaimer;
 }
 

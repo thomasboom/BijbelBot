@@ -305,5 +305,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get microphone => 'Microphone';
 
   @override
-  String get aiDisclaimer => 'AI may make mistakes';
+  String get aiDisclaimer =>
+      'AI can make mistakes. Always verify important information. No AI response replaces personal Bible study and prayer.';
 }

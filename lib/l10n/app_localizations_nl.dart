@@ -308,5 +308,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get microphone => 'Microfoon';
 
   @override
-  String get aiDisclaimer => 'AI kan fouten maken';
+  String get aiDisclaimer =>
+      'AI kan fouten maken. Verifieer belangrijke informatie altijd. Geen enkele AI-respons vervangt persoonlijk Bijbelonderzoek en gebed.';
 }
