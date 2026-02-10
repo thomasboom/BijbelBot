@@ -1,3 +1,3 @@
 {
-  "title_prompt": "Geef een korte, duidelijke titel van exact één zin zonder vraagteken en zonder opsommingen of voortekens. Gebruik geen Markdown-opmaak, geen codeblokken, geen emoji's en verwijder speciale tekens zoals \"#\", \"/\", \"`\", \"*\", \"-\", \"•\" of bullets; schrijf alleen een normale zin met alledaagse woorden."
+  "title_prompt": "Geef een korte, bondige samenvatting in één zin. Maximaal 6 woorden. Geen vraagteken, geen opsommingstekens, geen Markdown, geen emoji's, geen speciale tekens."
 }
