@@ -7,6 +7,7 @@ import '../models/bible_chat_conversation.dart';
 import '../models/ai_prompt_settings.dart';
 import '../services/bible_bot_service.dart';
 import '../services/logger.dart';
+import '../services/title_prompt_config.dart';
 import '../widgets/biblical_reference_dialog.dart';
 
 /// Provider for managing Bible chat conversations and messages
@@ -22,8 +23,6 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _languageKey = 'app_language';
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
   static const int _titleHistoryLimit = 12;
-  static const String _titlePrompt =
-      'Geef een korte, duidelijke titel van exact één zin zonder vraagteken en zonder opsommingen of voortekens. Gebruik geen Markdown-opmaak, geen codeblokken, geen emoji\'s en verwijder speciale tekens zoals "#", "/", "`", "*", "-", "•" of bullets; schrijf alleen een normale zin met alledaagse woorden.';
 
   SharedPreferences? _prefs;
   late final Future<void> _ready;
@@ -39,6 +38,7 @@ class BibleChatProvider extends ChangeNotifier {
   final BibleBotService _bibleBotService = BibleBotService.instance;
   String? _lastInitializedApiKey;
   final Set<String> _titleGenerationInProgress = {};
+  String _titlePrompt = ''; // Loaded from title_prompt.json
 
   bool _isLoading = true;
   String? _error;
@@ -650,6 +650,9 @@ class BibleChatProvider extends ChangeNotifier {
       _prefs = await SharedPreferences.getInstance();
       AppLogger.info('SharedPreferences instance obtained');
 
+      // Load title prompt from JSON file
+      await _loadTitlePrompt();
+
       // Load AI prompt settings
       _loadPromptSettings();
       _apiKey = _prefs?.getString(_apiKeyKey);
@@ -708,6 +711,18 @@ class BibleChatProvider extends ChangeNotifier {
       responseFormat: AiPromptSettings.parseResponseFormat(formatValue),
       customInstruction: customValue,
     );
+  }
+
+  /// Loads the title prompt from the JSON file
+  Future<void> _loadTitlePrompt() async {
+    try {
+      final config = await TitlePromptConfig.load();
+      _titlePrompt = config.titlePrompt;
+      AppLogger.info('Title prompt loaded successfully');
+    } catch (e) {
+      AppLogger.error('Failed to load title prompt, using fallback', e);
+      // Fallback is already handled in TitlePromptConfig.load()
+    }
   }
 
   Future<void> _updatePromptSettings(AiPromptSettings settings) async {

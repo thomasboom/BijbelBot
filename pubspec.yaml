@@ -94,6 +94,7 @@ flutter:
     - .env
     - soul.md
     - lib/assets/system_prompt.json
+    - lib/assets/title_prompt.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
