@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
 import 'logger.dart';
 import '../models/ai_prompt_settings.dart';
+import 'system_prompt_config.dart';
 
 /// Stream callback function type for real-time updates
 typedef StreamCallback = void Function(String chunk);
@@ -66,6 +67,7 @@ class AiService {
   late final http.Client _httpClient;
   bool _initialized = false;
   String _normenText = '';
+  SystemPromptConfig? _promptConfig;
 
   // Rate limiting
   DateTime? _lastRequestTime;
@@ -113,6 +115,7 @@ class AiService {
 
       _apiKey = trimmedKey;
       _normenText = await _loadNormenText();
+      _promptConfig = await _loadSystemPromptConfig();
       _initialized = true;
       AppLogger.info(
         'Ollama AI API service initialized successfully for BijbelBot',
@@ -432,6 +435,11 @@ class AiService {
 
   /// Builds a system prompt for Bible Q&A
   String _buildBiblePrompt(AiPromptSettings settings) {
+    final config = _promptConfig;
+    final systemPrompt =
+        config?.systemPrompt ?? 'Je bent een behulpzame assistent.';
+    final responseStructure = config?.responseStructure ?? '';
+
     final normenBlock = _normenText.trim().isEmpty
         ? 'Normen: (geen normen geladen)'
         : 'Normen (uit normen.md):\n$_normenText';
@@ -442,18 +450,7 @@ class AiService {
         : '\nExtra instructies van de gebruiker:\n${settings.customInstruction.trim()}\n';
 
     return '''
-Je bent een behulpzame, vriendelijke assistent met uitgebreide kennis over diverse onderwerpen, waaronder de Bijbel en christelijke tradities. Antwoord in het Nederlands.
-
-Richtlijnen voor je antwoord:
-1. Geef accurate, behulpzame antwoorden op allerlei vragen (algemeen, wetenschappelijk, praktisch, of Bijbels)
-2. Wees respectvol, vriendelijk en ondersteunend van toon
-3. Bij Bijbel- of geloofsvragen: gebruik Bijbelse kennis en waar passend voeg relevante Bijbelverwijzingen toe
-4. Houd uitleg duidelijk en toegankelijk
-5. Als de vraag over specifieke Bijbelteksten gaat, citeer ze waar relevant
-6. Antwoord in het Nederlands
-7. Als je het niet zeker weet, geef dat eerlijk aan en speculeer niet
-8. Bij algemene vragen: geef een behulpzaam algemeen antwoord; wanneer waarden relevant zijn, benadruk expliciet het christelijke morele kader (bijv. kuisheid en seks binnen het huwelijk)
-9. Vermijd harde of veroordelende taal; spreek met genade en waarheid
+$systemPrompt
 
 Stijlvoorkeuren:
 $styleBlock
@@ -462,15 +459,7 @@ $customBlock
 Gebruik het onderstaande normen-overzicht als waarde-kader:
 $normenBlock
 
-Structureer je antwoord als:
-1. Een helder, direct antwoord op de vraag
-2. Relevante Bijbelverwijzingen in het format "Boek Hoofdstuk:Vers"
-3. Eventuele extra uitleg of context
-
-Voorbeeld:
-[Je antwoord hier]
-
-Referenties: Genesis 1:1, Johannes 3:16
+$responseStructure
 ''';
   }
 
@@ -523,6 +512,19 @@ Referenties: Genesis 1:1, Johannes 3:16
     } catch (e) {
       AppLogger.warning('Could not load normen.md: $e');
       return '';
+    }
+  }
+
+  Future<SystemPromptConfig?> _loadSystemPromptConfig() async {
+    try {
+      final jsonString = await rootBundle.loadString(
+        'lib/assets/system_prompt.json',
+      );
+      final json = jsonDecode(jsonString);
+      return SystemPromptConfig.fromJson(json as Map<String, dynamic>);
+    } catch (e) {
+      AppLogger.warning('Could not load system_prompt.json: $e');
+      return null;
     }
   }
 
