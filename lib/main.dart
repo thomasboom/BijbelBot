@@ -34,7 +34,9 @@ class BijbelBotApp extends StatelessWidget {
             theme: _buildLightTheme(),
             darkTheme: _buildDarkTheme(),
             themeMode: provider.themeMode,
-            locale: provider.language == 'system' ? null : Locale(provider.language),
+            locale: provider.language == 'system'
+                ? null
+                : Locale(provider.language),
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,

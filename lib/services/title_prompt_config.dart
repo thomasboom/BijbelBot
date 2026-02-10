@@ -5,9 +5,7 @@ import 'package:flutter/services.dart';
 class TitlePromptConfig {
   final String titlePrompt;
 
-  const TitlePromptConfig({
-    required this.titlePrompt,
-  });
+  const TitlePromptConfig({required this.titlePrompt});
 
   factory TitlePromptConfig.fromJson(Map<String, dynamic> json) {
     return TitlePromptConfig(
@@ -16,15 +14,15 @@ class TitlePromptConfig {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'title_prompt': titlePrompt,
-    };
+    return {'title_prompt': titlePrompt};
   }
 
   /// Loads the title prompt configuration from the assets JSON file
   static Future<TitlePromptConfig> load() async {
     try {
-      final jsonString = await rootBundle.loadString('assets/title_prompt.json');
+      final jsonString = await rootBundle.loadString(
+        'assets/title_prompt.json',
+      );
       final jsonData = json.decode(jsonString) as Map<String, dynamic>;
       return TitlePromptConfig.fromJson(jsonData);
     } catch (e) {

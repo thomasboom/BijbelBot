@@ -482,8 +482,9 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   Future<void> _showEditMessageDialog(BibleChatMessage message) async {
     final localizations = AppLocalizations.of(context);
-    final TextEditingController editController =
-        TextEditingController(text: message.content);
+    final TextEditingController editController = TextEditingController(
+      text: message.content,
+    );
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -497,8 +498,8 @@ class _BibleChatScreenState extends State<BibleChatScreen>
               Text(
                 localizations.editPromptDescription,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 16),
               TextField(

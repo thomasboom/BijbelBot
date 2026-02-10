@@ -167,11 +167,16 @@ class _ChatInputFieldState extends State<ChatInputField>
               Expanded(
                 child: CallbackShortcuts(
                   bindings: <ShortcutActivator, VoidCallback>{
-                    const SingleActivator(LogicalKeyboardKey.enter): _sendMessage,
-                    const SingleActivator(LogicalKeyboardKey.enter, shift: true):
-                        _insertNewline,
-                    const SingleActivator(LogicalKeyboardKey.enter, control: true):
-                        _insertNewline,
+                    const SingleActivator(LogicalKeyboardKey.enter):
+                        _sendMessage,
+                    const SingleActivator(
+                      LogicalKeyboardKey.enter,
+                      shift: true,
+                    ): _insertNewline,
+                    const SingleActivator(
+                      LogicalKeyboardKey.enter,
+                      control: true,
+                    ): _insertNewline,
                   },
                   child: TextField(
                     controller: widget.controller,

@@ -260,11 +260,7 @@ class _ConversationHistorySidebarState
         final textTheme = theme.textTheme;
 
         return AlertDialog(
-          icon: Icon(
-            Icons.edit_outlined,
-            color: colorScheme.primary,
-            size: 32,
-          ),
+          icon: Icon(Icons.edit_outlined, color: colorScheme.primary, size: 32),
           title: Text(
             localizations.renameConversation,
             style: textTheme.headlineSmall,

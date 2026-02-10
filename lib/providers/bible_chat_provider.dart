@@ -277,7 +277,6 @@ class BibleChatProvider extends ChangeNotifier {
       var updatedConversation = _conversations[conversationId];
       if (updatedConversation != null) {
         updatedConversation = updatedConversation.withNewMessage(message.id);
-
       } else {
         // Recover from missing conversation by creating a placeholder
         updatedConversation = BibleChatConversation(
@@ -459,14 +458,11 @@ class BibleChatProvider extends ChangeNotifier {
       if (generatedTitle.isEmpty) return;
 
       final conversation = _conversations[conversationId];
-      if (conversation == null ||
-          generatedTitle == conversation.title) {
+      if (conversation == null || generatedTitle == conversation.title) {
         return;
       }
 
-      final updatedConversation = conversation.copyWith(
-        title: generatedTitle,
-      );
+      final updatedConversation = conversation.copyWith(title: generatedTitle);
       _conversations[conversationId] = updatedConversation;
       await _saveAllConversations();
 
@@ -488,8 +484,7 @@ class BibleChatProvider extends ChangeNotifier {
     if (key == null || key.isEmpty) {
       throw Exception('API key ontbreekt voor titelgeneratie');
     }
-    if (_lastInitializedApiKey == key &&
-        _bibleBotService.isInitialized) {
+    if (_lastInitializedApiKey == key && _bibleBotService.isInitialized) {
       return;
     }
     await _bibleBotService.initialize(apiKey: key);
@@ -545,10 +540,7 @@ class BibleChatProvider extends ChangeNotifier {
 
   String _normalizeTitle(String title) {
     var trimmed = title.trim();
-    trimmed = trimmed.replaceFirst(
-      RegExp(r'^[/\\#\*\-\–\—\•\u2022:\s]+'),
-      '',
-    );
+    trimmed = trimmed.replaceFirst(RegExp(r'^[/\\#\*\-\–\—\•\u2022:\s]+'), '');
     return trimmed;
   }
 
@@ -629,14 +621,14 @@ class BibleChatProvider extends ChangeNotifier {
       await _saveAllConversations();
       await _saveAllMessages();
       if (_activeConversationId != null) {
-      await _prefs?.setString(_activeConversationKey, _activeConversationId!);
-    }
+        await _prefs?.setString(_activeConversationKey, _activeConversationId!);
+      }
 
-    _rebuildMessageToConversationMap();
+      _rebuildMessageToConversationMap();
 
-    AppLogger.info(
-      'Imported chat data: ${_conversations.length} conversations, ${_messages.length} messages',
-    );
+      AppLogger.info(
+        'Imported chat data: ${_conversations.length} conversations, ${_messages.length} messages',
+      );
       notifyListeners();
     } catch (e) {
       _error = 'Failed to import chat data: ${e.toString()}';
@@ -954,7 +946,7 @@ class BibleChatProvider extends ChangeNotifier {
   }) async {
     try {
       await _ensureReady();
-      
+
       final message = _messages[messageId];
       if (message == null) {
         AppLogger.warning('Message not found for editing: $messageId');
@@ -986,7 +978,9 @@ class BibleChatProvider extends ChangeNotifier {
       }
 
       // Remove all messages after the edited message
-      final messagesToRemove = conversation.messageIds.sublist(messageIndex + 1);
+      final messagesToRemove = conversation.messageIds.sublist(
+        messageIndex + 1,
+      );
       for (final msgId in messagesToRemove) {
         _messages.remove(msgId);
         _messageToConversation.remove(msgId);
@@ -1000,7 +994,10 @@ class BibleChatProvider extends ChangeNotifier {
       _messages[messageId] = updatedMessage;
 
       // Update the conversation with only messages up to and including the edited message
-      final updatedMessageIds = conversation.messageIds.sublist(0, messageIndex + 1);
+      final updatedMessageIds = conversation.messageIds.sublist(
+        0,
+        messageIndex + 1,
+      );
       final updatedConversation = conversation.copyWith(
         messageIds: updatedMessageIds,
         lastActivity: DateTime.now(),

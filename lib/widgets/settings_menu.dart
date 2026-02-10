@@ -137,7 +137,8 @@ class _SettingsBottomSheetContentState
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: _buildDropdown<AiModel>(
-                value: AiModels.getModelById(provider.aiModel) ?? AiModels.lowCost,
+                value:
+                    AiModels.getModelById(provider.aiModel) ?? AiModels.lowCost,
                 items: AiModels.allModels,
                 labelBuilder: (model) => model.getLabel(localizations),
                 onChanged: (model) => provider.setAiModel(model.id),

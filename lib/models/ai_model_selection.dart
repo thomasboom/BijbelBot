@@ -1,11 +1,7 @@
 import '../l10n/app_localizations.dart';
 
 /// AI model cost tier for Ollama models
-enum AiModelCost {
-  low,
-  medium,
-  high,
-}
+enum AiModelCost { low, medium, high }
 
 /// Represents an Ollama AI model with its configuration
 class AiModel {
@@ -73,11 +69,7 @@ class AiModels {
   );
 
   /// All available models
-  static const List<AiModel> allModels = [
-    lowCost,
-    mediumCost,
-    highCost,
-  ];
+  static const List<AiModel> allModels = [lowCost, mediumCost, highCost];
 
   /// Get model by ID
   static AiModel? getModelById(String id) {
