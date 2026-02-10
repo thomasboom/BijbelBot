@@ -26,20 +26,25 @@ class BijbelBotApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => BibleChatProvider(),
-      child: MaterialApp(
-        title: 'BijbelBot',
-        debugShowCheckedModeBanner: false,
-        theme: _buildLightTheme(),
-        darkTheme: _buildDarkTheme(),
-        themeMode: ThemeMode.system,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [const Locale('en'), const Locale('nl')],
-        home: const BijbelBotHomePage(),
+      child: Consumer<BibleChatProvider>(
+        builder: (context, provider, _) {
+          return MaterialApp(
+            title: 'BijbelBot',
+            debugShowCheckedModeBanner: false,
+            theme: _buildLightTheme(),
+            darkTheme: _buildDarkTheme(),
+            themeMode: ThemeMode.system,
+            locale: provider.language == 'system' ? null : Locale(provider.language),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [const Locale('en'), const Locale('nl')],
+            home: const BijbelBotHomePage(),
+          );
+        },
       ),
     );
   }

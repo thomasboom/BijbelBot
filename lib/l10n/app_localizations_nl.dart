@@ -317,4 +317,16 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get disclaimerText =>
       'Deze applicatie is een hulpmiddel dat bedoeld is om te assisteren bij bijbelstudie en bezinning. Het is GEEN vervanging voor persoonlijk gebed, geestelijke begeleiding of uw relatie met God. AI-responsen kunnen fouten of onnauwkeurigheden bevatten. Verifieer belangrijke informatie altijd met uw eigen Bijbelstudie en gebed. Dit hulpmiddel kan de leiding van de Heilige Geest in uw leven niet vervangen. De ontwikkelaars zijn niet verantwoordelijk voor beslissingen die op basis van door AI gegenereerde inhoud worden genomen. Onthoud: dit is een hulpmiddel, geen god.';
+
+  @override
+  String get language => 'Taal';
+
+  @override
+  String get systemLanguage => 'Systeem';
+
+  @override
+  String get english => 'Engels';
+
+  @override
+  String get dutch => 'Nederlands';
 }

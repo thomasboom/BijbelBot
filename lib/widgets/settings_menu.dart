@@ -131,6 +131,20 @@ class _SettingsBottomSheetContentState
               ),
             ),
 
+            // Language Section
+            _buildSectionTitle(localizations.language, textTheme, colorScheme),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: _buildDropdown<String>(
+                value: provider.language,
+                items: const ['system', 'en', 'nl'],
+                labelBuilder: (lang) => _languageLabel(lang, localizations),
+                onChanged: (lang) => provider.setLanguage(lang),
+                colorScheme: colorScheme,
+                textTheme: textTheme,
+              ),
+            ),
+
             // Tone Section
             _buildSectionTitle(localizations.tone, textTheme, colorScheme),
             Padding(
@@ -346,6 +360,19 @@ class _SettingsBottomSheetContentState
     if (trimmed.length <= 4) return '****';
     final visible = trimmed.substring(trimmed.length - 4);
     return '****$visible';
+  }
+
+  String _languageLabel(String lang, AppLocalizations localizations) {
+    switch (lang) {
+      case 'system':
+        return localizations.systemLanguage;
+      case 'en':
+        return localizations.english;
+      case 'nl':
+        return localizations.dutch;
+      default:
+        return lang;
+    }
   }
 
   void _showApiKeyDialog(

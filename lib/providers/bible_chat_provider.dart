@@ -19,6 +19,7 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _promptFormatKey = 'ai_prompt_format';
   static const String _promptCustomKey = 'ai_prompt_custom';
   static const String _apiKeyKey = 'ollama_api_key';
+  static const String _languageKey = 'app_language';
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
   static const int _titleHistoryLimit = 12;
   static const String _titlePrompt =
@@ -34,6 +35,7 @@ class BibleChatProvider extends ChangeNotifier {
   String? _activeConversationId;
   AiPromptSettings _promptSettings = AiPromptSettings.defaults();
   String? _apiKey;
+  String _language = 'system'; // Default to system language
   final BibleBotService _bibleBotService = BibleBotService.instance;
   String? _lastInitializedApiKey;
   final Set<String> _titleGenerationInProgress = {};
@@ -90,6 +92,17 @@ class BibleChatProvider extends ChangeNotifier {
 
   /// Whether an API key is available
   bool get hasApiKey => _apiKey != null && _apiKey!.trim().isNotEmpty;
+
+  /// Current language setting
+  String get language => _language;
+
+  /// Sets the language preference
+  Future<void> setLanguage(String language) async {
+    await _ensureReady();
+    _language = language;
+    await _prefs?.setString(_languageKey, language);
+    notifyListeners();
+  }
 
   Future<void> setApiKey(String apiKey) async {
     await _ensureReady();
@@ -640,6 +653,7 @@ class BibleChatProvider extends ChangeNotifier {
       // Load AI prompt settings
       _loadPromptSettings();
       _apiKey = _prefs?.getString(_apiKeyKey);
+      _language = _prefs?.getString(_languageKey) ?? 'system';
 
       // Load conversations
       await _loadConversations();
