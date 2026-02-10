@@ -77,7 +77,7 @@ class _ChatInputFieldState extends State<ChatInputField>
       },
       listenFor: const Duration(seconds: 30),
       pauseFor: const Duration(seconds: 3),
-      partialResults: true,
+      listenOptions: SpeechListenOptions(partialResults: true),
     );
     setState(() {
       _isListening = true;

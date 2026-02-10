@@ -51,7 +51,7 @@ class _ApiKeyDialogState extends State<_ApiKeyDialog> {
   Future<void> _save() async {
     if (_formKey.currentState?.validate() != true) return;
     await widget.onSave(_controller.text.trim());
-    if (context.mounted) {
+    if (mounted) {
       Navigator.of(context).pop();
     }
   }

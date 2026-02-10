@@ -407,32 +407,34 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       }
     } catch (e) {
       AppLogger.error('Failed to send message', e);
-      final localizations = AppLocalizations.of(context);
+      if (mounted) {
+        final localizations = AppLocalizations.of(context);
 
-      // Create error message through provider
-      if (botMessage != null) {
-        await _chatProvider!.updateMessageContent(
-          messageId: botMessage.id,
-          content: localizations.errorProcessingQuestion,
-        );
-      } else {
-        await _chatProvider!.addMessage(
-          conversationId: widget.conversation.id,
-          content: localizations.errorProcessingQuestion,
-          sender: MessageSender.bot,
-          type: MessageType.text,
-        );
+        // Create error message through provider
+        if (botMessage != null) {
+          await _chatProvider!.updateMessageContent(
+            messageId: botMessage.id,
+            content: localizations.errorProcessingQuestion,
+          );
+        } else {
+          await _chatProvider!.addMessage(
+            conversationId: widget.conversation.id,
+            content: localizations.errorProcessingQuestion,
+            sender: MessageSender.bot,
+            type: MessageType.text,
+          );
+        }
+
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
+        _syncMessagesFromProvider();
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
       }
-
-      setState(() {
-        _isLoading = false;
-        _errorMessage = e.toString();
-      });
-      _syncMessagesFromProvider();
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
     }
   }
 
@@ -459,56 +461,11 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     });
   }
 
-  Future<void> _startNewConversation() async {
-    if (_chatProvider == null) return;
-    final localizations = AppLocalizations.of(context);
-
-    try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-
-      // Create a new conversation
-      final newConversation = await _chatProvider!.createConversation(
-        title: localizations.newConversation,
-      );
-
-      // Set as active conversation
-      await _chatProvider!.setActiveConversation(newConversation.id);
-
-      // Clear current messages
-      setState(() {
-        _messages.clear();
-        _isLoading = false;
-      });
-
-      // Update the conversation through the callback
-      widget.onConversationUpdated?.call(newConversation);
-
-      AppLogger.info('Started new conversation: ${newConversation.id}');
-
-      // Scroll to top to show empty state
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.jumpTo(0);
-        }
-      });
-    } catch (e) {
-      AppLogger.error('Failed to start new conversation', e);
-      final localizations = AppLocalizations.of(context);
-      setState(() {
-        _isLoading = false;
-        _errorMessage = localizations.couldNotStartNewConversation(
-          e.toString(),
-        );
-      });
-    }
-  }
-
   Future<void> _promptForApiKey() async {
     if (_chatProvider == null) return;
     await _chatProvider!.ensureReady();
+
+    if (!mounted) return;
 
     await showApiKeyDialog(
       context: context,
@@ -730,32 +687,34 @@ class _BibleChatScreenState extends State<BibleChatScreen>
       }
     } catch (e) {
       AppLogger.error('Failed to get AI response', e);
-      final localizations = AppLocalizations.of(context);
+      if (mounted) {
+        final localizations = AppLocalizations.of(context);
 
-      // Create error message through provider
-      if (botMessage != null) {
-        await _chatProvider!.updateMessageContent(
-          messageId: botMessage.id,
-          content: localizations.errorProcessingQuestion,
-        );
-      } else {
-        await _chatProvider!.addMessage(
-          conversationId: widget.conversation.id,
-          content: localizations.errorProcessingQuestion,
-          sender: MessageSender.bot,
-          type: MessageType.text,
-        );
+        // Create error message through provider
+        if (botMessage != null) {
+          await _chatProvider!.updateMessageContent(
+            messageId: botMessage.id,
+            content: localizations.errorProcessingQuestion,
+          );
+        } else {
+          await _chatProvider!.addMessage(
+            conversationId: widget.conversation.id,
+            content: localizations.errorProcessingQuestion,
+            sender: MessageSender.bot,
+            type: MessageType.text,
+          );
+        }
+
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
+        _syncMessagesFromProvider();
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
       }
-
-      setState(() {
-        _isLoading = false;
-        _errorMessage = e.toString();
-      });
-      _syncMessagesFromProvider();
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollToBottom();
-      });
     }
   }
 

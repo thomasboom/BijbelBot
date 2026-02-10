@@ -350,7 +350,6 @@ class AiService {
           .where((line) => line.trim().isNotEmpty);
 
       String fullContent = '';
-      bool isDone = false;
 
       for (final line in lines) {
         try {
@@ -366,7 +365,6 @@ class AiService {
 
           // Check if this is the final chunk
           if (response['done'] == true) {
-            isDone = true;
             break;
           }
         } catch (e) {
