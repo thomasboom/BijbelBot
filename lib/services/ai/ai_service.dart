@@ -2,63 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart' show rootBundle;
-import 'logger.dart';
-import '../models/ai_prompt_settings.dart';
-import '../models/ai_model_selection.dart';
-import 'system_prompt_config.dart';
-
-/// Stream callback function type for real-time updates
-typedef StreamCallback = void Function(String chunk);
-
-/// Configuration for AI API service
-class AiConfig {
-  static const String baseUrl = 'https://ollama.com'; // Ollama cloud API
-  static const Duration requestTimeout = Duration(seconds: 30);
-  static const int maxRetries = 3;
-  static const Duration retryDelay = Duration(seconds: 1);
-  static const int maxHistoryMessages = 20;
-}
-
-/// Model class for Bible Q&A responses
-class BibleQAResponse {
-  final String answer;
-  final List<BibleReference> references;
-
-  const BibleQAResponse({required this.answer, required this.references});
-}
-
-/// Model class for Bible reference extraction
-class BibleReference {
-  final String book;
-  final int chapter;
-  final int verse;
-  final int? endVerse;
-
-  const BibleReference({
-    required this.book,
-    required this.chapter,
-    required this.verse,
-    this.endVerse,
-  });
-
-  @override
-  String toString() {
-    return '$book $chapter:$verse${endVerse != null ? '-$endVerse' : ''}';
-  }
-}
-
-/// Model class for AI API error responses
-class AiError implements Exception {
-  final String message;
-  final int? statusCode;
-  final String? errorCode;
-
-  const AiError({required this.message, this.statusCode, this.errorCode});
-
-  @override
-  String toString() =>
-      'AiError: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
-}
+import '../../services/logger.dart';
+import '../../models/ai_prompt_settings.dart';
+import '../../models/ai_model_selection.dart';
+import '../../config/prompt_config.dart';
+import '../../config/ai_config.dart';
 
 /// A service that provides an interface to the AI API for Bible Q&A.
 /// This is a standalone version specifically for the BijbelBot app.
@@ -73,7 +21,6 @@ class AiService {
 
   // Rate limiting
   DateTime? _lastRequestTime;
-  static const Duration _minRequestInterval = Duration(seconds: 1);
 
   /// Private constructor for singleton pattern
   AiService._internal() {
@@ -126,7 +73,7 @@ class AiService {
 
       _apiKey = trimmedKey;
       _normenText = await _loadNormenText();
-      _promptConfig = await _loadSystemPromptConfig();
+      _promptConfig = await SystemPromptConfig.load();
       _initialized = true;
       AppLogger.info(
         'Ollama AI API service initialized successfully for BijbelBot',
@@ -264,8 +211,8 @@ class AiService {
   Future<void> _ensureRateLimit() async {
     if (_lastRequestTime != null) {
       final timeSinceLastRequest = DateTime.now().difference(_lastRequestTime!);
-      if (timeSinceLastRequest < _minRequestInterval) {
-        final delay = _minRequestInterval - timeSinceLastRequest;
+      if (timeSinceLastRequest < AiConfig.minRequestInterval) {
+        final delay = AiConfig.minRequestInterval - timeSinceLastRequest;
         AppLogger.info('Rate limiting: waiting ${delay.inMilliseconds}ms');
         await Future.delayed(delay);
       }
@@ -523,19 +470,6 @@ $responseStructure
     }
   }
 
-  Future<SystemPromptConfig?> _loadSystemPromptConfig() async {
-    try {
-      final jsonString = await rootBundle.loadString(
-        'lib/assets/system_prompt.json',
-      );
-      final json = jsonDecode(jsonString);
-      return SystemPromptConfig.fromJson(json as Map<String, dynamic>);
-    } catch (e) {
-      AppLogger.warning('Could not load system_prompt.json: $e');
-      return null;
-    }
-  }
-
   List<Map<String, String>> _buildMessages(
     String question,
     List<Map<String, String>>? history,
@@ -692,7 +626,6 @@ $responseStructure
       'Hag': 'Haggai',
       'Zach': 'Zacharia',
       'Mal': 'Maleachi',
-
       // New Testament abbreviations
       'Matt': 'Matteus',
       'Mt': 'Matteus',

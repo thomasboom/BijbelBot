@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import '../models/bible_chat_conversation.dart';
-import '../providers/bible_chat_provider.dart';
+import '../../models/bible_chat_conversation.dart';
+import '../../providers/bible_chat_provider.dart';
 
 /// M3 Expressive conversation history sidebar
 ///

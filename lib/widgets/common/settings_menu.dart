@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/bible_chat_provider.dart';
-import '../models/ai_prompt_settings.dart';
-import '../models/ai_model_selection.dart';
-import '../l10n/app_localizations.dart';
-import 'api_key_dialog.dart';
+import '../../providers/bible_chat_provider.dart';
+import '../../models/ai_prompt_settings.dart';
+import '../../models/ai_model_selection.dart';
+import '../../l10n/app_localizations.dart';
+import '../dialogs/api_key_dialog.dart';
 
 /// M3 Expressive settings menu widget
 ///

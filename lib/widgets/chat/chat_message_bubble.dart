@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../models/bible_chat_message.dart';
-import '../providers/bible_chat_provider.dart';
+import '../../models/bible_chat_message.dart';
+import '../../providers/bible_chat_provider.dart';
 
 /// M3 Expressive chat message bubble widget
 ///

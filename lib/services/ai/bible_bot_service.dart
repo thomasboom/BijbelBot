@@ -1,9 +1,10 @@
-import '../services/logger.dart';
+import '../../services/logger.dart';
 import 'ai_service.dart';
-import '../models/ai_prompt_settings.dart';
+import '../../models/ai_prompt_settings.dart';
+import '../../config/ai_config.dart';
 
 // Re-export types for convenience
-export 'ai_service.dart' show BibleReference, BibleQAResponse;
+export '../../config/ai_config.dart' show BibleReference, BibleQAResponse;
 
 /// Service for handling Bible bot interactions
 class BibleBotService {

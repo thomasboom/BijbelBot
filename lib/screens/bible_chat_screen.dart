@@ -4,13 +4,14 @@ import '../l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../models/bible_chat_message.dart';
 import '../models/bible_chat_conversation.dart';
-import '../services/bible_bot_service.dart';
-import '../services/connection_service.dart';
+import '../services/ai/bible_bot_service.dart';
+import '../services/storage/connection_service.dart';
 import '../services/logger.dart';
-import '../widgets/chat_message_bubble.dart';
-import '../widgets/chat_input_field.dart';
+import '../widgets/chat/chat_message_bubble.dart';
+import '../widgets/chat/chat_input_field.dart';
 import '../providers/bible_chat_provider.dart';
-import '../widgets/api_key_dialog.dart';
+import '../widgets/dialogs/api_key_dialog.dart';
+import '../core/app_config.dart';
 
 /// M3 Expressive main chat interface screen
 ///
@@ -60,7 +61,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
 
   // Throttling for scroll-to-bottom during streaming
   Timer? _scrollDebounceTimer;
-  static const Duration _scrollDebounceDelay = Duration(milliseconds: 100);
+  static const Duration _scrollDebounceDelay = AppConfig.scrollDebounceDelay;
 
   @override
   void initState() {
@@ -317,7 +318,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                 history: history,
                 promptSettings: _chatProvider!.promptSettings,
               )
-              .timeout(const Duration(seconds: 45))) {
+              .timeout(AppConfig.requestTimeout)) {
         buffer.write(chunk);
         await _chatProvider!.updateMessageContent(
           messageId: botMessage.id,
@@ -443,7 +444,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 250), // M3 medium duration
+        duration: AppConfig.scrollAnimationDuration, // M3 medium duration
         curve: Curves.easeOutCubic, // M3 standard easing
       );
     }
@@ -598,7 +599,7 @@ class _BibleChatScreenState extends State<BibleChatScreen>
                 history: history,
                 promptSettings: _chatProvider!.promptSettings,
               )
-              .timeout(const Duration(seconds: 45))) {
+              .timeout(AppConfig.requestTimeout)) {
         buffer.write(chunk);
         await _chatProvider!.updateMessageContent(
           messageId: botMessage.id,

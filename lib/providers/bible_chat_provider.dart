@@ -6,27 +6,28 @@ import '../models/bible_chat_message.dart';
 import '../models/bible_chat_conversation.dart';
 import '../models/ai_prompt_settings.dart';
 import '../models/ai_model_selection.dart';
-import '../services/bible_bot_service.dart';
-import '../services/ai_service.dart';
+import '../services/ai/bible_bot_service.dart';
+import '../services/ai/ai_service.dart';
 import '../services/logger.dart';
-import '../services/title_prompt_config.dart';
-import '../widgets/biblical_reference_dialog.dart';
+import '../config/prompt_config.dart';
+import '../widgets/dialogs/biblical_reference_dialog.dart';
+import '../core/app_config.dart';
 
 /// Provider for managing Bible chat conversations and messages
 class BibleChatProvider extends ChangeNotifier {
-  static const String _conversationsKey = 'bible_chat_conversations';
-  static const String _messagesKey = 'bible_chat_messages';
-  static const String _activeConversationKey = 'bible_chat_active_conversation';
-  static const String _promptToneKey = 'ai_prompt_tone';
-  static const String _promptEmojiKey = 'ai_prompt_emoji';
-  static const String _promptFormatKey = 'ai_prompt_format';
-  static const String _promptCustomKey = 'ai_prompt_custom';
-  static const String _apiKeyKey = 'ollama_api_key';
-  static const String _languageKey = 'app_language';
-  static const String _themeModeKey = 'app_theme_mode';
-  static const String _aiModelKey = 'ai_model';
-  static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
-  static const int _titleHistoryLimit = 12;
+  static const String _conversationsKey = AppConfig.conversationsKey;
+  static const String _messagesKey = AppConfig.messagesKey;
+  static const String _activeConversationKey = AppConfig.activeConversationKey;
+  static const String _promptToneKey = AppConfig.promptToneKey;
+  static const String _promptEmojiKey = AppConfig.promptEmojiKey;
+  static const String _promptFormatKey = AppConfig.promptFormatKey;
+  static const String _promptCustomKey = AppConfig.promptCustomKey;
+  static const String _apiKeyKey = AppConfig.apiKeyKey;
+  static const String _languageKey = AppConfig.languageKey;
+  static const String _themeModeKey = AppConfig.themeModeKey;
+  static const String _aiModelKey = AppConfig.aiModelKey;
+  static const Duration _emptyConversationGracePeriod = AppConfig.emptyConversationGracePeriod;
+  static const int _titleHistoryLimit = AppConfig.titleHistoryLimit;
 
   SharedPreferences? _prefs;
   late final Future<void> _ready;

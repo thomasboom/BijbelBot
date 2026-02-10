@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:async';
 import 'package:xml/xml.dart' as xml;
-import '../constants/urls.dart';
-import '../utils/bible_book_mapper.dart';
+import '../../constants/urls.dart';
+import '../../utils/bible_book_mapper.dart';
 
 /// M3 Expressive biblical reference dialog
 ///
