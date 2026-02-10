@@ -661,6 +661,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI can make mistakes. Always verify important information. No AI response replaces personal Bible study and prayer.'**
   String get aiDisclaimer;
+
+  /// No description provided for @disclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Disclaimer'**
+  String get disclaimer;
+
+  /// No description provided for @disclaimerText.
+  ///
+  /// In en, this message translates to:
+  /// **'This application is a tool designed to assist with biblical study and reflection. It is NOT a replacement for personal prayer, spiritual guidance, or your relationship with God. AI responses may contain errors or inaccuracies. Always verify important information with your own Bible study and prayer. This tool cannot replace the Holy Spirit\'s guidance in your life. The developers are not responsible for any decisions made based on AI-generated content. Remember: this is a tool, not a god.'**
+  String get disclaimerText;
 }
 
 class _AppLocalizationsDelegate
