@@ -348,4 +348,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterNewTitle => 'Enter new title';
+
+  @override
+  String get pin => 'Pin';
+
+  @override
+  String get unpin => 'Unpin';
+
+  @override
+  String get conversationPinned => 'Conversation pinned';
+
+  @override
+  String get conversationUnpinned => 'Conversation unpinned';
 }

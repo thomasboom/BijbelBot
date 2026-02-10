@@ -105,5 +105,9 @@
   "deleteConversationConfirm": "Weet je zeker dat je dit gesprek wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
   "conversationDeleted": "Gesprek verwijderd",
   "conversationRenamed": "Gesprek hernoemd",
-  "enterNewTitle": "Voer nieuwe titel in"
+  "enterNewTitle": "Voer nieuwe titel in",
+  "pin": "Vastzetten",
+  "unpin": "Losmaken",
+  "conversationPinned": "Gesprek vastgezet",
+  "conversationUnpinned": "Gesprek losgemaakt"
 }

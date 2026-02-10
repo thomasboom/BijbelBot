@@ -53,12 +53,31 @@ class _ConversationHistorySidebarState
     }).toList();
   }
 
+  /// Sorts conversations with pinned ones at the top
+  List<BibleChatConversation> _sortConversations(
+    List<BibleChatConversation> conversations,
+  ) {
+    final pinned = <BibleChatConversation>[];
+    final unpinned = <BibleChatConversation>[];
+
+    for (final conversation in conversations) {
+      if (conversation.isPinned) {
+        pinned.add(conversation);
+      } else {
+        unpinned.add(conversation);
+      }
+    }
+
+    return [...pinned, ...unpinned];
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final provider = Provider.of<BibleChatProvider>(context);
-    final allConversations = provider.conversationsByLastActivity.reversed
-        .toList();
+    final allConversations = _sortConversations(
+      provider.conversationsByLastActivity.reversed.toList(),
+    );
     final filteredConversations = _filterConversations(allConversations);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
@@ -159,6 +178,8 @@ class _ConversationHistorySidebarState
                           widget.onConversationSelected?.call(conversation),
                       onRename: () => _showRenameDialog(context, conversation),
                       onDelete: () => _showDeleteDialog(context, conversation),
+                      onPin: () =>
+                          _togglePinConversation(context, conversation),
                     );
                   },
                 ),
@@ -333,6 +354,18 @@ class _ConversationHistorySidebarState
       ),
     );
   }
+
+  /// Toggles the pin status of a conversation
+  void _togglePinConversation(
+    BuildContext context,
+    BibleChatConversation conversation,
+  ) {
+    final provider = Provider.of<BibleChatProvider>(context, listen: false);
+    final updatedConversation = conversation.copyWith(
+      isPinned: !conversation.isPinned,
+    );
+    provider.updateConversation(updatedConversation);
+  }
 }
 
 /// M3 Expressive conversation list item
@@ -342,6 +375,7 @@ class ConversationItem extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onRename;
   final VoidCallback? onDelete;
+  final VoidCallback? onPin;
 
   const ConversationItem({
     super.key,
@@ -350,6 +384,7 @@ class ConversationItem extends StatelessWidget {
     this.onTap,
     this.onRename,
     this.onDelete,
+    this.onPin,
   });
 
   @override
@@ -389,15 +424,32 @@ class ConversationItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      conversation.title ?? localizations.newConversation,
-                      style: textTheme.titleSmall?.copyWith(
-                        color: isSelected
-                            ? colorScheme.onSecondaryContainer
-                            : colorScheme.onSurface,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      children: [
+                        if (conversation.isPinned)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: Icon(
+                              Icons.push_pin,
+                              size: 14,
+                              color: isSelected
+                                  ? colorScheme.onSecondaryContainer
+                                  : colorScheme.primary,
+                            ),
+                          ),
+                        Expanded(
+                          child: Text(
+                            conversation.title ?? localizations.newConversation,
+                            style: textTheme.titleSmall?.copyWith(
+                              color: isSelected
+                                  ? colorScheme.onSecondaryContainer
+                                  : colorScheme.onSurface,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -413,7 +465,7 @@ class ConversationItem extends StatelessWidget {
                   ],
                 ),
               ),
-              // Menu button for delete and rename
+              // Menu button for delete, rename, and pin
               PopupMenuButton<String>(
                 icon: Icon(
                   Icons.more_vert,
@@ -427,6 +479,9 @@ class ConversationItem extends StatelessWidget {
                 ),
                 onSelected: (value) {
                   switch (value) {
+                    case 'pin':
+                      onPin?.call();
+                      break;
                     case 'rename':
                       onRename?.call();
                       break;
@@ -436,6 +491,26 @@ class ConversationItem extends StatelessWidget {
                   }
                 },
                 itemBuilder: (context) => [
+                  PopupMenuItem<String>(
+                    value: 'pin',
+                    child: Row(
+                      children: [
+                        Icon(
+                          conversation.isPinned
+                              ? Icons.push_pin
+                              : Icons.push_pin_outlined,
+                          size: 20,
+                          color: colorScheme.onSurface,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          conversation.isPinned
+                              ? localizations.unpin
+                              : localizations.pin,
+                        ),
+                      ],
+                    ),
+                  ),
                   PopupMenuItem<String>(
                     value: 'rename',
                     child: Row(

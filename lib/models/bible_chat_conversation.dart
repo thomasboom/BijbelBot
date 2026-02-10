@@ -24,6 +24,9 @@ class BibleChatConversation {
   /// Whether this conversation is currently active.
   final bool isActive;
 
+  /// Whether this conversation is pinned to the top.
+  final bool isPinned;
+
   /// Title or summary of the conversation (optional).
   final String? title;
 
@@ -39,6 +42,7 @@ class BibleChatConversation {
     this.userContext,
     this.metadata,
     this.isActive = true,
+    this.isPinned = false,
     this.title,
     DateTime? lastActivity,
   }) : lastActivity = lastActivity ?? startTime;
@@ -74,6 +78,7 @@ class BibleChatConversation {
       userContext: context,
       metadata: meta,
       isActive: json['isActive'] != false,
+      isPinned: json['isPinned'] == true,
       title: json['title']?.toString(),
     );
   }
@@ -91,6 +96,7 @@ class BibleChatConversation {
       'userContext': userContext,
       'metadata': metadata,
       'isActive': isActive,
+      'isPinned': isPinned,
       'title': title,
     };
   }
@@ -105,6 +111,7 @@ class BibleChatConversation {
     Map<String, dynamic>? userContext,
     Map<String, dynamic>? metadata,
     bool? isActive,
+    bool? isPinned,
     String? title,
   }) {
     return BibleChatConversation(
@@ -116,6 +123,7 @@ class BibleChatConversation {
       userContext: userContext ?? this.userContext,
       metadata: metadata ?? this.metadata,
       isActive: isActive ?? this.isActive,
+      isPinned: isPinned ?? this.isPinned,
       title: title ?? this.title,
     );
   }

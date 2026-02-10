@@ -739,6 +739,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter new title'**
   String get enterNewTitle;
+
+  /// No description provided for @pin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get pin;
+
+  /// No description provided for @unpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get unpin;
+
+  /// No description provided for @conversationPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation pinned'**
+  String get conversationPinned;
+
+  /// No description provided for @conversationUnpinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation unpinned'**
+  String get conversationUnpinned;
 }
 
 class _AppLocalizationsDelegate

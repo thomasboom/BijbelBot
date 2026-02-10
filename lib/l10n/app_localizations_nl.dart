@@ -351,4 +351,16 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get enterNewTitle => 'Voer nieuwe titel in';
+
+  @override
+  String get pin => 'Vastzetten';
+
+  @override
+  String get unpin => 'Losmaken';
+
+  @override
+  String get conversationPinned => 'Gesprek vastgezet';
+
+  @override
+  String get conversationUnpinned => 'Gesprek losgemaakt';
 }
