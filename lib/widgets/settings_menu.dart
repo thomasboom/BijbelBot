@@ -145,6 +145,20 @@ class _SettingsBottomSheetContentState
               ),
             ),
 
+            // Theme Section
+            _buildSectionTitle(localizations.theme, textTheme, colorScheme),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: _buildDropdown<ThemeMode>(
+                value: provider.themeMode,
+                items: ThemeMode.values,
+                labelBuilder: (mode) => _themeModeLabel(mode, localizations),
+                onChanged: (mode) => provider.setThemeMode(mode),
+                colorScheme: colorScheme,
+                textTheme: textTheme,
+              ),
+            ),
+
             // Tone Section
             _buildSectionTitle(localizations.tone, textTheme, colorScheme),
             Padding(
@@ -372,6 +386,17 @@ class _SettingsBottomSheetContentState
         return localizations.dutch;
       default:
         return lang;
+    }
+  }
+
+  String _themeModeLabel(ThemeMode mode, AppLocalizations localizations) {
+    switch (mode) {
+      case ThemeMode.system:
+        return localizations.systemTheme;
+      case ThemeMode.light:
+        return localizations.lightTheme;
+      case ThemeMode.dark:
+        return localizations.darkTheme;
     }
   }
 

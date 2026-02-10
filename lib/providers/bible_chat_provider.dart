@@ -21,6 +21,7 @@ class BibleChatProvider extends ChangeNotifier {
   static const String _promptCustomKey = 'ai_prompt_custom';
   static const String _apiKeyKey = 'ollama_api_key';
   static const String _languageKey = 'app_language';
+  static const String _themeModeKey = 'app_theme_mode';
   static const Duration _emptyConversationGracePeriod = Duration(minutes: 10);
   static const int _titleHistoryLimit = 12;
 
@@ -35,6 +36,7 @@ class BibleChatProvider extends ChangeNotifier {
   AiPromptSettings _promptSettings = AiPromptSettings.defaults();
   String? _apiKey;
   String _language = 'system'; // Default to system language
+  ThemeMode _themeMode = ThemeMode.system; // Default to system theme
   final BibleBotService _bibleBotService = BibleBotService.instance;
   String? _lastInitializedApiKey;
   final Set<String> _titleGenerationInProgress = {};
@@ -101,6 +103,17 @@ class BibleChatProvider extends ChangeNotifier {
     await _ensureReady();
     _language = language;
     await _prefs?.setString(_languageKey, language);
+    notifyListeners();
+  }
+
+  /// Current theme mode setting
+  ThemeMode get themeMode => _themeMode;
+
+  /// Sets the theme mode preference
+  Future<void> setThemeMode(ThemeMode mode) async {
+    await _ensureReady();
+    _themeMode = mode;
+    await _prefs?.setString(_themeModeKey, mode.name);
     notifyListeners();
   }
 
@@ -657,6 +670,7 @@ class BibleChatProvider extends ChangeNotifier {
       _loadPromptSettings();
       _apiKey = _prefs?.getString(_apiKeyKey);
       _language = _prefs?.getString(_languageKey) ?? 'system';
+      _themeMode = _loadThemeMode();
 
       // Load conversations
       await _loadConversations();
@@ -711,6 +725,21 @@ class BibleChatProvider extends ChangeNotifier {
       responseFormat: AiPromptSettings.parseResponseFormat(formatValue),
       customInstruction: customValue,
     );
+  }
+
+  /// Loads the theme mode from SharedPreferences
+  ThemeMode _loadThemeMode() {
+    if (_prefs == null) return ThemeMode.system;
+    final themeModeValue = _prefs!.getString(_themeModeKey);
+    switch (themeModeValue) {
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      case 'system':
+      default:
+        return ThemeMode.system;
+    }
   }
 
   /// Loads the title prompt from the JSON file

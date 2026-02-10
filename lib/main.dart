@@ -33,7 +33,7 @@ class BijbelBotApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: _buildLightTheme(),
             darkTheme: _buildDarkTheme(),
-            themeMode: ThemeMode.system,
+            themeMode: provider.themeMode,
             locale: provider.language == 'system' ? null : Locale(provider.language),
             localizationsDelegates: const [
               AppLocalizations.delegate,

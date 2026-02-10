@@ -331,6 +331,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get dutch => 'Nederlands';
 
   @override
+  String get theme => 'Thema';
+
+  @override
+  String get systemTheme => 'Systeem';
+
+  @override
+  String get lightTheme => 'Licht';
+
+  @override
+  String get darkTheme => 'Donker';
+
+  @override
   String get rename => 'Hernoemen';
 
   @override
