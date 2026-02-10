@@ -98,769 +98,769 @@ abstract class AppLocalizations {
     Locale('nl'),
   ];
 
-  /// No description provided for @appName.
+  /// The name of the application
   ///
   /// In en, this message translates to:
   /// **'BijbelBot'**
   String get appName;
 
-  /// No description provided for @loading.
+  /// Loading indicator text
   ///
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
 
-  /// No description provided for @error.
+  /// Generic error label
   ///
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
 
-  /// No description provided for @close.
+  /// Close button text
   ///
   /// In en, this message translates to:
   /// **'Close'**
   String get close;
 
-  /// No description provided for @biblicalReference.
+  /// Label for biblical reference input
   ///
   /// In en, this message translates to:
   /// **'Biblical Reference'**
   String get biblicalReference;
 
-  /// No description provided for @invalidBiblicalReference.
+  /// Error message for invalid biblical reference
   ///
   /// In en, this message translates to:
   /// **'Invalid biblical reference'**
   String get invalidBiblicalReference;
 
-  /// No description provided for @errorLoadingBiblicalText.
+  /// Error message when biblical text fails to load
   ///
   /// In en, this message translates to:
   /// **'Error loading biblical text'**
   String get errorLoadingBiblicalText;
 
-  /// No description provided for @errorLoadingWithDetails.
+  /// Error message prefix with details
   ///
   /// In en, this message translates to:
   /// **'Error loading:'**
   String get errorLoadingWithDetails;
 
-  /// No description provided for @networkError.
+  /// Network error message
   ///
   /// In en, this message translates to:
   /// **'Network error. Check your internet connection.'**
   String get networkError;
 
-  /// No description provided for @timeoutError.
+  /// Timeout error message
   ///
   /// In en, this message translates to:
   /// **'Timeout loading biblical text. Please try again later.'**
   String get timeoutError;
 
-  /// No description provided for @invalidApiUrl.
+  /// Invalid API URL error
   ///
   /// In en, this message translates to:
   /// **'Invalid API URL'**
   String get invalidApiUrl;
 
-  /// No description provided for @invalidContentType.
+  /// Invalid content type error
   ///
   /// In en, this message translates to:
   /// **'Invalid server response'**
   String get invalidContentType;
 
-  /// No description provided for @xmlParsingFailed.
+  /// XML parsing error
   ///
   /// In en, this message translates to:
   /// **'XML parsing failed and no text found'**
   String get xmlParsingFailed;
 
-  /// No description provided for @noTextFound.
+  /// No text found error
   ///
   /// In en, this message translates to:
   /// **'No text found in XML after parsing'**
   String get noTextFound;
 
-  /// No description provided for @tooManyRequests.
+  /// Rate limit error
   ///
   /// In en, this message translates to:
   /// **'Too many requests. Please try again later.'**
   String get tooManyRequests;
 
-  /// No description provided for @serverError.
+  /// Server error message prefix
   ///
   /// In en, this message translates to:
   /// **'Error loading biblical text (status:'**
   String get serverError;
 
-  /// No description provided for @newBibleChat.
+  /// New Bible Chat button label
   ///
   /// In en, this message translates to:
   /// **'New Bible Chat'**
   String get newBibleChat;
 
-  /// No description provided for @newConversation.
+  /// New conversation button label
   ///
   /// In en, this message translates to:
   /// **'New conversation'**
   String get newConversation;
 
-  /// No description provided for @openConversations.
+  /// Open conversations button label
   ///
   /// In en, this message translates to:
   /// **'Open conversations'**
   String get openConversations;
 
-  /// No description provided for @bibleBot.
+  /// BibleBot name
   ///
   /// In en, this message translates to:
   /// **'BijbelBot'**
   String get bibleBot;
 
-  /// No description provided for @errorInitializing.
+  /// Error initializing message
   ///
   /// In en, this message translates to:
   /// **'Error initializing: '**
   String get errorInitializing;
 
-  /// No description provided for @errorCreatingConversation.
+  /// Error creating conversation message
   ///
   /// In en, this message translates to:
   /// **'Error creating conversation: '**
   String get errorCreatingConversation;
 
-  /// No description provided for @conversations.
+  /// Conversations section title
   ///
   /// In en, this message translates to:
   /// **'Conversations'**
   String get conversations;
 
-  /// No description provided for @searchConversations.
+  /// Search conversations placeholder
   ///
   /// In en, this message translates to:
   /// **'Search conversations...'**
   String get searchConversations;
 
-  /// No description provided for @noResults.
+  /// No search results message
   ///
   /// In en, this message translates to:
   /// **'No results'**
   String get noResults;
 
-  /// No description provided for @noConversations.
+  /// No conversations message
   ///
   /// In en, this message translates to:
   /// **'No conversations'**
   String get noConversations;
 
-  /// No description provided for @tryDifferentSearchTerm.
+  /// Try different search term hint
   ///
   /// In en, this message translates to:
   /// **'Try a different search term'**
   String get tryDifferentSearchTerm;
 
-  /// No description provided for @startNewConversationToAppear.
+  /// Hint to start new conversation
   ///
   /// In en, this message translates to:
   /// **'Start a new conversation to appear here'**
   String get startNewConversationToAppear;
 
-  /// No description provided for @today.
+  /// Today label
   ///
   /// In en, this message translates to:
   /// **'Today'**
   String get today;
 
-  /// No description provided for @yesterday.
+  /// Yesterday label
   ///
   /// In en, this message translates to:
   /// **'Yesterday'**
   String get yesterday;
 
-  /// No description provided for @monday.
+  /// Monday abbreviation
   ///
   /// In en, this message translates to:
   /// **'Mon'**
   String get monday;
 
-  /// No description provided for @tuesday.
+  /// Tuesday abbreviation
   ///
   /// In en, this message translates to:
   /// **'Tue'**
   String get tuesday;
 
-  /// No description provided for @wednesday.
+  /// Wednesday abbreviation
   ///
   /// In en, this message translates to:
   /// **'Wed'**
   String get wednesday;
 
-  /// No description provided for @thursday.
+  /// Thursday abbreviation
   ///
   /// In en, this message translates to:
   /// **'Thu'**
   String get thursday;
 
-  /// No description provided for @friday.
+  /// Friday abbreviation
   ///
   /// In en, this message translates to:
   /// **'Fri'**
   String get friday;
 
-  /// No description provided for @saturday.
+  /// Saturday abbreviation
   ///
   /// In en, this message translates to:
   /// **'Sat'**
   String get saturday;
 
-  /// No description provided for @sunday.
+  /// Sunday abbreviation
   ///
   /// In en, this message translates to:
   /// **'Sun'**
   String get sunday;
 
-  /// No description provided for @settings.
+  /// Settings menu label
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
 
-  /// No description provided for @aiSettings.
+  /// AI Settings section title
   ///
   /// In en, this message translates to:
   /// **'AI Settings'**
   String get aiSettings;
 
-  /// No description provided for @apiKey.
+  /// API Key label
   ///
   /// In en, this message translates to:
   /// **'API Key'**
   String get apiKey;
 
-  /// No description provided for @ollamaApiKey.
+  /// Ollama API Key label
   ///
   /// In en, this message translates to:
   /// **'Ollama API Key'**
   String get ollamaApiKey;
 
-  /// No description provided for @set.
+  /// Set button label
   ///
   /// In en, this message translates to:
   /// **'Set'**
   String get set;
 
-  /// No description provided for @notSet.
+  /// Not set status
   ///
   /// In en, this message translates to:
   /// **'Not set'**
   String get notSet;
 
-  /// No description provided for @change.
+  /// Change button label
   ///
   /// In en, this message translates to:
   /// **'Change'**
   String get change;
 
-  /// No description provided for @add.
+  /// Add button label
   ///
   /// In en, this message translates to:
   /// **'Add'**
   String get add;
 
-  /// No description provided for @tone.
+  /// Tone setting label
   ///
   /// In en, this message translates to:
   /// **'Tone'**
   String get tone;
 
-  /// No description provided for @emojis.
+  /// Emojis setting label
   ///
   /// In en, this message translates to:
   /// **'Emojis'**
   String get emojis;
 
-  /// No description provided for @responseFormat.
+  /// Response Format setting label
   ///
   /// In en, this message translates to:
   /// **'Response Format'**
   String get responseFormat;
 
-  /// No description provided for @customInstruction.
+  /// Custom Instruction setting label
   ///
   /// In en, this message translates to:
   /// **'Custom Instruction'**
   String get customInstruction;
 
-  /// No description provided for @writeExtraInstructions.
+  /// Write extra instructions placeholder
   ///
   /// In en, this message translates to:
   /// **'Write extra instructions for the AI...'**
   String get writeExtraInstructions;
 
-  /// No description provided for @deleteAllConversations.
+  /// Delete all conversations button label
   ///
   /// In en, this message translates to:
   /// **'Delete all conversations'**
   String get deleteAllConversations;
 
-  /// No description provided for @thisActionCannotBeUndone.
+  /// Warning that action cannot be undone
   ///
   /// In en, this message translates to:
   /// **'This action cannot be undone'**
   String get thisActionCannotBeUndone;
 
-  /// No description provided for @select.
+  /// Select button label
   ///
   /// In en, this message translates to:
   /// **'Select...'**
   String get select;
 
-  /// No description provided for @deleteAllConversationsTitle.
+  /// Delete all conversations dialog title
   ///
   /// In en, this message translates to:
   /// **'Delete all conversations'**
   String get deleteAllConversationsTitle;
 
-  /// No description provided for @deleteAllConversationsConfirm.
+  /// Delete all conversations confirmation message
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete all conversations? This action cannot be undone.'**
   String get deleteAllConversationsConfirm;
 
-  /// No description provided for @allConversationsDeleted.
+  /// All conversations deleted success message
   ///
   /// In en, this message translates to:
   /// **'All conversations have been deleted'**
   String get allConversationsDeleted;
 
-  /// No description provided for @delete.
+  /// Delete button label
   ///
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
 
-  /// No description provided for @setApiKey.
+  /// Set API Key button label
   ///
   /// In en, this message translates to:
   /// **'Set API Key'**
   String get setApiKey;
 
-  /// No description provided for @enterApiKeyDescription.
+  /// API key entry description
   ///
   /// In en, this message translates to:
   /// **'Enter your Ollama API key to use the chat. The key is only stored locally on this device.'**
   String get enterApiKeyDescription;
 
-  /// No description provided for @storedLocallyOnly.
+  /// Stored locally only label
   ///
   /// In en, this message translates to:
   /// **'Stored locally only'**
   String get storedLocallyOnly;
 
-  /// No description provided for @showKey.
+  /// Show key button label
   ///
   /// In en, this message translates to:
   /// **'Show key'**
   String get showKey;
 
-  /// No description provided for @hideKey.
+  /// Hide key button label
   ///
   /// In en, this message translates to:
   /// **'Hide key'**
   String get hideKey;
 
-  /// No description provided for @enterValidApiKey.
+  /// Enter valid API key validation message
   ///
   /// In en, this message translates to:
   /// **'Please enter a valid API key.'**
   String get enterValidApiKey;
 
-  /// No description provided for @save.
+  /// Save button label
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
 
-  /// No description provided for @cancel.
+  /// Cancel button label
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
 
-  /// No description provided for @invalidBiblicalReferenceWithRef.
+  /// Invalid biblical reference error with reference placeholder
   ///
   /// In en, this message translates to:
   /// **'Invalid biblical reference: \"{reference}\"'**
-  String invalidBiblicalReferenceWithRef(Object reference);
+  String invalidBiblicalReferenceWithRef(String reference);
 
-  /// No description provided for @invalidBookName.
+  /// Invalid book name error with book and books placeholders
   ///
   /// In en, this message translates to:
   /// **'Invalid book name: \"{book}\". Valid books: {books}...'**
-  String invalidBookName(Object book, Object books);
+  String invalidBookName(String book, String books);
 
-  /// No description provided for @errorProcessingQuestion.
+  /// Error processing question message
   ///
   /// In en, this message translates to:
   /// **'Sorry, an error occurred while processing your question. Please try again.'**
   String get errorProcessingQuestion;
 
-  /// No description provided for @noInternetConnection.
+  /// No internet connection error
   ///
   /// In en, this message translates to:
   /// **'No internet connection. Check your network and try again.'**
   String get noInternetConnection;
 
-  /// No description provided for @couldNotInitializeChat.
+  /// Could not initialize chat error with error placeholder
   ///
   /// In en, this message translates to:
   /// **'Could not initialize chat: {error}'**
-  String couldNotInitializeChat(Object error);
+  String couldNotInitializeChat(String error);
 
-  /// No description provided for @addApiKeyFirst.
+  /// Add API key first message
   ///
   /// In en, this message translates to:
   /// **'Please add your API key in the settings first.'**
   String get addApiKeyFirst;
 
-  /// No description provided for @responseTakingLonger.
+  /// Response taking longer message
   ///
   /// In en, this message translates to:
   /// **'The response is taking longer than expected. Please try again.'**
   String get responseTakingLonger;
 
-  /// No description provided for @confirmNewConversation.
+  /// Confirm new conversation message
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to start a new conversation? The current conversation will be cleared.'**
   String get confirmNewConversation;
 
-  /// No description provided for @couldNotStartNewConversation.
+  /// Could not start new conversation error with error placeholder
   ///
   /// In en, this message translates to:
   /// **'Could not start new conversation: {error}'**
-  String couldNotStartNewConversation(Object error);
+  String couldNotStartNewConversation(String error);
 
-  /// No description provided for @apiKeyRequired.
+  /// API Key Required title
   ///
   /// In en, this message translates to:
   /// **'API Key Required'**
   String get apiKeyRequired;
 
-  /// No description provided for @addApiKeyToUseChat.
+  /// Add API key to use chat message
   ///
   /// In en, this message translates to:
   /// **'Add your own Ollama API key to use the chat. You can change this later in the settings.'**
   String get addApiKeyToUseChat;
 
-  /// No description provided for @addApiKey.
+  /// Add API Key button label
   ///
   /// In en, this message translates to:
   /// **'Add API Key'**
   String get addApiKey;
 
-  /// No description provided for @initializingBibleChat.
+  /// Initializing Bible Chat message
   ///
   /// In en, this message translates to:
   /// **'Initializing Bible Chat...'**
   String get initializingBibleChat;
 
-  /// No description provided for @startConversation.
+  /// Start conversation button label
   ///
   /// In en, this message translates to:
   /// **'Start a conversation'**
   String get startConversation;
 
-  /// No description provided for @sampleQuestion1.
+  /// Sample question 1
   ///
   /// In en, this message translates to:
   /// **'What does the Bible say about forgiveness?'**
   String get sampleQuestion1;
 
-  /// No description provided for @sampleQuestion2.
+  /// Sample question 2
   ///
   /// In en, this message translates to:
   /// **'Explain the parable of the prodigal son'**
   String get sampleQuestion2;
 
-  /// No description provided for @sampleQuestion3.
+  /// Sample question 3
   ///
   /// In en, this message translates to:
   /// **'What is the meaning of John 3:16?'**
   String get sampleQuestion3;
 
-  /// No description provided for @askQuestionAboutBible.
+  /// Ask question about Bible placeholder
   ///
   /// In en, this message translates to:
   /// **'Ask a question about the Bible...'**
   String get askQuestionAboutBible;
 
-  /// No description provided for @warm.
+  /// Warm tone option
   ///
   /// In en, this message translates to:
   /// **'Warm'**
   String get warm;
 
-  /// No description provided for @professional.
+  /// Professional tone option
   ///
   /// In en, this message translates to:
   /// **'Professional'**
   String get professional;
 
-  /// No description provided for @functional.
+  /// Functional tone option
   ///
   /// In en, this message translates to:
   /// **'Functional'**
   String get functional;
 
-  /// No description provided for @more.
+  /// More option
   ///
   /// In en, this message translates to:
   /// **'More'**
   String get more;
 
-  /// No description provided for @normal.
+  /// Normal option
   ///
   /// In en, this message translates to:
   /// **'Normal'**
   String get normal;
 
-  /// No description provided for @less.
+  /// Less option
   ///
   /// In en, this message translates to:
   /// **'Less'**
   String get less;
 
-  /// No description provided for @formatted.
+  /// Formatted option
   ///
   /// In en, this message translates to:
   /// **'Formatted'**
   String get formatted;
 
-  /// No description provided for @longText.
+  /// Long text option
   ///
   /// In en, this message translates to:
   /// **'Long text'**
   String get longText;
 
-  /// No description provided for @retry.
+  /// Retry button label
   ///
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
 
-  /// No description provided for @microphone.
+  /// Microphone button label
   ///
   /// In en, this message translates to:
   /// **'Microphone'**
   String get microphone;
 
-  /// No description provided for @aiDisclaimer.
+  /// AI disclaimer message
   ///
   /// In en, this message translates to:
   /// **'AI can make mistakes. Always verify important information. No AI response replaces personal Bible study and prayer.'**
   String get aiDisclaimer;
 
-  /// No description provided for @disclaimer.
+  /// Disclaimer label
   ///
   /// In en, this message translates to:
   /// **'Disclaimer'**
   String get disclaimer;
 
-  /// No description provided for @disclaimerText.
+  /// Full disclaimer text
   ///
   /// In en, this message translates to:
   /// **'This application is a tool designed to assist with biblical study and reflection. It is NOT a replacement for personal prayer, spiritual guidance, or your relationship with God. AI responses may contain errors or inaccuracies. Always verify important information with your own Bible study and prayer. This tool cannot replace the Holy Spirit\'s guidance in your life. The developers are not responsible for any decisions made based on AI-generated content. Remember: this is a tool, not a god.'**
   String get disclaimerText;
 
-  /// No description provided for @language.
+  /// Language setting label
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
 
-  /// No description provided for @systemLanguage.
+  /// System language option
   ///
   /// In en, this message translates to:
   /// **'System'**
   String get systemLanguage;
 
-  /// No description provided for @english.
+  /// English language option
   ///
   /// In en, this message translates to:
   /// **'English'**
   String get english;
 
-  /// No description provided for @dutch.
+  /// Dutch language option
   ///
   /// In en, this message translates to:
   /// **'Dutch'**
   String get dutch;
 
-  /// No description provided for @theme.
+  /// Theme setting label
   ///
   /// In en, this message translates to:
   /// **'Theme'**
   String get theme;
 
-  /// No description provided for @systemTheme.
+  /// System theme option
   ///
   /// In en, this message translates to:
   /// **'System'**
   String get systemTheme;
 
-  /// No description provided for @lightTheme.
+  /// Light theme option
   ///
   /// In en, this message translates to:
   /// **'Light'**
   String get lightTheme;
 
-  /// No description provided for @darkTheme.
+  /// Dark theme option
   ///
   /// In en, this message translates to:
   /// **'Dark'**
   String get darkTheme;
 
-  /// No description provided for @rename.
+  /// Rename button label
   ///
   /// In en, this message translates to:
   /// **'Rename'**
   String get rename;
 
-  /// No description provided for @renameConversation.
+  /// Rename conversation button label
   ///
   /// In en, this message translates to:
   /// **'Rename conversation'**
   String get renameConversation;
 
-  /// No description provided for @deleteConversation.
+  /// Delete conversation button label
   ///
   /// In en, this message translates to:
   /// **'Delete conversation'**
   String get deleteConversation;
 
-  /// No description provided for @deleteConversationConfirm.
+  /// Delete conversation confirmation message
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this conversation? This action cannot be undone.'**
   String get deleteConversationConfirm;
 
-  /// No description provided for @conversationDeleted.
+  /// Conversation deleted success message
   ///
   /// In en, this message translates to:
   /// **'Conversation deleted'**
   String get conversationDeleted;
 
-  /// No description provided for @conversationRenamed.
+  /// Conversation renamed success message
   ///
   /// In en, this message translates to:
   /// **'Conversation renamed'**
   String get conversationRenamed;
 
-  /// No description provided for @enterNewTitle.
+  /// Enter new title placeholder
   ///
   /// In en, this message translates to:
   /// **'Enter new title'**
   String get enterNewTitle;
 
-  /// No description provided for @pin.
+  /// Pin button label
   ///
   /// In en, this message translates to:
   /// **'Pin'**
   String get pin;
 
-  /// No description provided for @unpin.
+  /// Unpin button label
   ///
   /// In en, this message translates to:
   /// **'Unpin'**
   String get unpin;
 
-  /// No description provided for @conversationPinned.
+  /// Conversation pinned success message
   ///
   /// In en, this message translates to:
   /// **'Conversation pinned'**
   String get conversationPinned;
 
-  /// No description provided for @conversationUnpinned.
+  /// Conversation unpinned success message
   ///
   /// In en, this message translates to:
   /// **'Conversation unpinned'**
   String get conversationUnpinned;
 
-  /// No description provided for @edit.
+  /// Edit button label
   ///
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
 
-  /// No description provided for @editPrompt.
+  /// Edit prompt button label
   ///
   /// In en, this message translates to:
   /// **'Edit prompt'**
   String get editPrompt;
 
-  /// No description provided for @editPromptTitle.
+  /// Edit prompt dialog title
   ///
   /// In en, this message translates to:
   /// **'Edit your message'**
   String get editPromptTitle;
 
-  /// No description provided for @editPromptDescription.
+  /// Edit prompt dialog description
   ///
   /// In en, this message translates to:
   /// **'Edit your message. The conversation will restart from this point.'**
   String get editPromptDescription;
 
-  /// No description provided for @editPromptHint.
+  /// Edit prompt input hint
   ///
   /// In en, this message translates to:
   /// **'Enter your message...'**
   String get editPromptHint;
 
-  /// No description provided for @messageEdited.
+  /// Message edited success message
   ///
   /// In en, this message translates to:
   /// **'Message edited'**
   String get messageEdited;
 
-  /// No description provided for @restartConversation.
+  /// Restart conversation button label
   ///
   /// In en, this message translates to:
   /// **'Restart conversation'**
   String get restartConversation;
 
-  /// No description provided for @restartConversationConfirm.
+  /// Restart conversation confirmation message
   ///
   /// In en, this message translates to:
   /// **'Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?'**
   String get restartConversationConfirm;
 
-  /// No description provided for @aiModel.
+  /// AI Model setting label
   ///
   /// In en, this message translates to:
   /// **'AI Model'**
   String get aiModel;
 
-  /// No description provided for @lowCostModel.
+  /// Low cost model option
   ///
   /// In en, this message translates to:
   /// **'Low Cost'**
   String get lowCostModel;
 
-  /// No description provided for @mediumCostModel.
+  /// Medium cost model option
   ///
   /// In en, this message translates to:
   /// **'Medium Cost'**
   String get mediumCostModel;
 
-  /// No description provided for @highCostModel.
+  /// High cost model option
   ///
   /// In en, this message translates to:
   /// **'High Cost'**
   String get highCostModel;
 
-  /// No description provided for @modelDescription.
+  /// Model selection description
   ///
   /// In en, this message translates to:
   /// **'Choose the AI model to use. Higher cost models provide better quality but may be slower and more expensive.'**

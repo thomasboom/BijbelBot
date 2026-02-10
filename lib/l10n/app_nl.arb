@@ -1,130 +1,543 @@
 {
+  "@@locale": "nl",
+  "@appName": {
+    "description": "De naam van de applicatie"
+  },
   "appName": "BijbelBot",
+  "@loading": {
+    "description": "Laad indicator tekst"
+  },
   "loading": "Laden...",
+  "@error": {
+    "description": "Algemeen fout label"
+  },
   "error": "Fout",
+  "@close": {
+    "description": "Sluiten knop tekst"
+  },
   "close": "Sluiten",
+  "@biblicalReference": {
+    "description": "Label voor bijbelverwijzing invoer"
+  },
   "biblicalReference": "Bijbelverwijzing",
+  "@invalidBiblicalReference": {
+    "description": "Foutmelding voor ongeldige bijbelverwijzing"
+  },
   "invalidBiblicalReference": "Ongeldige bijbelverwijzing",
+  "@errorLoadingBiblicalText": {
+    "description": "Foutmelding wanneer bijbeltekst niet kan worden geladen"
+  },
   "errorLoadingBiblicalText": "Fout bij het laden van de bijbeltekst",
+  "@errorLoadingWithDetails": {
+    "description": "Foutmelding voorvoegsel met details"
+  },
   "errorLoadingWithDetails": "Fout bij het laden:",
+  "@networkError": {
+    "description": "Netwerkfout melding"
+  },
   "networkError": "Netwerkfout. Controleer uw internetverbinding.",
+  "@timeoutError": {
+    "description": "Time-out foutmelding"
+  },
   "timeoutError": "Time-out bij het laden van de bijbeltekst. Probeer het later opnieuw.",
+  "@invalidApiUrl": {
+    "description": "Ongeldige API URL fout"
+  },
   "invalidApiUrl": "Ongeldige API URL",
+  "@invalidContentType": {
+    "description": "Ongeldig content type fout"
+  },
   "invalidContentType": "Ongeldig antwoord van de server",
+  "@xmlParsingFailed": {
+    "description": "XML parsing fout"
+  },
   "xmlParsingFailed": "XML parsing mislukt en geen tekst gevonden",
+  "@noTextFound": {
+    "description": "Geen tekst gevonden fout"
+  },
   "noTextFound": "Geen tekst gevonden in XML na parsing",
+  "@tooManyRequests": {
+    "description": "Rate limit fout"
+  },
   "tooManyRequests": "Te veel verzoeken. Probeer het later opnieuw.",
+  "@serverError": {
+    "description": "Server foutmelding voorvoegsel"
+  },
   "serverError": "Fout bij het laden van de bijbeltekst (status:",
+  "@newBibleChat": {
+    "description": "Nieuwe Bijbel Chat knop label"
+  },
   "newBibleChat": "Nieuwe Bijbel Chat",
+  "@newConversation": {
+    "description": "Nieuwe conversatie knop label"
+  },
   "newConversation": "Nieuwe conversatie",
+  "@openConversations": {
+    "description": "Open gesprekken knop label"
+  },
   "openConversations": "Open gesprekken",
+  "@bibleBot": {
+    "description": "BijbelBot naam"
+  },
   "bibleBot": "BijbelBot",
+  "@errorInitializing": {
+    "description": "Fout bij initialiseren bericht"
+  },
   "errorInitializing": "Fout bij initialiseren: ",
+  "@errorCreatingConversation": {
+    "description": "Fout bij maken conversatie bericht"
+  },
   "errorCreatingConversation": "Fout bij maken conversatie: ",
+  "@conversations": {
+    "description": "Gesprekken sectie titel"
+  },
   "conversations": "Gesprekken",
+  "@searchConversations": {
+    "description": "Zoek gesprekken placeholder"
+  },
   "searchConversations": "Zoek gesprekken...",
+  "@noResults": {
+    "description": "Geen zoekresultaten bericht"
+  },
   "noResults": "Geen resultaten",
+  "@noConversations": {
+    "description": "Geen gesprekken bericht"
+  },
   "noConversations": "Geen gesprekken",
+  "@tryDifferentSearchTerm": {
+    "description": "Probeer andere zoekterm hint"
+  },
   "tryDifferentSearchTerm": "Probeer een andere zoekterm",
+  "@startNewConversationToAppear": {
+    "description": "Hint om nieuw gesprek te starten"
+  },
   "startNewConversationToAppear": "Begin een nieuw gesprek om hier te verschijnen",
+  "@today": {
+    "description": "Vandaag label"
+  },
   "today": "Vandaag",
+  "@yesterday": {
+    "description": "Gisteren label"
+  },
   "yesterday": "Gisteren",
+  "@monday": {
+    "description": "Maandag afkorting"
+  },
   "monday": "Ma",
+  "@tuesday": {
+    "description": "Dinsdag afkorting"
+  },
   "tuesday": "Di",
+  "@wednesday": {
+    "description": "Woensdag afkorting"
+  },
   "wednesday": "Wo",
+  "@thursday": {
+    "description": "Donderdag afkorting"
+  },
   "thursday": "Do",
+  "@friday": {
+    "description": "Vrijdag afkorting"
+  },
   "friday": "Vr",
+  "@saturday": {
+    "description": "Zaterdag afkorting"
+  },
   "saturday": "Za",
+  "@sunday": {
+    "description": "Zondag afkorting"
+  },
   "sunday": "Zo",
+  "@settings": {
+    "description": "Instellingen menu label"
+  },
   "settings": "Instellingen",
+  "@aiSettings": {
+    "description": "AI-instellingen sectie titel"
+  },
   "aiSettings": "AI-instellingen",
+  "@apiKey": {
+    "description": "API key label"
+  },
   "apiKey": "API key",
+  "@ollamaApiKey": {
+    "description": "Ollama API key label"
+  },
   "ollamaApiKey": "Ollama API key",
+  "@set": {
+    "description": "Ingesteld knop label"
+  },
   "set": "Ingesteld",
+  "@notSet": {
+    "description": "Niet ingesteld status"
+  },
   "notSet": "Niet ingesteld",
+  "@change": {
+    "description": "Wijzigen knop label"
+  },
   "change": "Wijzigen",
+  "@add": {
+    "description": "Toevoegen knop label"
+  },
   "add": "Toevoegen",
+  "@tone": {
+    "description": "Toon instelling label"
+  },
   "tone": "Toon",
+  "@emojis": {
+    "description": "Emoji's instelling label"
+  },
   "emojis": "Emoji's",
+  "@responseFormat": {
+    "description": "Antwoordformaat instelling label"
+  },
   "responseFormat": "Antwoordformaat",
+  "@customInstruction": {
+    "description": "Eigen instructie instelling label"
+  },
   "customInstruction": "Eigen instructie",
+  "@writeExtraInstructions": {
+    "description": "Schrijf extra instructies placeholder"
+  },
   "writeExtraInstructions": "Schrijf extra instructies voor de AI...",
+  "@deleteAllConversations": {
+    "description": "Verwijder alle gesprekken knop label"
+  },
   "deleteAllConversations": "Verwijder alle gesprekken",
+  "@thisActionCannotBeUndone": {
+    "description": "Waarschuwing dat actie niet ongedaan kan worden gemaakt"
+  },
   "thisActionCannotBeUndone": "Deze actie kan niet ongedaan worden gemaakt",
+  "@select": {
+    "description": "Selecteer knop label"
+  },
   "select": "Selecteer...",
+  "@deleteAllConversationsTitle": {
+    "description": "Alle gesprekken verwijderen dialoog titel"
+  },
   "deleteAllConversationsTitle": "Alle gesprekken verwijderen",
+  "@deleteAllConversationsConfirm": {
+    "description": "Alle gesprekken verwijderen bevestigingsbericht"
+  },
   "deleteAllConversationsConfirm": "Weet u zeker dat u alle gesprekken wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+  "@allConversationsDeleted": {
+    "description": "Alle gesprekken verwijderd succesbericht"
+  },
   "allConversationsDeleted": "Alle gesprekken zijn verwijderd",
+  "@delete": {
+    "description": "Verwijderen knop label"
+  },
   "delete": "Verwijderen",
+  "@setApiKey": {
+    "description": "API key instellen knop label"
+  },
   "setApiKey": "API key instellen",
+  "@enterApiKeyDescription": {
+    "description": "API key invoer beschrijving"
+  },
   "enterApiKeyDescription": "Voer je Ollama API key in om de chat te gebruiken. De key wordt alleen lokaal opgeslagen op dit apparaat.",
+  "@storedLocallyOnly": {
+    "description": "Wordt alleen lokaal opgeslagen label"
+  },
   "storedLocallyOnly": "Wordt alleen lokaal opgeslagen",
+  "@showKey": {
+    "description": "Toon key knop label"
+  },
   "showKey": "Toon key",
+  "@hideKey": {
+    "description": "Verberg key knop label"
+  },
   "hideKey": "Verberg key",
+  "@enterValidApiKey": {
+    "description": "Vul geldige API key in validatiebericht"
+  },
   "enterValidApiKey": "Vul een geldige API key in.",
+  "@save": {
+    "description": "Opslaan knop label"
+  },
   "save": "Opslaan",
+  "@cancel": {
+    "description": "Annuleren knop label"
+  },
   "cancel": "Annuleren",
+  "@invalidBiblicalReferenceWithRef": {
+    "description": "Ongeldige bijbelverwijzing fout met verwijzing placeholder",
+    "placeholders": {
+      "reference": {
+        "type": "String",
+        "example": "Johannes 3:16"
+      }
+    }
+  },
   "invalidBiblicalReferenceWithRef": "Ongeldige bijbelverwijzing: \"{reference}\"",
+  "@invalidBookName": {
+    "description": "Ongeldig boeknaam fout met boek en boeken placeholders",
+    "placeholders": {
+      "book": {
+        "type": "String",
+        "example": "Johannes"
+      },
+      "books": {
+        "type": "String",
+        "example": "Genesis, Exodus, Leviticus"
+      }
+    }
+  },
   "invalidBookName": "Ongeldig boeknaam: \"{book}\". Geldige boeken: {books}...",
+  "@errorProcessingQuestion": {
+    "description": "Fout bij verwerken vraag bericht"
+  },
   "errorProcessingQuestion": "Sorry, er is een fout opgetreden bij het verwerken van uw vraag. Probeer opnieuw.",
+  "@noInternetConnection": {
+    "description": "Geen internetverbinding fout"
+  },
   "noInternetConnection": "Geen internetverbinding. Controleer uw netwerk en probeer opnieuw.",
+  "@couldNotInitializeChat": {
+    "description": "Kon chat niet initialiseren fout met fout placeholder",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "API key niet ingesteld"
+      }
+    }
+  },
   "couldNotInitializeChat": "Kon chat niet initialiseren: {error}",
+  "@addApiKeyFirst": {
+    "description": "Voeg eerst API key toe bericht"
+  },
   "addApiKeyFirst": "Voeg eerst je API key toe in de instellingen.",
+  "@responseTakingLonger": {
+    "description": "Reactie duurt langer bericht"
+  },
   "responseTakingLonger": "De reactie duurt langer dan verwacht. Probeer het opnieuw.",
+  "@confirmNewConversation": {
+    "description": "Bevestig nieuwe conversatie bericht"
+  },
   "confirmNewConversation": "Weet je zeker dat je een nieuwe conversatie wilt starten? De huidige conversatie wordt gewist.",
+  "@couldNotStartNewConversation": {
+    "description": "Kon nieuwe conversatie niet starten fout met fout placeholder",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Netwerkfout"
+      }
+    }
+  },
   "couldNotStartNewConversation": "Kon nieuwe conversatie niet starten: {error}",
+  "@apiKeyRequired": {
+    "description": "API key vereist titel"
+  },
   "apiKeyRequired": "API key vereist",
+  "@addApiKeyToUseChat": {
+    "description": "Voeg API key toe om chat te gebruiken bericht"
+  },
   "addApiKeyToUseChat": "Voeg je eigen Ollama API key toe om de chat te gebruiken. Je kunt dit later wijzigen in de instellingen.",
+  "@addApiKey": {
+    "description": "API key toevoegen knop label"
+  },
   "addApiKey": "API key toevoegen",
+  "@initializingBibleChat": {
+    "description": "Bijbel Chat initialiseren bericht"
+  },
   "initializingBibleChat": "Bijbel Chat initialiseren...",
+  "@startConversation": {
+    "description": "Start een gesprek knop label"
+  },
   "startConversation": "Start een gesprek",
+  "@sampleQuestion1": {
+    "description": "Voorbeeldvraag 1"
+  },
   "sampleQuestion1": "Wat zegt de Bijbel over vergeving?",
+  "@sampleQuestion2": {
+    "description": "Voorbeeldvraag 2"
+  },
   "sampleQuestion2": "Leg de gelijkenis van de verloren zoon uit",
+  "@sampleQuestion3": {
+    "description": "Voorbeeldvraag 3"
+  },
   "sampleQuestion3": "Wat is de betekenis van Johannes 3:16?",
+  "@askQuestionAboutBible": {
+    "description": "Stel een vraag over de Bijbel placeholder"
+  },
   "askQuestionAboutBible": "Stel een vraag over de Bijbel...",
+  "@warm": {
+    "description": "Warm toon optie"
+  },
   "warm": "Warm",
+  "@professional": {
+    "description": "Professioneel toon optie"
+  },
   "professional": "Professioneel",
+  "@functional": {
+    "description": "Functioneel toon optie"
+  },
   "functional": "Functioneel",
+  "@more": {
+    "description": "Meer optie"
+  },
   "more": "Meer",
+  "@normal": {
+    "description": "Normaal optie"
+  },
   "normal": "Normaal",
+  "@less": {
+    "description": "Minder optie"
+  },
   "less": "Minder",
+  "@formatted": {
+    "description": "Geformatteerd optie"
+  },
   "formatted": "Geformatteerd",
+  "@longText": {
+    "description": "Lange tekst optie"
+  },
   "longText": "Lange tekst",
+  "@retry": {
+    "description": "Opnieuw knop label"
+  },
   "retry": "Opnieuw",
+  "@microphone": {
+    "description": "Microfoon knop label"
+  },
   "microphone": "Microfoon",
+  "@aiDisclaimer": {
+    "description": "AI disclaimer bericht"
+  },
   "aiDisclaimer": "AI kan fouten maken. Verifieer belangrijke informatie altijd. Geen enkele AI-respons vervangt persoonlijk Bijbelonderzoek en gebed.",
+  "@disclaimer": {
+    "description": "Disclaimer label"
+  },
   "disclaimer": "Disclaimer",
+  "@disclaimerText": {
+    "description": "Volledige disclaimer tekst"
+  },
   "disclaimerText": "Deze applicatie is een hulpmiddel dat bedoeld is om te assisteren bij bijbelstudie en bezinning. Het is GEEN vervanging voor persoonlijk gebed, geestelijke begeleiding of uw relatie met God. AI-responsen kunnen fouten of onnauwkeurigheden bevatten. Verifieer belangrijke informatie altijd met uw eigen Bijbelstudie en gebed. Dit hulpmiddel kan de leiding van de Heilige Geest in uw leven niet vervangen. De ontwikkelaars zijn niet verantwoordelijk voor beslissingen die op basis van door AI gegenereerde inhoud worden genomen. Onthoud: dit is een hulpmiddel, geen god.",
+  "@language": {
+    "description": "Taal instelling label"
+  },
   "language": "Taal",
+  "@systemLanguage": {
+    "description": "Systeem taal optie"
+  },
   "systemLanguage": "Systeem",
+  "@english": {
+    "description": "Engels taal optie"
+  },
   "english": "Engels",
+  "@dutch": {
+    "description": "Nederlands taal optie"
+  },
   "dutch": "Nederlands",
+  "@theme": {
+    "description": "Thema instelling label"
+  },
   "theme": "Thema",
+  "@systemTheme": {
+    "description": "Systeem thema optie"
+  },
   "systemTheme": "Systeem",
+  "@lightTheme": {
+    "description": "Licht thema optie"
+  },
   "lightTheme": "Licht",
+  "@darkTheme": {
+    "description": "Donker thema optie"
+  },
   "darkTheme": "Donker",
+  "@rename": {
+    "description": "Hernoemen knop label"
+  },
   "rename": "Hernoemen",
+  "@renameConversation": {
+    "description": "Gesprek hernoemen knop label"
+  },
   "renameConversation": "Gesprek hernoemen",
+  "@deleteConversation": {
+    "description": "Gesprek verwijderen knop label"
+  },
   "deleteConversation": "Gesprek verwijderen",
+  "@deleteConversationConfirm": {
+    "description": "Gesprek verwijderen bevestigingsbericht"
+  },
   "deleteConversationConfirm": "Weet je zeker dat je dit gesprek wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+  "@conversationDeleted": {
+    "description": "Gesprek verwijderd succesbericht"
+  },
   "conversationDeleted": "Gesprek verwijderd",
+  "@conversationRenamed": {
+    "description": "Gesprek hernoemd succesbericht"
+  },
   "conversationRenamed": "Gesprek hernoemd",
+  "@enterNewTitle": {
+    "description": "Voer nieuwe titel in placeholder"
+  },
   "enterNewTitle": "Voer nieuwe titel in",
+  "@pin": {
+    "description": "Vastzetten knop label"
+  },
   "pin": "Vastzetten",
+  "@unpin": {
+    "description": "Losmaken knop label"
+  },
   "unpin": "Losmaken",
+  "@conversationPinned": {
+    "description": "Gesprek vastgezet succesbericht"
+  },
   "conversationPinned": "Gesprek vastgezet",
+  "@conversationUnpinned": {
+    "description": "Gesprek losgemaakt succesbericht"
+  },
   "conversationUnpinned": "Gesprek losgemaakt",
+  "@edit": {
+    "description": "Bewerken knop label"
+  },
   "edit": "Bewerken",
+  "@editPrompt": {
+    "description": "Prompt bewerken knop label"
+  },
   "editPrompt": "Prompt bewerken",
+  "@editPromptTitle": {
+    "description": "Prompt bewerken dialoog titel"
+  },
   "editPromptTitle": "Bewerk je bericht",
+  "@editPromptDescription": {
+    "description": "Prompt bewerken dialoog beschrijving"
+  },
   "editPromptDescription": "Bewerk je bericht. Het gesprek wordt vanaf dit punt opnieuw gestart.",
+  "@editPromptHint": {
+    "description": "Prompt bewerken input hint"
+  },
   "editPromptHint": "Voer je bericht in...",
+  "@messageEdited": {
+    "description": "Bericht bewerkt succesbericht"
+  },
   "messageEdited": "Bericht bewerkt",
+  "@restartConversation": {
+    "description": "Gesprek herstarten knop label"
+  },
   "restartConversation": "Gesprek herstarten",
+  "@restartConversationConfirm": {
+    "description": "Gesprek herstarten bevestigingsbericht"
+  },
   "restartConversationConfirm": "Door dit bericht te bewerken wordt het gesprek vanaf dit punt opnieuw gestart. Alle berichten na dit bericht worden verwijderd. Doorgaan?",
+  "@aiModel": {
+    "description": "AI-model instelling label"
+  },
   "aiModel": "AI-model",
+  "@lowCostModel": {
+    "description": "Lage kosten model optie"
+  },
   "lowCostModel": "Lage kosten",
+  "@mediumCostModel": {
+    "description": "Middelmatige kosten model optie"
+  },
   "mediumCostModel": "Middelmatige kosten",
+  "@highCostModel": {
+    "description": "Hoge kosten model optie"
+  },
   "highCostModel": "Hoge kosten",
+  "@modelDescription": {
+    "description": "Model selectie beschrijving"
+  },
   "modelDescription": "Kies het AI-model dat je wilt gebruiken. Modellen met hogere kosten geven betere kwaliteit maar kunnen langzamer en duurder zijn."
 }

@@ -211,12 +211,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get cancel => 'Annuleren';
 
   @override
-  String invalidBiblicalReferenceWithRef(Object reference) {
+  String invalidBiblicalReferenceWithRef(String reference) {
     return 'Ongeldige bijbelverwijzing: \"$reference\"';
   }
 
   @override
-  String invalidBookName(Object book, Object books) {
+  String invalidBookName(String book, String books) {
     return 'Ongeldig boeknaam: \"$book\". Geldige boeken: $books...';
   }
 
@@ -229,7 +229,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Geen internetverbinding. Controleer uw netwerk en probeer opnieuw.';
 
   @override
-  String couldNotInitializeChat(Object error) {
+  String couldNotInitializeChat(String error) {
     return 'Kon chat niet initialiseren: $error';
   }
 
@@ -245,7 +245,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Weet je zeker dat je een nieuwe conversatie wilt starten? De huidige conversatie wordt gewist.';
 
   @override
-  String couldNotStartNewConversation(Object error) {
+  String couldNotStartNewConversation(String error) {
     return 'Kon nieuwe conversatie niet starten: $error';
   }
 

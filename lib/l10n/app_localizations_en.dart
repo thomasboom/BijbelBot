@@ -208,12 +208,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
-  String invalidBiblicalReferenceWithRef(Object reference) {
+  String invalidBiblicalReferenceWithRef(String reference) {
     return 'Invalid biblical reference: \"$reference\"';
   }
 
   @override
-  String invalidBookName(Object book, Object books) {
+  String invalidBookName(String book, String books) {
     return 'Invalid book name: \"$book\". Valid books: $books...';
   }
 
@@ -226,7 +226,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'No internet connection. Check your network and try again.';
 
   @override
-  String couldNotInitializeChat(Object error) {
+  String couldNotInitializeChat(String error) {
     return 'Could not initialize chat: $error';
   }
 
@@ -242,7 +242,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to start a new conversation? The current conversation will be cleared.';
 
   @override
-  String couldNotStartNewConversation(Object error) {
+  String couldNotStartNewConversation(String error) {
     return 'Could not start new conversation: $error';
   }
 

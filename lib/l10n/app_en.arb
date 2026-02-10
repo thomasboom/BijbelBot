@@ -1,130 +1,543 @@
 {
+  "@@locale": "en",
+  "@appName": {
+    "description": "The name of the application"
+  },
   "appName": "BijbelBot",
+  "@loading": {
+    "description": "Loading indicator text"
+  },
   "loading": "Loading...",
+  "@error": {
+    "description": "Generic error label"
+  },
   "error": "Error",
+  "@close": {
+    "description": "Close button text"
+  },
   "close": "Close",
+  "@biblicalReference": {
+    "description": "Label for biblical reference input"
+  },
   "biblicalReference": "Biblical Reference",
+  "@invalidBiblicalReference": {
+    "description": "Error message for invalid biblical reference"
+  },
   "invalidBiblicalReference": "Invalid biblical reference",
+  "@errorLoadingBiblicalText": {
+    "description": "Error message when biblical text fails to load"
+  },
   "errorLoadingBiblicalText": "Error loading biblical text",
+  "@errorLoadingWithDetails": {
+    "description": "Error message prefix with details"
+  },
   "errorLoadingWithDetails": "Error loading:",
+  "@networkError": {
+    "description": "Network error message"
+  },
   "networkError": "Network error. Check your internet connection.",
+  "@timeoutError": {
+    "description": "Timeout error message"
+  },
   "timeoutError": "Timeout loading biblical text. Please try again later.",
+  "@invalidApiUrl": {
+    "description": "Invalid API URL error"
+  },
   "invalidApiUrl": "Invalid API URL",
+  "@invalidContentType": {
+    "description": "Invalid content type error"
+  },
   "invalidContentType": "Invalid server response",
+  "@xmlParsingFailed": {
+    "description": "XML parsing error"
+  },
   "xmlParsingFailed": "XML parsing failed and no text found",
+  "@noTextFound": {
+    "description": "No text found error"
+  },
   "noTextFound": "No text found in XML after parsing",
+  "@tooManyRequests": {
+    "description": "Rate limit error"
+  },
   "tooManyRequests": "Too many requests. Please try again later.",
+  "@serverError": {
+    "description": "Server error message prefix"
+  },
   "serverError": "Error loading biblical text (status:",
+  "@newBibleChat": {
+    "description": "New Bible Chat button label"
+  },
   "newBibleChat": "New Bible Chat",
+  "@newConversation": {
+    "description": "New conversation button label"
+  },
   "newConversation": "New conversation",
+  "@openConversations": {
+    "description": "Open conversations button label"
+  },
   "openConversations": "Open conversations",
+  "@bibleBot": {
+    "description": "BibleBot name"
+  },
   "bibleBot": "BijbelBot",
+  "@errorInitializing": {
+    "description": "Error initializing message"
+  },
   "errorInitializing": "Error initializing: ",
+  "@errorCreatingConversation": {
+    "description": "Error creating conversation message"
+  },
   "errorCreatingConversation": "Error creating conversation: ",
+  "@conversations": {
+    "description": "Conversations section title"
+  },
   "conversations": "Conversations",
+  "@searchConversations": {
+    "description": "Search conversations placeholder"
+  },
   "searchConversations": "Search conversations...",
+  "@noResults": {
+    "description": "No search results message"
+  },
   "noResults": "No results",
+  "@noConversations": {
+    "description": "No conversations message"
+  },
   "noConversations": "No conversations",
+  "@tryDifferentSearchTerm": {
+    "description": "Try different search term hint"
+  },
   "tryDifferentSearchTerm": "Try a different search term",
+  "@startNewConversationToAppear": {
+    "description": "Hint to start new conversation"
+  },
   "startNewConversationToAppear": "Start a new conversation to appear here",
+  "@today": {
+    "description": "Today label"
+  },
   "today": "Today",
+  "@yesterday": {
+    "description": "Yesterday label"
+  },
   "yesterday": "Yesterday",
+  "@monday": {
+    "description": "Monday abbreviation"
+  },
   "monday": "Mon",
+  "@tuesday": {
+    "description": "Tuesday abbreviation"
+  },
   "tuesday": "Tue",
+  "@wednesday": {
+    "description": "Wednesday abbreviation"
+  },
   "wednesday": "Wed",
+  "@thursday": {
+    "description": "Thursday abbreviation"
+  },
   "thursday": "Thu",
+  "@friday": {
+    "description": "Friday abbreviation"
+  },
   "friday": "Fri",
+  "@saturday": {
+    "description": "Saturday abbreviation"
+  },
   "saturday": "Sat",
+  "@sunday": {
+    "description": "Sunday abbreviation"
+  },
   "sunday": "Sun",
+  "@settings": {
+    "description": "Settings menu label"
+  },
   "settings": "Settings",
+  "@aiSettings": {
+    "description": "AI Settings section title"
+  },
   "aiSettings": "AI Settings",
+  "@apiKey": {
+    "description": "API Key label"
+  },
   "apiKey": "API Key",
+  "@ollamaApiKey": {
+    "description": "Ollama API Key label"
+  },
   "ollamaApiKey": "Ollama API Key",
+  "@set": {
+    "description": "Set button label"
+  },
   "set": "Set",
+  "@notSet": {
+    "description": "Not set status"
+  },
   "notSet": "Not set",
+  "@change": {
+    "description": "Change button label"
+  },
   "change": "Change",
+  "@add": {
+    "description": "Add button label"
+  },
   "add": "Add",
+  "@tone": {
+    "description": "Tone setting label"
+  },
   "tone": "Tone",
+  "@emojis": {
+    "description": "Emojis setting label"
+  },
   "emojis": "Emojis",
+  "@responseFormat": {
+    "description": "Response Format setting label"
+  },
   "responseFormat": "Response Format",
+  "@customInstruction": {
+    "description": "Custom Instruction setting label"
+  },
   "customInstruction": "Custom Instruction",
+  "@writeExtraInstructions": {
+    "description": "Write extra instructions placeholder"
+  },
   "writeExtraInstructions": "Write extra instructions for the AI...",
+  "@deleteAllConversations": {
+    "description": "Delete all conversations button label"
+  },
   "deleteAllConversations": "Delete all conversations",
+  "@thisActionCannotBeUndone": {
+    "description": "Warning that action cannot be undone"
+  },
   "thisActionCannotBeUndone": "This action cannot be undone",
+  "@select": {
+    "description": "Select button label"
+  },
   "select": "Select...",
+  "@deleteAllConversationsTitle": {
+    "description": "Delete all conversations dialog title"
+  },
   "deleteAllConversationsTitle": "Delete all conversations",
+  "@deleteAllConversationsConfirm": {
+    "description": "Delete all conversations confirmation message"
+  },
   "deleteAllConversationsConfirm": "Are you sure you want to delete all conversations? This action cannot be undone.",
+  "@allConversationsDeleted": {
+    "description": "All conversations deleted success message"
+  },
   "allConversationsDeleted": "All conversations have been deleted",
+  "@delete": {
+    "description": "Delete button label"
+  },
   "delete": "Delete",
+  "@setApiKey": {
+    "description": "Set API Key button label"
+  },
   "setApiKey": "Set API Key",
+  "@enterApiKeyDescription": {
+    "description": "API key entry description"
+  },
   "enterApiKeyDescription": "Enter your Ollama API key to use the chat. The key is only stored locally on this device.",
+  "@storedLocallyOnly": {
+    "description": "Stored locally only label"
+  },
   "storedLocallyOnly": "Stored locally only",
+  "@showKey": {
+    "description": "Show key button label"
+  },
   "showKey": "Show key",
+  "@hideKey": {
+    "description": "Hide key button label"
+  },
   "hideKey": "Hide key",
+  "@enterValidApiKey": {
+    "description": "Enter valid API key validation message"
+  },
   "enterValidApiKey": "Please enter a valid API key.",
+  "@save": {
+    "description": "Save button label"
+  },
   "save": "Save",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
   "cancel": "Cancel",
+  "@invalidBiblicalReferenceWithRef": {
+    "description": "Invalid biblical reference error with reference placeholder",
+    "placeholders": {
+      "reference": {
+        "type": "String",
+        "example": "John 3:16"
+      }
+    }
+  },
   "invalidBiblicalReferenceWithRef": "Invalid biblical reference: \"{reference}\"",
+  "@invalidBookName": {
+    "description": "Invalid book name error with book and books placeholders",
+    "placeholders": {
+      "book": {
+        "type": "String",
+        "example": "John"
+      },
+      "books": {
+        "type": "String",
+        "example": "Genesis, Exodus, Leviticus"
+      }
+    }
+  },
   "invalidBookName": "Invalid book name: \"{book}\". Valid books: {books}...",
+  "@errorProcessingQuestion": {
+    "description": "Error processing question message"
+  },
   "errorProcessingQuestion": "Sorry, an error occurred while processing your question. Please try again.",
+  "@noInternetConnection": {
+    "description": "No internet connection error"
+  },
   "noInternetConnection": "No internet connection. Check your network and try again.",
+  "@couldNotInitializeChat": {
+    "description": "Could not initialize chat error with error placeholder",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "API key not set"
+      }
+    }
+  },
   "couldNotInitializeChat": "Could not initialize chat: {error}",
+  "@addApiKeyFirst": {
+    "description": "Add API key first message"
+  },
   "addApiKeyFirst": "Please add your API key in the settings first.",
+  "@responseTakingLonger": {
+    "description": "Response taking longer message"
+  },
   "responseTakingLonger": "The response is taking longer than expected. Please try again.",
+  "@confirmNewConversation": {
+    "description": "Confirm new conversation message"
+  },
   "confirmNewConversation": "Are you sure you want to start a new conversation? The current conversation will be cleared.",
+  "@couldNotStartNewConversation": {
+    "description": "Could not start new conversation error with error placeholder",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
   "couldNotStartNewConversation": "Could not start new conversation: {error}",
+  "@apiKeyRequired": {
+    "description": "API Key Required title"
+  },
   "apiKeyRequired": "API Key Required",
+  "@addApiKeyToUseChat": {
+    "description": "Add API key to use chat message"
+  },
   "addApiKeyToUseChat": "Add your own Ollama API key to use the chat. You can change this later in the settings.",
+  "@addApiKey": {
+    "description": "Add API Key button label"
+  },
   "addApiKey": "Add API Key",
+  "@initializingBibleChat": {
+    "description": "Initializing Bible Chat message"
+  },
   "initializingBibleChat": "Initializing Bible Chat...",
+  "@startConversation": {
+    "description": "Start conversation button label"
+  },
   "startConversation": "Start a conversation",
+  "@sampleQuestion1": {
+    "description": "Sample question 1"
+  },
   "sampleQuestion1": "What does the Bible say about forgiveness?",
+  "@sampleQuestion2": {
+    "description": "Sample question 2"
+  },
   "sampleQuestion2": "Explain the parable of the prodigal son",
+  "@sampleQuestion3": {
+    "description": "Sample question 3"
+  },
   "sampleQuestion3": "What is the meaning of John 3:16?",
+  "@askQuestionAboutBible": {
+    "description": "Ask question about Bible placeholder"
+  },
   "askQuestionAboutBible": "Ask a question about the Bible...",
+  "@warm": {
+    "description": "Warm tone option"
+  },
   "warm": "Warm",
+  "@professional": {
+    "description": "Professional tone option"
+  },
   "professional": "Professional",
+  "@functional": {
+    "description": "Functional tone option"
+  },
   "functional": "Functional",
+  "@more": {
+    "description": "More option"
+  },
   "more": "More",
+  "@normal": {
+    "description": "Normal option"
+  },
   "normal": "Normal",
+  "@less": {
+    "description": "Less option"
+  },
   "less": "Less",
+  "@formatted": {
+    "description": "Formatted option"
+  },
   "formatted": "Formatted",
+  "@longText": {
+    "description": "Long text option"
+  },
   "longText": "Long text",
+  "@retry": {
+    "description": "Retry button label"
+  },
   "retry": "Retry",
+  "@microphone": {
+    "description": "Microphone button label"
+  },
   "microphone": "Microphone",
+  "@aiDisclaimer": {
+    "description": "AI disclaimer message"
+  },
   "aiDisclaimer": "AI can make mistakes. Always verify important information. No AI response replaces personal Bible study and prayer.",
+  "@disclaimer": {
+    "description": "Disclaimer label"
+  },
   "disclaimer": "Disclaimer",
+  "@disclaimerText": {
+    "description": "Full disclaimer text"
+  },
   "disclaimerText": "This application is a tool designed to assist with biblical study and reflection. It is NOT a replacement for personal prayer, spiritual guidance, or your relationship with God. AI responses may contain errors or inaccuracies. Always verify important information with your own Bible study and prayer. This tool cannot replace the Holy Spirit's guidance in your life. The developers are not responsible for any decisions made based on AI-generated content. Remember: this is a tool, not a god.",
+  "@language": {
+    "description": "Language setting label"
+  },
   "language": "Language",
+  "@systemLanguage": {
+    "description": "System language option"
+  },
   "systemLanguage": "System",
+  "@english": {
+    "description": "English language option"
+  },
   "english": "English",
+  "@dutch": {
+    "description": "Dutch language option"
+  },
   "dutch": "Dutch",
+  "@theme": {
+    "description": "Theme setting label"
+  },
   "theme": "Theme",
+  "@systemTheme": {
+    "description": "System theme option"
+  },
   "systemTheme": "System",
+  "@lightTheme": {
+    "description": "Light theme option"
+  },
   "lightTheme": "Light",
+  "@darkTheme": {
+    "description": "Dark theme option"
+  },
   "darkTheme": "Dark",
+  "@rename": {
+    "description": "Rename button label"
+  },
   "rename": "Rename",
+  "@renameConversation": {
+    "description": "Rename conversation button label"
+  },
   "renameConversation": "Rename conversation",
+  "@deleteConversation": {
+    "description": "Delete conversation button label"
+  },
   "deleteConversation": "Delete conversation",
+  "@deleteConversationConfirm": {
+    "description": "Delete conversation confirmation message"
+  },
   "deleteConversationConfirm": "Are you sure you want to delete this conversation? This action cannot be undone.",
+  "@conversationDeleted": {
+    "description": "Conversation deleted success message"
+  },
   "conversationDeleted": "Conversation deleted",
+  "@conversationRenamed": {
+    "description": "Conversation renamed success message"
+  },
   "conversationRenamed": "Conversation renamed",
+  "@enterNewTitle": {
+    "description": "Enter new title placeholder"
+  },
   "enterNewTitle": "Enter new title",
+  "@pin": {
+    "description": "Pin button label"
+  },
   "pin": "Pin",
+  "@unpin": {
+    "description": "Unpin button label"
+  },
   "unpin": "Unpin",
+  "@conversationPinned": {
+    "description": "Conversation pinned success message"
+  },
   "conversationPinned": "Conversation pinned",
+  "@conversationUnpinned": {
+    "description": "Conversation unpinned success message"
+  },
   "conversationUnpinned": "Conversation unpinned",
+  "@edit": {
+    "description": "Edit button label"
+  },
   "edit": "Edit",
+  "@editPrompt": {
+    "description": "Edit prompt button label"
+  },
   "editPrompt": "Edit prompt",
+  "@editPromptTitle": {
+    "description": "Edit prompt dialog title"
+  },
   "editPromptTitle": "Edit your message",
+  "@editPromptDescription": {
+    "description": "Edit prompt dialog description"
+  },
   "editPromptDescription": "Edit your message. The conversation will restart from this point.",
+  "@editPromptHint": {
+    "description": "Edit prompt input hint"
+  },
   "editPromptHint": "Enter your message...",
+  "@messageEdited": {
+    "description": "Message edited success message"
+  },
   "messageEdited": "Message edited",
+  "@restartConversation": {
+    "description": "Restart conversation button label"
+  },
   "restartConversation": "Restart conversation",
+  "@restartConversationConfirm": {
+    "description": "Restart conversation confirmation message"
+  },
   "restartConversationConfirm": "Editing this message will restart the conversation from this point. All messages after this one will be removed. Continue?",
+  "@aiModel": {
+    "description": "AI Model setting label"
+  },
   "aiModel": "AI Model",
+  "@lowCostModel": {
+    "description": "Low cost model option"
+  },
   "lowCostModel": "Low Cost",
+  "@mediumCostModel": {
+    "description": "Medium cost model option"
+  },
   "mediumCostModel": "Medium Cost",
+  "@highCostModel": {
+    "description": "High cost model option"
+  },
   "highCostModel": "High Cost",
+  "@modelDescription": {
+    "description": "Model selection description"
+  },
   "modelDescription": "Choose the AI model to use. Higher cost models provide better quality but may be slower and more expensive."
 }
