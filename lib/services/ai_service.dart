@@ -442,7 +442,7 @@ class AiService {
 
     final normenBlock = _normenText.trim().isEmpty
         ? 'Normen: (geen normen geladen)'
-        : 'Normen (uit normen.md):\n$_normenText';
+        : 'Normen (uit soul.md):\n$_normenText';
 
     final styleBlock = _buildStyleInstructions(settings);
     final customBlock = settings.customInstruction.trim().isEmpty
@@ -508,9 +508,9 @@ $responseStructure
 
   Future<String> _loadNormenText() async {
     try {
-      return await rootBundle.loadString('normen.md');
+      return await rootBundle.loadString('soul.md');
     } catch (e) {
-      AppLogger.warning('Could not load normen.md: $e');
+      AppLogger.warning('Could not load soul.md: $e');
       return '';
     }
   }
